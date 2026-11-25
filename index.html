@@ -87,7 +87,6 @@ footer .wave{font-size:28px;letter-spacing:6px}
 .balloon i{position:absolute;left:50%;top:97%;width:0;height:0;margin-left:-6px;border:6px solid transparent;border-bottom-color:inherit}
 @keyframes rise{0%{transform:translate(0,0) rotate(-4deg)}25%{transform:translate(18px,-30vh) rotate(4deg)}50%{transform:translate(-14px,-60vh) rotate(-4deg)}75%{transform:translate(16px,-90vh) rotate(4deg)}100%{transform:translate(0,-125vh) rotate(0)}}
 .conf{position:absolute;width:10px;height:16px;border-radius:3px;will-change:transform}
-@media (prefers-reduced-motion:reduce){#party{display:none}}
 </style>
 </head>
 <body>
@@ -168,7 +167,7 @@ footer .wave{font-size:28px;letter-spacing:6px}
 <script>
 (function(){
   var party=document.getElementById('party');
-  if(!party||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(!party)return;var calm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var cols=['#ef476f','#ff9f43','#ffd166','#06d6a0','#4cc9f0','#7b61ff','#f78fb3','#b197fc'];
   function rnd(a,b){return a+Math.random()*(b-a)}
   function balloon(){
@@ -195,9 +194,9 @@ footer .wave{font-size:28px;letter-spacing:6px}
     }
   }
   function cannons(){var h=window.innerHeight,w=window.innerWidth;burst(w*.08,h*.9,45);burst(w*.92,h*.9,45);burst(w*.5,h*.35,35);}
-  for(var i=0;i<14;i++)setTimeout(balloon,i*350);
-  setInterval(balloon,1300);
-  setTimeout(cannons,400);setInterval(cannons,7000);
+  for(var i=0;i<(calm?8:14);i++)setTimeout(balloon,i*(calm?600:350));
+  setInterval(balloon,calm?2500:1300);
+  setTimeout(cannons,400);setInterval(cannons,calm?15000:7000);
   document.addEventListener('click',function(e){burst(e.clientX,e.clientY,40);});
 })();
 </script>
