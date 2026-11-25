@@ -79,6 +79,21 @@ a.game:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
 footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40px}
 footer .wave{font-size:28px;letter-spacing:6px}
 
+
+/* GRUPY WIEKOWE */
+.ages{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.age-btn{border:none;cursor:pointer;border-radius:30px;padding:20px 14px 18px;text-align:center;font-family:inherit;color:var(--ink);box-shadow:0 8px 0 rgba(0,0,0,.14);transition:transform .12s;position:relative}
+.age-btn:hover{transform:translateY(-4px) rotate(-1deg)}
+.age-btn .ic{font-size:58px;display:block;line-height:1.1}
+.age-btn b{display:block;font:800 23px/1.15 "Baloo 2",sans-serif;margin:6px 0 4px}
+.age-btn span.yrs{display:inline-block;background:rgba(255,255,255,.85);border-radius:999px;padding:4px 14px;font-weight:800;font-size:17px}
+.age-btn.on{outline:5px solid var(--ink);outline-offset:3px}
+.hint{text-align:center;color:var(--muted);margin:14px 0 0;font-size:16px}
+#gry-box{scroll-margin-top:80px}
+.empty{background:#fff;border:3px dashed #e6d7b8;border-radius:26px;padding:22px;text-align:center;font-size:18px;line-height:1.5}
+.empty b{font-family:"Baloo 2",sans-serif;font-size:24px}
+.empty ul{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.empty li{background:#fff8ec;border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
 /* BALONY + CONFETTI */
 #party{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
 .balloon{position:absolute;bottom:-160px;width:60px;height:74px;border-radius:50% 50% 48% 52%/55% 55% 45% 45%;animation:rise linear forwards;opacity:.92;box-shadow:inset -8px -10px 0 rgba(0,0,0,.12)}
@@ -110,18 +125,31 @@ footer .wave{font-size:28px;letter-spacing:6px}
   <p class="motto">Witamy w wielkim przygotowaniu do dorosłego życia!</p>
   <p class="dare">Udowodnij mi, że tak nie jest – i że to <b>Ty</b> wiesz więcej! 💪</p>
   <p>Gry, które uczą czytać, liczyć, myśleć i pomagać innym.</p>
-  <a class="cta" href="#gry">▶ Gramy!</a>
+  <a class="cta" href="#wiek">▶ Gramy!</a>
   <div class="badges"><span>🔊 Z lektorem</span><span>🚫 Bez reklam</span><span>⭐ Zbieraj gwiazdki</span><span>📱 Telefon i tablet</span></div>
 </header>
 
+<section id="wiek">
+  <h2 class="title">Ile masz lat?</h2>
+  <p class="sub">Wybierz swoją grupę – pokażemy gry dla Ciebie!</p>
+  <div class="ages">
+    <button class="age-btn" data-age="a" style="background:var(--y)"><span class="ic">🐣</span><b>Jestem małym bąkiem</b><span class="yrs">4–6 lat</span></button>
+    <button class="age-btn" data-age="b" style="background:var(--g)"><span class="ic">🌱</span><b>Rosnę jak na drożdżach</b><span class="yrs">6–9 lat</span></button>
+    <button class="age-btn" data-age="c" style="background:var(--b)"><span class="ic">🚀</span><b>Chcę już być duży!</b><span class="yrs">9–13 lat</span></button>
+    <button class="age-btn" data-age="d" style="background:var(--v)"><span class="ic">🦸</span><b>Jestem już prawie dorosły i odpowiedzialny</b><span class="yrs">13–17 lat</span></button>
+  </div>
+  <p class="hint" id="age-hint">👆 Kliknij swój wiek</p>
+</section>
+
 <section id="gry">
-  <h2 class="title">Wybierz grę</h2>
+  <h2 class="title" id="gry-title">Wszystkie gry</h2>
   <p class="sub">Kliknij kafelek i zaczynamy!</p>
+  <div id="gry-box"></div>
   <div class="games">
-    <a class="game" style="background:var(--y)" href="gry/czytanka.html"><span class="age">4–7 lat</span><span class="ic">📖</span><h3>Czytanka</h3><p>Literki, sylaby, słowa i krótkie bajeczki</p><span class="play">Graj ▶</span></a>
-    <a class="game" style="background:var(--g)" href="gry/liczydelko.html"><span class="age">4–8 lat</span><span class="ic">🔢</span><h3>Liczydełko</h3><p>Liczenie, dodawanie, odejmowanie i tabliczka</p><span class="play">Graj ▶</span></a>
-    <a class="game" style="background:var(--v)" href="gry/glowkowanie.html"><span class="age">5–8 lat</span><span class="ic">🧩</span><h3>Główkowanie</h3><p>Zagadki logiczne, wzory i myślenie</p><span class="play">Graj ▶</span></a>
-    <a class="game" style="background:var(--p)" href="gry/maly-ratownik.html"><span class="age">5–8 lat</span><span class="ic">🚑</span><h3>Mały ratownik</h3><p>Telefon 112, oparzenia, zadławienie, bezpieczeństwo</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="a b" style="background:var(--y)" href="gry/czytanka.html"><span class="age">4–7 lat</span><span class="ic">📖</span><h3>Czytanka</h3><p>Literki, sylaby, słowa i krótkie bajeczki</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="a b" style="background:var(--g)" href="gry/liczydelko.html"><span class="age">4–8 lat</span><span class="ic">🔢</span><h3>Liczydełko</h3><p>Liczenie, dodawanie, odejmowanie i tabliczka</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="a b" style="background:var(--v)" href="gry/glowkowanie.html"><span class="age">5–8 lat</span><span class="ic">🧩</span><h3>Główkowanie</h3><p>Zagadki logiczne, wzory i myślenie</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="a b c" style="background:var(--p)" href="gry/maly-ratownik.html"><span class="age">5–8 lat</span><span class="ic">🚑</span><h3>Mały ratownik</h3><p>Telefon 112, oparzenia, zadławienie, bezpieczeństwo</p><span class="play">Graj ▶</span></a>
   </div>
   <div class="soon">
     <div><b>🕐</b>Zegarek<small>wkrótce</small></div>
@@ -163,6 +191,24 @@ footer .wave{font-size:28px;letter-spacing:6px}
 </footer>
 
 
+<script>
+(function(){
+  var names={a:'Jestem małym bąkiem 🐣 (4–6 lat)',b:'Rosnę jak na drożdżach 🌱 (6–9 lat)',c:'Chcę już być duży! 🚀 (9–13 lat)',d:'Jestem już prawie dorosły i odpowiedzialny 🦸 (13–17 lat)'};
+  var soon={c:['Tabliczka mnożenia na czas','Ułamki','English – zdania','Pierwsza pomoc – resuscytacja','Mapa Polski'],d:['Pierwsza pomoc jak ratownik medyczny','Własne pieniądze i budżet','Przepisy drogowe – teoria','English – rozmowy','Bezpieczeństwo w internecie']};
+  function pick(k,scroll){
+    document.querySelectorAll('.age-btn').forEach(function(b){b.classList.toggle('on',b.dataset.age===k)});
+    var n=0;document.querySelectorAll('a.game').forEach(function(g){var ok=(g.dataset.ages||'').split(' ').indexOf(k)>-1;g.style.display=ok?'':'none';if(ok)n++;});
+    document.getElementById('gry-title').textContent='Gry dla: '+names[k];
+    document.getElementById('age-hint').textContent='Wybrano: '+names[k]+' – możesz zmienić w każdej chwili';
+    var box=document.getElementById('gry-box');
+    box.innerHTML=(soon[k]?'<div class="empty"><b>'+(n?'Na początek mamy dla Ciebie '+n+' grę. Wkrótce dojdą nowe:':'Gry dla Twojej grupy są w przygotowaniu! Wkrótce:')+'</b><ul>'+soon[k].map(function(t){return'<li>'+t+'</li>'}).join('')+'</ul></div><br>':'');
+    try{localStorage.setItem('bystrzaki-wiek',k)}catch(e){}
+    if(scroll)document.getElementById('gry').scrollIntoView({behavior:'smooth'});
+  }
+  document.querySelectorAll('.age-btn').forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.age,true)})});
+  try{var k=localStorage.getItem('bystrzaki-wiek');if(k&&names[k])pick(k,false)}catch(e){}
+})();
+</script>
 <div id="party" aria-hidden="true"></div>
 <script>
 (function(){
