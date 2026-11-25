@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Główkowanie – logika</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0fdfa;--ink:#1f2a44;--muted:#6b7590;--ok:#16a34a;--bad:#dc2626;
+--c1:#ffd166;--c2:#06d6a0;--c3:#4cc9f0;--c4:#f78fb3;--c5:#b197fc;--c6:#ff9f43;--sh:rgba(0,0,0,.08)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 var(--sh);position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:700;font-size:18px}
+main{flex:1;width:100%;max-width:820px;margin:0 auto;padding:16px}
+button{font-family:inherit}
+.hello{text-align:center;margin:6px 0 12px;font-size:20px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.tile{border:none;border-radius:24px;padding:20px 12px;font-size:21px;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:44px;display:block;margin-bottom:6px}
+.tile small{display:block;font-size:14px;font-weight:400;color:#334;margin-top:4px}
+.seg{display:flex;gap:8px;justify-content:center;margin:0 0 14px;flex-wrap:wrap}
+.sg{border:none;border-radius:14px;padding:10px 14px;font-size:17px;font-weight:700;background:#fff;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.sg.on{background:var(--c5);color:#fff}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar h2{margin:0;font-size:22px;flex:1}
+.back{border:none;background:#fff;border-radius:14px;padding:10px 14px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.spk{border:none;background:var(--c3);border-radius:14px;padding:10px 14px;font-size:18px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.progress{height:12px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden;margin:4px 0 14px}
+.progress i{display:block;height:100%;background:var(--c2);transition:width .3s}
+.panel{background:#fff;border-radius:28px;padding:20px 14px;text-align:center;box-shadow:0 6px 0 var(--sh);margin-bottom:14px}
+.q{font-size:30px;font-weight:700;line-height:1.25;margin:4px 0 12px}
+.hint{color:var(--muted);font-size:15px;margin:4px 0 8px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:520px;margin:0 auto}
+.opts.c1{grid-template-columns:1fr}.opts.c3{grid-template-columns:repeat(3,1fr)}
+.opt{border:none;background:var(--c1);border-radius:22px;font-size:26px;font-weight:700;padding:14px 8px;cursor:pointer;box-shadow:0 5px 0 #d7a300;color:#3d2c00;min-height:70px}
+.opt:active{transform:translateY(3px);box-shadow:0 2px 0 #d7a300}
+.opt.good{background:#86efac;box-shadow:0 5px 0 #22a35a}
+.opt.wrong{animation:shake .4s;background:#fecaca;box-shadow:0 5px 0 #f87171}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.msg{font-size:24px;font-weight:700;min-height:34px;margin-top:10px}
+.msg.ok{color:var(--ok)} .msg.no{color:var(--bad)}
+.big-emoji{font-size:80px;line-height:1.1}
+.btn{border:none;border-radius:18px;padding:14px 20px;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:var(--c2);color:#033;margin:6px}
+.btn.y{background:var(--c1);color:#3d2c00}.btn.b{background:var(--c3);color:#06263a}
+.tip{background:#fff;border-radius:20px;padding:16px 18px;margin-top:14px;font-size:15.5px;line-height:1.5;box-shadow:0 4px 0 var(--sh)}
+.tip h3{margin:0 0 6px;font-size:18px}.tip ul{margin:6px 0 0;padding-left:20px}
+.burst{position:fixed;pointer-events:none;font-size:32px;z-index:20;animation:fly 1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+.pat{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;font-size:44px;margin:8px 0 14px}
+.pat .qm{display:inline-flex;width:56px;height:56px;border:4px dashed var(--c6);border-radius:14px;align-items:center;justify-content:center;font-size:34px;color:var(--c6);font-weight:700}
+.opt.em{font-size:52px;padding:8px}
+.opt.em:not(.good):not(.wrong){background:#fff;box-shadow:0 5px 0 #d6dbe6}
+.mem{display:grid;gap:8px;max-width:420px;margin:0 auto}
+.mc{aspect-ratio:1;border:none;border-radius:16px;font-size:40px;cursor:pointer;background:var(--c5);box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .2s}
+.mc.open{background:#fff;transform:rotateY(180deg)}
+.mc.done{background:#bbf7d0;transform:none}
+.mc span{display:inline-block;transform:rotateY(180deg)}
+.gridR{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-width:340px;margin:0 auto;background:#e2e8f0;padding:4px;border-radius:16px}
+.gc{aspect-ratio:1;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.gc.path{background:#fef9c3}
+.prog{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:52px;background:#f1f5f9;border-radius:14px;padding:6px;margin:10px 0;font-size:28px}
+.prog span{cursor:pointer}
+.prog span.act{background:var(--c1);border-radius:8px}
+.pad{display:grid;grid-template-columns:repeat(3,64px);gap:6px;justify-content:center}
+.pad button{height:58px;border:none;border-radius:14px;font-size:28px;background:var(--c3);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.pad .run{background:var(--c2)} .pad .clr{background:#fecaca}
+</style>
+</head>
+<body>
+<header><h1 id="home">🧠 Główkowanie</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<script>
+const APP="logika";
+const $=s=>document.querySelector(s), app=$("#app");
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(APP+"_"+k);localStorage.setItem(APP+"_"+k,v)}catch(e){return null}}
+let stars=+store("stars")||0;
+function saveStars(){$("#stars").textContent=stars;store("stars",stars)}
+saveStars();
+// mowa
+let voices={};
+function pickVoices(){try{const v=speechSynthesis.getVoices();voices.pl=v.find(x=>/^pl/i.test(x.lang))||null;voices.en=v.find(x=>/^en-GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}catch(e){}}
+if("speechSynthesis" in window){pickVoices();speechSynthesis.onvoiceschanged=pickVoices;}
+function say(t,lang="pl",rate=0.85,queue=false){try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang==="en"?"en-GB":"pl-PL";if(voices[lang])u.voice=voices[lang];u.rate=rate;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!","Doskonale!"];
+function cheer(x,y,add=true){
+  if(add){stars++;saveStars();}
+  const l=["⭐","🌟","✨","🎉","💛"];
+  for(let i=0;i<12;i++){const b=document.createElement("div");b.className="burst";b.textContent=l[i%5];
+    b.style.left=(x||innerWidth/2)+"px";b.style.top=(y||innerHeight/2)+"px";
+    const a=Math.random()*Math.PI*2,r=90+Math.random()*120;
+    b.style.setProperty("--dx",Math.cos(a)*r+"px");b.style.setProperty("--dy",Math.sin(a)*r+"px");
+    document.body.appendChild(b);setTimeout(()=>b.remove(),1000);}
+}
+function bar(title,speak){return `<div class="bar"><button class="back" id="bk">⬅</button><h2>${title}</h2>${speak?'<button class="spk" id="sp">🔊</button>':""}</div>`}
+function bindBar(onSpeak){$("#bk").onclick=menu; if(onSpeak&&$("#sp"))$("#sp").onclick=onSpeak;}
+// silnik quizu: task = {html, opts:[{label,val}], ans, speak, speakLang, after, afterSpeak, hint, cols, onShow}
+function game(title,makeTask,ROUND=10){
+  let n=0,score=0;
+  const next=()=>{
+    if(n>=ROUND) return finish();
+    const t=makeTask(); let tries=0;
+    app.innerHTML=bar(title,!!t.speak)+`<div class="progress"><i style="width:${n/ROUND*100}%"></i></div>
+      <div class="panel">${t.html}
+      <div class="opts ${t.cols?"c"+t.cols:""}">${t.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.label}</button>`).join("")}</div>
+      <div class="msg" id="msg"></div></div>`;
+    const sp=()=>say(t.speak,t.speakLang||"pl",t.rate||0.85);
+    bindBar(sp); if(t.speak&&!t.noAuto) sp(); if(t.onShow) t.onShow();
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=e=>{
+      const o=t.opts[+b.dataset.i];
+      if(o.val===t.ans){
+        b.classList.add("good"); app.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+        const p=pick(PRAISE); $("#msg").className="msg ok"; $("#msg").innerHTML=p+(t.after?" "+t.after:"");
+        say(p+(t.afterSpeak?" "+t.afterSpeak:"")); if(tries===0)score++; cheer(e.clientX,e.clientY);
+        n++; setTimeout(next,t.wait||2000);
+      }else{
+        tries++; b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+        $("#msg").className="msg no"; $("#msg").innerHTML=(t.hint&&tries>1)?t.hint:"Spróbuj jeszcze raz 🙂"; say(t.wrongSay||"Spróbuj jeszcze raz");
+      }
+    });
+  };
+  const finish=()=>{
+    const txt=score>=ROUND-1?"Jesteś mistrzem!":score>=ROUND*0.6?"Bardzo ładnie!":"Dobra robota, ćwiczymy dalej!";
+    app.innerHTML=bar(title)+`<div class="panel"><div class="big-emoji">🏆</div><div class="q" style="font-size:52px">${score} / ${ROUND}</div>
+      <div class="msg ok">${txt}</div><button class="btn" id="ag">🔁 Jeszcze raz</button><button class="btn y" id="mn">🏠 Menu</button></div>`;
+    bindBar(); $("#mn").onclick=menu; $("#ag").onclick=()=>game(title,makeTask,ROUND); say(txt);
+  };
+  next();
+}
+function menuOf(hello,tiles,extraTop=""){
+  try{speechSynthesis.cancel()}catch(e){}
+  app.innerHTML=`<p class="hello">${hello}</p>${extraTop}<div class="menu">${tiles.map((t,i)=>`<button class="tile" style="background:${t.bg}" data-i="${i}"><span class="ic">${t.ic}</span>${t.name}<small>${t.sub||""}</small></button>`).join("")}</div>`;
+  app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>tiles[+b.dataset.i].go());
+}
+function parentsPage(html){
+  app.innerHTML=bar("👨‍👩‍👦 Dla rodzica")+html+`<div style="text-align:center"><button class="btn" id="test">🔊 Test głosu</button><button class="btn y" id="reset">🔄 Wyzeruj gwiazdki</button></div>`;
+  bindBar(); $("#test").onclick=()=>say("Cześć! Gotowy do zabawy?"); $("#reset").onclick=()=>{stars=0;saveStars()};
+}
+$("#home").onclick=()=>menu();
+const PALS=[["🔴","🔵","🟡","🟢","🟣"],["🐶","🐱","🐭","🐰","🐻"],["🍎","🍌","🍇","🍓","🍐"],["⭐","🌙","☀️","☁️","⚡"],["🚗","🚲","✈️","🚂","⛵"]];
+const PATTERNS=[[[0,1],"AB"],[[0,0,1],"AAB"],[[0,1,1],"ABB"],[[0,1,2],"ABC"],[[0,1,2,1],"ABCB"],[[0,0,1,1],"AABB"]];
+let level=+store("level")||0;
+function tPattern(){
+  const pats=level?PATTERNS:PATTERNS.slice(0,3);
+  const [p]=pick(pats), pal=shuffle(pick(PALS)), shown=R(p.length+3,p.length*2+2);
+  const seq=[...Array(shown+1)].map((_,i)=>pal[p[i%p.length]]), ans=seq[shown];
+  const o=shuffle([ans,...pal.filter(x=>x!==ans).slice(0,2)]);
+  return {html:`<p class="hint">Co będzie dalej?</p><div class="pat">${seq.slice(0,shown).map(x=>`<span>${x}</span>`).join("")}<span class="qm">?</span></div>`,
+    opts:o.map(x=>({label:x,val:x})),ans,cols:3,speak:"Co będzie dalej?",after:"",afterSpeak:"",hint:"Znajdź, co się powtarza",
+    onShow:()=>app.querySelectorAll(".opt").forEach(b=>b.classList.add("em"))};
+}
+const GROUPS=[["owoce","🍎🍌🍇🍓🍐🍒🍑🍍"],["zwierzęta","🐶🐱🐭🐰🐻🦁🐸🐵"],["pojazdy","🚗🚲✈️🚂⛵🚌🚀🚜"],["ubrania","👕👖👗🧦🧢🧥🧤🧣"],["warzywa","🥕🥦🌽🥒🍅🥔🧅🫑"],["sport","⚽🏀🎾🏐🏈⚾🏓🥊"],["pogoda","☀️🌧️❄️⛈️🌈☁️🌬️🌫️"],["instrumenty","🎸🥁🎺🎻🎹🪗🎷🪘"]];
+const em=s=>[...new Intl.Segmenter().segment(s)].map(x=>x.segment);
+function tOdd(){
+  const [g1,g2]=shuffle(GROUPS); const three=shuffle(em(g1[1])).slice(0,3), odd=pick(em(g2[1]));
+  const all=shuffle([...three,odd]);
+  return {html:`<p class="hint">Co tu nie pasuje?</p>`,opts:all.map(x=>({label:x,val:x})),ans:odd,
+    speak:"Co tu nie pasuje?",after:`Reszta to ${g1[0]}.`,afterSpeak:`Bo reszta to ${g1[0]}`,hint:"Co łączy trzy obrazki?",
+    onShow:()=>app.querySelectorAll(".opt").forEach(b=>b.classList.add("em"))};
+}
+function memory(){
+  const pairs=level?8:6, cols=4;
+  const pool=shuffle(em("🐶🐱🦁🐸🐵🐻🐰🦊🐼🐨🐯🐷🐮🐔🐧🦄")).slice(0,pairs);
+  const cards=shuffle([...pool,...pool]); let open=[],done=0,moves=0,lock=false;
+  app.innerHTML=bar("🃏 Memory",true)+`<div class="panel"><p class="hint">Znajdź pary. Ruchy: <b id="mv">0</b></p>
+    <div class="mem" style="grid-template-columns:repeat(${cols},1fr)">${cards.map((c,i)=>`<button class="mc" data-i="${i}"><span></span></button>`).join("")}</div>
+    <div class="msg" id="msg"></div></div>`;
+  bindBar(()=>say("Odkrywaj po dwie karty i szukaj par."));
+  app.querySelectorAll(".mc").forEach(b=>b.onclick=e=>{
+    if(lock||b.classList.contains("open")||b.classList.contains("done"))return;
+    const i=+b.dataset.i; b.classList.add("open"); b.firstChild.textContent=cards[i]; open.push(b);
+    if(open.length===2){moves++;$("#mv").textContent=moves;const [a,c]=open;
+      if(cards[+a.dataset.i]===cards[+c.dataset.i]){a.classList.add("done");c.classList.add("done");open=[];done++;say(pick(["Para!","Jest!","Super!"]),"pl",1);
+        if(done===pairs){$("#msg").className="msg ok";$("#msg").innerHTML=`Wszystkie pary w ${moves} ruchach! <button class="btn" id="ag">🔁 Jeszcze raz</button>`;say("Brawo! Znalazłeś wszystkie pary");cheer(e.clientX,e.clientY);$("#ag").onclick=memory;}}
+      else{lock=true;setTimeout(()=>{a.classList.remove("open");c.classList.remove("open");a.firstChild.textContent="";c.firstChild.textContent="";open=[];lock=false},900)}}
+  });
+}
+// robot
+const DIRS={"⬆️":[0,-1],"⬇️":[0,1],"⬅️":[-1,0],"➡️":[1,0]};
+function makeLevel(){
+  const N=5;
+  for(let t=0;t<200;t++){
+    const rb=[R(0,4),R(0,4)], st=[R(0,4),R(0,4)];
+    const dist=Math.abs(rb[0]-st[0])+Math.abs(rb[1]-st[1]); if(dist<(level?5:3)||dist>(level?8:5))continue;
+    const walls=new Set(); const nw=level?R(4,7):R(1,3);
+    while(walls.size<nw){const w=[R(0,4),R(0,4)];const k=w+"";if(k!==rb+""&&k!==st+"")walls.add(k)}
+    // BFS
+    const q=[[...rb,0]],seen=new Set([rb+""]);let best=-1;
+    while(q.length){const [x,y,d]=q.shift(); if(x===st[0]&&y===st[1]){best=d;break}
+      for(const [dx,dy] of Object.values(DIRS)){const nx=x+dx,ny=y+dy,k=nx+","+ny; if(nx<0||ny<0||nx>=N||ny>=N||walls.has(k)||seen.has(k))continue; seen.add(k);q.push([nx,ny,d+1])}}
+    if(best>0&&best<=10) return {rb,st,walls,best};
+  }
+  return {rb:[0,0],st:[2,2],walls:new Set(),best:4};
+}
+function robot(){
+  let L=makeLevel(), prog=[], pos=[...L.rb], running=false, trail=new Set();
+  const cell=(x,y)=>{const k=x+","+y; if(pos[0]===x&&pos[1]===y)return "🤖"; if(L.st[0]===x&&L.st[1]===y)return "⭐"; if(L.walls.has(k))return "🪨"; return ""};
+  const draw=(act=-1)=>{
+    app.innerHTML=bar("🤖 Robot",true)+`<div class="panel"><p class="hint">Ułóż strzałki, żeby robot doszedł do gwiazdki. Omijaj kamienie!</p>
+      <div class="gridR">${[...Array(25)].map((_,i)=>{const x=i%5,y=Math.floor(i/5);return `<div class="gc ${trail.has(x+","+y)?"path":""}">${cell(x,y)}</div>`}).join("")}</div>
+      <div class="prog">${prog.map((p,i)=>`<span data-i="${i}" class="${i===act?"act":""}">${p}</span>`).join("")||'<span class="hint">tu pojawią się strzałki</span>'}</div>
+      <div class="pad"><button class="clr" id="cl">🧽</button><button data-d="⬆️">⬆️</button><button class="clr" id="un">↩️</button>
+       <button data-d="⬅️">⬅️</button><button data-d="⬇️">⬇️</button><button data-d="➡️">➡️</button></div>
+      <button class="btn" id="go">▶ Start</button><button class="btn y" id="nw">🔀 Nowa plansza</button><div class="msg" id="msg"></div></div>`;
+    bindBar(()=>say("Ułóż strzałki, żeby robot doszedł do gwiazdki."));
+    app.querySelectorAll(".pad [data-d]").forEach(b=>b.onclick=()=>{if(running||prog.length>=14)return;prog.push(b.dataset.d);draw()});
+    $("#un").onclick=()=>{if(!running){prog.pop();draw()}}; $("#cl").onclick=()=>{if(!running){prog=[];pos=[...L.rb];trail.clear();draw()}};
+    app.querySelectorAll(".prog [data-i]").forEach(s=>s.onclick=()=>{if(!running){prog.splice(+s.dataset.i,1);draw()}});
+    $("#nw").onclick=()=>{if(!running){L=makeLevel();prog=[];pos=[...L.rb];trail.clear();draw()}};
+    $("#go").onclick=run;
+  };
+  const run=async e=>{
+    if(running||!prog.length)return; running=true; pos=[...L.rb]; trail=new Set([pos+""]);
+    for(let i=0;i<prog.length;i++){
+      const [dx,dy]=DIRS[prog[i]]; const nx=pos[0]+dx, ny=pos[1]+dy;
+      if(nx<0||ny<0||nx>4||ny>4||L.walls.has(nx+","+ny)){draw(i);$("#msg").className="msg no";$("#msg").textContent="Bum! Robot się zatrzymał 🪨";say("Bum! Spróbuj poprawić strzałki.");running=false;return}
+      pos=[nx,ny];trail.add(pos+"");draw(i);await new Promise(r=>setTimeout(r,450));
+      if(pos[0]===L.st[0]&&pos[1]===L.st[1])break;
+    }
+    if(pos[0]===L.st[0]&&pos[1]===L.st[1]){
+      $("#msg").className="msg ok";$("#msg").textContent=prog.length===L.best?"Brawo! Najkrótsza droga! 🏆":"Brawo! Robot ma gwiazdkę!";say("Brawo! Robot dotarł do gwiazdki!");cheer();
+      setTimeout(()=>{L=makeLevel();prog=[];pos=[...L.rb];trail.clear();running=false;draw()},2400);
+    }else{$("#msg").className="msg no";$("#msg").textContent="Robot nie doszedł do gwiazdki – dodaj strzałki";say("Jeszcze nie. Dodaj strzałki.");running=false}
+  };
+  draw(); say("Ułóż strzałki, żeby robot doszedł do gwiazdki.");
+}
+const SIZES=[["🐭","🐱","🐶","🐴","🐘"],["🐜","🐞","🐦","🐕","🐄"],["🫐","🍒","🍎","🍈","🍉"],["🚲","🚗","🚌","✈️","🚀"]];
+function tSize(){
+  const s=pick(SIZES), [a,b]=shuffle(s.map((x,i)=>i)).slice(0,2), big=Math.random()<.5;
+  const ans=big?(a>b?s[a]:s[b]):(a<b?s[a]:s[b]);
+  return {html:`<p class="hint">${big?"Co jest większe w prawdziwym życiu?":"Co jest mniejsze w prawdziwym życiu?"}</p>`,opts:[s[a],s[b]].map(x=>({label:x,val:x})),ans,
+    speak:big?"Co jest większe naprawdę?":"Co jest mniejsze naprawdę?",after:"",afterSpeak:"",onShow:()=>app.querySelectorAll(".opt").forEach(b=>b.classList.add("em"))};
+}
+function menu(){
+  const seg=`<div class="seg">${["Łatwe","Trudniejsze"].map((n,i)=>`<button class="sg ${i===level?"on":""}" data-l="${i}">${n}</button>`).join("")}</div>`;
+  menuOf("Cześć! Pogłówkujemy? 🧠",[
+    {ic:"🔴🔵",name:"Co dalej?",sub:"dokończ wzór",bg:"var(--c1)",go:()=>game("🔴🔵 Co dalej?",tPattern)},
+    {ic:"🙃",name:"Co nie pasuje?",sub:"znajdź intruza",bg:"var(--c2)",go:()=>game("🙃 Co nie pasuje?",tOdd)},
+    {ic:"🃏",name:"Memory",sub:"znajdź pary",bg:"var(--c5)",go:memory},
+    {ic:"🤖",name:"Robot",sub:"programowanie strzałkami",bg:"var(--c3)",go:robot},
+    {ic:"🐘",name:"Większe – mniejsze",sub:"porównaj",bg:"var(--c6)",go:()=>game("🐘 Większe – mniejsze",tSize,8)},
+    {ic:"👨‍👩‍👦",name:"Dla rodzica",sub:"jak ćwiczyć",bg:"#fff",go:parents}
+  ],seg);
+  app.querySelectorAll(".sg").forEach(b=>b.onclick=()=>{level=+b.dataset.l;store("level",level);menu()});
+}
+function parents(){parentsPage(`<div class="tip"><h3>Jak korzystać</h3><ul>
+ <li><b>Poziom</b> nad menu: <b>Łatwe</b> / <b>Trudniejsze</b> (dłuższe wzory, 8 par w memory, więcej kamieni i dłuższa droga robota).</li>
+ <li><b>Co dalej?</b> – rytmy (AB, AAB, ABC…). Uczą dostrzegania reguł, to podstawa matematyki.</li>
+ <li><b>Co nie pasuje?</b> – klasyfikowanie (owoce, zwierzęta, pojazdy…). Po odpowiedzi lektor mówi, co łączy resztę. Dobrze zapytać dziecko „dlaczego?”.</li>
+ <li><b>Robot</b> – pierwsze programowanie: dziecko układa całą listę strzałek i dopiero wtedy uruchamia robota. Strzałkę z listy usuwa się dotknięciem, ↩️ cofa ostatnią, 🧽 czyści.</li>
+ <li><b>Memory</b> ćwiczy pamięć i koncentrację – licznik ruchów pozwala bić własny rekord.</li>
+</ul></div>`)}
+menu();
+</script>
+<a href="../index.html" id="homeBtn" aria-label="Wszystkie gry" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)">🏠 Wszystkie gry</a>
+</body>
+</html>

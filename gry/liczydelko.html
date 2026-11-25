@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Liczydełko – nauka liczenia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef8ff;--ink:#1f2a44;--muted:#6b7590;--ok:#16a34a;--bad:#dc2626;
+--c1:#ffd166;--c2:#06d6a0;--c3:#4cc9f0;--c4:#f78fb3;--c5:#b197fc;--c6:#ff9f43;--sh:#cfe3f3}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 var(--sh);position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:700;font-size:18px}
+main{flex:1;width:100%;max-width:820px;margin:0 auto;padding:16px}
+button{font-family:inherit}
+.hello{text-align:center;margin:6px 0 10px;font-size:20px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.tile{border:none;border-radius:24px;padding:22px 12px;font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:44px;display:block;margin-bottom:6px}
+.tile small{display:block;font-size:14px;font-weight:400;color:#334;margin-top:4px}
+.range{display:flex;gap:8px;justify-content:center;margin:0 0 14px;flex-wrap:wrap}
+.rg{border:none;border-radius:14px;padding:10px 16px;font-size:18px;font-weight:700;background:#fff;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.rg.on{background:var(--c5);color:#fff}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar h2{margin:0;font-size:22px;flex:1}
+.back{border:none;background:#fff;border-radius:14px;padding:10px 14px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.spk{border:none;background:var(--c3);border-radius:14px;padding:10px 14px;font-size:18px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.progress{height:12px;background:#d6e6f3;border-radius:99px;overflow:hidden;margin:4px 0 14px}
+.progress i{display:block;height:100%;background:var(--c2);transition:width .3s}
+.panel{background:#fff;border-radius:28px;padding:20px 14px;text-align:center;box-shadow:0 6px 0 var(--sh)}
+.q{font-size:58px;font-weight:700;line-height:1.15;margin:4px 0 10px;letter-spacing:1px}
+.q .gap{display:inline-block;min-width:64px;border-bottom:5px solid var(--c6);color:var(--c6)}
+.vis{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;margin:6px auto 12px;max-width:560px;min-height:40px}
+.grp{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:250px;padding:8px;border-radius:18px;background:#f4f9ff}
+.it{font-size:34px;line-height:1;cursor:pointer;position:relative;user-select:none}
+.it.big{font-size:44px}
+.it.off{opacity:.25}
+.it.off::after{content:"✕";position:absolute;left:0;right:0;top:-2px;text-align:center;color:var(--bad);font-size:38px;opacity:1}
+.it .n{position:absolute;right:-6px;top:-8px;background:var(--c6);color:#fff;font-size:13px;border-radius:99px;padding:1px 6px;font-weight:700}
+.op{font-size:40px;font-weight:700;color:var(--muted);margin:0 4px}
+.tens{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 12px}
+.ten{width:16px;height:120px;border-radius:6px;background:repeating-linear-gradient(to bottom,var(--c3) 0 10px,#fff 10px 12px);border:2px solid #2b8fb5}
+.one{width:16px;height:16px;border-radius:4px;background:var(--c1);border:2px solid #d7a300;align-self:flex-end}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:440px;margin:0 auto}
+.opt{border:none;background:var(--c1);border-radius:22px;font-size:46px;font-weight:700;padding:16px 0;cursor:pointer;box-shadow:0 5px 0 #d7a300;color:#3d2c00}
+.opt:active{transform:translateY(3px);box-shadow:0 2px 0 #d7a300}
+.opt.good{background:#86efac;box-shadow:0 5px 0 #22a35a}
+.opt.wrong{animation:shake .4s;background:#fecaca;box-shadow:0 5px 0 #f87171}
+.opts.three{grid-template-columns:repeat(3,1fr)}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.msg{font-size:26px;font-weight:700;min-height:38px;margin-top:10px}
+.msg.ok{color:var(--ok)} .msg.no{color:var(--bad)}
+.hint{color:var(--muted);font-size:15px;margin:4px 0 8px}
+.big-emoji{font-size:80px}
+.btn{border:none;border-radius:18px;padding:14px 20px;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:var(--c2);color:#033;margin:6px}
+.tip{background:#fff;border-radius:20px;padding:16px 18px;margin-top:14px;font-size:15.5px;line-height:1.5;box-shadow:0 4px 0 var(--sh)}
+.tip h3{margin:0 0 6px;font-size:18px}.tip ul{margin:6px 0 0;padding-left:20px}
+.burst{position:fixed;pointer-events:none;font-size:32px;z-index:20;animation:fly 1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+.cmp{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
+.cmpbox{min-width:120px;background:#f4f9ff;border-radius:18px;padding:10px}
+.cmpbox .num{font-size:54px;font-weight:700}
+.slot{display:inline-flex;width:84px;height:84px;border:4px dashed var(--c6);border-radius:20px;align-items:center;justify-content:center;font-size:54px;font-weight:700;color:var(--c6);vertical-align:middle}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="home">🔢 Liczydełko</h1>
+  <span class="stars">⭐ <span id="stars">0</span></span>
+</header>
+<main id="app"></main>
+<script>
+// ---------- stan ----------
+let stars=0, maxN=10;
+try{stars=+localStorage.getItem("liczydlo_stars")||0; maxN=+localStorage.getItem("liczydlo_max")||10;}catch(e){}
+const $=s=>document.querySelector(s), app=$("#app");
+function saveStars(){ $("#stars").textContent=stars; try{localStorage.setItem("liczydlo_stars",stars)}catch(e){} }
+saveStars(); $("#home").onclick=()=>menu();
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const EM=["🍎","🍓","🐟","⭐","🎈","🐞","🍪","🚗","🌸","🐥","⚽","🍌","🦋","🧁"];
+
+// ---------- mowa ----------
+let plVoice=null;
+function pickVoice(){try{plVoice=speechSynthesis.getVoices().find(v=>/^pl/i.test(v.lang))||null}catch(e){}}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t,rate=0.85){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plVoice)u.voice=plVoice;u.rate=rate;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!","Doskonale!"];
+function cheer(x,y){
+  stars++; saveStars();
+  const l=["⭐","🌟","✨","🎉","💛"];
+  for(let i=0;i<12;i++){const b=document.createElement("div");b.className="burst";b.textContent=l[i%5];
+    b.style.left=(x||innerWidth/2)+"px";b.style.top=(y||innerHeight/2)+"px";
+    const a=Math.random()*Math.PI*2,r=90+Math.random()*120;
+    b.style.setProperty("--dx",Math.cos(a)*r+"px");b.style.setProperty("--dy",Math.sin(a)*r+"px");
+    document.body.appendChild(b);setTimeout(()=>b.remove(),1000);}
+}
+
+// ---------- obrazki ----------
+// grupa przedmiotów; dotknięcie numeruje (pomaga liczyć)
+function group(n,em,offFrom){
+  let h=`<div class="grp">`;
+  for(let i=0;i<n;i++) h+=`<span class="it ${n<=5?"big":""} ${offFrom!=null&&i>=offFrom?"off":""}">${em}</span>`;
+  return h+`</div>`;
+}
+function tensView(n){ // dziesiątki i jedności dla liczb > 20
+  let h=`<div class="tens">`; for(let i=0;i<Math.floor(n/10);i++) h+=`<div class="ten"></div>`;
+  for(let i=0;i<n%10;i++) h+=`<div class="one"></div>`; return h+`</div>`;
+}
+function bindCount(){
+  let c=0;
+  app.querySelectorAll(".it").forEach(el=>el.onclick=()=>{
+    if(el.querySelector(".n")||el.classList.contains("off")) return;
+    c++; const s=document.createElement("span"); s.className="n"; s.textContent=c; el.appendChild(s); say(String(c),1);
+  });
+}
+function options(ans,lo,hi,k=4){
+  const set=new Set([ans]); let tries=0;
+  while(set.size<k&&tries<200){tries++; const d=R(-3,3); const v=ans+d; if(v>=lo&&v<=hi) set.add(v);}
+  while(set.size<k){set.add(R(lo,hi));}
+  return shuffle([...set]);
+}
+
+// ---------- silnik rundy ----------
+const ROUND=10;
+function game(title,makeTask){
+  let n=0,score=0;
+  const next=()=>{
+    if(n>=ROUND) return finish();
+    const t=makeTask(); let tries=0;
+    app.innerHTML=`<div class="bar"><button class="back" id="bk">⬅</button><h2>${title}</h2><button class="spk" id="sp">🔊</button></div>
+      <div class="progress"><i style="width:${n/ROUND*100}%"></i></div>
+      <div class="panel">${t.html}
+        <div class="opts ${t.opts.length===3?"three":""}">${t.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+        <div class="msg" id="msg"></div></div>`;
+    $("#bk").onclick=menu; $("#sp").onclick=()=>say(t.speak); bindCount(); say(t.speak);
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=e=>{
+      const v=t.opts[+b.dataset.i];
+      if(String(v)===String(t.ans)){
+        b.classList.add("good"); app.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+        const p=pick(PRAISE); $("#msg").className="msg ok"; $("#msg").textContent=p+(t.after?" "+t.after:"");
+        say(p+(t.afterSpeak?" "+t.afterSpeak:"")); if(tries===0) score++; cheer(e.clientX,e.clientY);
+        if(t.onOk) t.onOk(); n++; setTimeout(next,1800);
+      } else {
+        tries++; b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+        $("#msg").className="msg no"; $("#msg").textContent=t.hint&&tries>1?t.hint:"Spróbuj jeszcze raz 🙂"; say("Spróbuj jeszcze raz");
+      }
+    });
+  };
+  const finish=()=>{
+    const txt=score>=9?"Jesteś mistrzem liczenia!":score>=6?"Bardzo ładnie!":"Dobra robota, ćwiczymy dalej!";
+    app.innerHTML=`<div class="bar"><button class="back" id="bk">⬅</button><h2>${title}</h2></div>
+      <div class="panel"><div class="big-emoji">🏆</div><div class="q">${score} / ${ROUND}</div>
+      <div class="msg ok">${txt}</div><button class="btn" id="ag">🔁 Jeszcze raz</button><button class="btn" style="background:var(--c1)" id="mn">🏠 Menu</button></div>`;
+    $("#bk").onclick=menu; $("#mn").onclick=menu; $("#ag").onclick=()=>game(title,makeTask); say(txt);
+  };
+  next();
+}
+
+// ---------- zadania ----------
+function tCount(){
+  const top=Math.min(maxN,20), n=R(1,top), em=pick(EM);
+  return {html:`<p class="hint">Ile jest? Dotykaj po kolei, żeby policzyć.</p><div class="vis">${group(n,em)}</div>`,
+    opts:options(n,1,top), ans:n, speak:"Ile tu jest?", after:"To jest "+n+".", afterSpeak:"To jest "+n};
+}
+function tAdd(){
+  let a,b; const M=maxN;
+  do{ a=R(0,M); b=R(0,M-a);}while(a+b===0 || (M>10 && a+b<5));
+  const s=a+b, e1=pick(EM), e2=pick(EM.filter(x=>x!==e1));
+  const vis=M<=20?`<div class="vis">${a?group(a,e1):""}<span class="op">+</span>${b?group(b,e2):"<span class='op'>0</span>"}</div>`:tensView(a)+`<div class="op">+</div>`+tensView(b);
+  return {html:`<div class="q">${a} + ${b} = <span class="gap">?</span></div>${vis}`,
+    opts:options(s,0,M), ans:s, speak:`Ile to jest ${a} dodać ${b}?`, after:`${a} + ${b} = ${s}`, afterSpeak:`${a} dodać ${b} to ${s}`,
+    hint:M<=20?"Policz wszystkie obrazki razem 🙂":"Dodaj najpierw dziesiątki, potem jedności"};
+}
+function tSub(){
+  const M=maxN; let a=R(M>10?5:1,M), b=R(0,a);
+  if(a===b&&Math.random()<.7) b=R(0,a-1);
+  const d=a-b, em=pick(EM);
+  const vis=M<=20?`<div class="vis">${group(a,em,a-b)}</div><p class="hint">Skreślone obrazki odchodzą. Ile zostało?</p>`:tensView(a);
+  return {html:`<div class="q">${a} − ${b} = <span class="gap">?</span></div>${vis}`,
+    opts:options(d,0,M), ans:d, speak:`Ile to jest ${a} odjąć ${b}?`, after:`${a} − ${b} = ${d}`, afterSpeak:`${a} odjąć ${b} to ${d}`,
+    hint:M<=20?"Policz obrazki bez krzyżyka 🙂":"Od dziesiątek odejmij dziesiątki, od jedności jedności"};
+}
+function tCmp(){
+  const M=maxN; let a=R(0,M), b=Math.random()<.2?a:R(0,M);
+  const ans=a>b?">":a<b?"<":"=";
+  const em=pick(EM);
+  const show=n=>M<=20?group(n,em):"";
+  return {html:`<p class="hint">Gdzie jest więcej? Wybierz znak.</p><div class="cmp">
+      <div class="cmpbox"><div class="num">${a}</div>${show(a)}</div><span class="slot">?</span><div class="cmpbox"><div class="num">${b}</div>${show(b)}</div></div><br>`,
+    opts:["<","=",">"], ans, speak:"Wybierz znak: większe, mniejsze czy równe?",
+    after:`${a} ${ans} ${b}`, afterSpeak:`${a} ${ans===">"?"jest większe od":ans==="<"?"jest mniejsze od":"jest równe"} ${b}`,
+    hint:"Dzióbek znaku zawsze otwiera się do większej liczby 🐊"};
+}
+function tSeq(){
+  const M=maxN, step=M>=100?pick([1,2,5,10]):M>10?pick([1,1,2]):1, down=Math.random()<.25;
+  const len=5; let start=down?R(step*(len-1),M):R(0,M-step*(len-1));
+  const seq=[...Array(len)].map((_,i)=>down?start-i*step:start+i*step);
+  const hole=R(1,len-2), ans=seq[hole];
+  return {html:`<p class="hint">Jakiej liczby brakuje?</p><div class="q" style="font-size:44px">${seq.map((v,i)=>i===hole?`<span class="gap">?</span>`:v).join(", ")}</div>`,
+    opts:options(ans,0,M), ans, speak:"Jakiej liczby brakuje?", after:seq.join(", "), afterSpeak:seq.join(", "),
+    hint:step===1?(down?"Liczby maleją o 1":"Liczby rosną o 1"):`Co ${step}!`};
+}
+function tBond(){ // ile brakuje do ...
+  const M=maxN<=10?10:maxN<=20?pick([10,20]):pick([10,20,50,100]);
+  const a=R(0,M), ans=M-a;
+  const vis=M<=20?`<div class="vis">${group(a,"🔵")}${ans?group(ans,"⚪"):""}</div>`:"";
+  return {html:`<p class="hint">Ile brakuje do ${M}?</p><div class="q">${a} + <span class="gap">?</span> = ${M}</div>${vis}`,
+    opts:options(ans,0,M), ans, speak:`Ile trzeba dodać do ${a}, żeby było ${M}?`, after:`${a} + ${ans} = ${M}`, afterSpeak:`${a} dodać ${ans} to ${M}`,
+    hint:M<=20?"Policz białe kółka 🙂":"Pomyśl, ile brakuje do pełnej dziesiątki"};
+}
+function mulFactors(){ // iloczyn w zakresie: do 10 → ≤10, do 20 → ≤20, do 100 → cała tabliczka
+  let a,b; do{ a=R(1,10); b=R(1,10);}while(a*b>maxN || (maxN>=100 && a*b<6));
+  return [a,b];
+}
+function groups(k,n,em){ // k grup po n
+  let h=`<div class="vis">`; for(let i=0;i<k;i++) h+=group(n,em); return h+`</div>`;
+}
+function tMul(){
+  const [a,b]=mulFactors(), p=a*b, em=pick(EM);
+  const vis=p<=30?groups(a,b,em)+`<p class="hint">${a} ${a===1?"grupa":a<5?"grupy":"grup"} po ${b}. Ile razem?</p>`:"";
+  return {html:`<div class="q">${a} · ${b} = <span class="gap">?</span></div>${vis}`,
+    opts:options(p,1,Math.max(p+5,maxN)), ans:p, speak:`Ile to jest ${a} razy ${b}?`, after:`${a} · ${b} = ${p}`, afterSpeak:`${a} razy ${b} to ${p}`,
+    hint:`Dodaj ${b} ${a} razy: ${Array(a).fill(b).join(" + ")}`};
+}
+function tDiv(){
+  const [q,b]=mulFactors(), a=q*b, em=pick(EM);
+  const vis=a<=30?`<div class="vis">${group(a,em)}</div><p class="hint">Rozdziel ${a} po równo na ${b} ${b===1?"osobę":b<5?"osoby":"osób"}. Ile dostanie każda?</p>`:"";
+  return {html:`<div class="q">${a} : ${b} = <span class="gap">?</span></div>${vis}`,
+    opts:options(q,0,Math.max(q+5,10)), ans:q, speak:`Ile to jest ${a} podzielić przez ${b}?`, after:`${a} : ${b} = ${q}`, afterSpeak:`${a} podzielić przez ${b} to ${q}`,
+    hint:`Pomyśl: ile razy ${b} daje ${a}? (${b} · ? = ${a})`};
+}
+function tMix(){ return pick([tCount,tAdd,tAdd,tSub,tSub,tCmp,tSeq,tBond,tMul,tDiv])(); }
+
+// ---------- tabliczka mnożenia ----------
+function table(){
+  let h=`<div class="bar"><button class="back" id="bk">⬅</button><h2>✖️ Tabliczka mnożenia</h2></div>
+   <p class="hint" style="text-align:center">Dotknij pola, żeby zobaczyć i usłyszeć działanie.</p>
+   <div class="panel"><div class="q" id="tq" style="font-size:44px">? · ? = ?</div>
+   <div style="overflow-x:auto"><table style="border-collapse:collapse;margin:0 auto;font-weight:700">`;
+  for(let r=0;r<=10;r++){ h+="<tr>";
+    for(let c=0;c<=10;c++){
+      if(r===0&&c===0) h+=`<td style="padding:6px;font-size:18px">·</td>`;
+      else if(r===0||c===0) h+=`<td style="padding:6px;font-size:18px;background:var(--c3);border-radius:6px">${r||c}</td>`;
+      else h+=`<td class="tc" data-r="${r}" data-c="${c}" style="padding:6px 4px;font-size:16px;border:1px solid #e3eef7;cursor:pointer;min-width:30px;background:${r===c?"#fff3c4":"#fff"}">${r*c}</td>`;
+    } h+="</tr>"; }
+  h+=`</table></div></div>`;
+  app.innerHTML=h; $("#bk").onclick=menu;
+  app.querySelectorAll(".tc").forEach(td=>td.onclick=()=>{
+    app.querySelectorAll(".tc").forEach(x=>x.style.outline="");
+    td.style.outline="3px solid var(--c6)";
+    const r=+td.dataset.r,c=+td.dataset.c; $("#tq").textContent=`${r} · ${c} = ${r*c}`; say(`${r} razy ${c} to ${r*c}`);
+  });
+}
+
+// ---------- menu ----------
+function menu(){
+  try{speechSynthesis.cancel()}catch(e){}
+  app.innerHTML=`<p class="hello">Cześć! Co dziś liczymy? 😊</p>
+  <div class="range">${[10,20,100].map(m=>`<button class="rg ${m===maxN?"on":""}" data-m="${m}">do ${m}</button>`).join("")}</div>
+  <div class="menu">
+   <button class="tile" style="background:#fbcfe8" data-g="showsay"><span class="ic">🗣️</span>Pokaż i powiedz<small>jaka to liczba?</small></button>
+   <button class="tile" style="background:#ddd6fe" data-g="hear"><span class="ic">👂</span>Usłysz i wskaż<small>znajdź liczbę</small></button>
+   <button class="tile" style="background:var(--c1)" data-g="count"><span class="ic">🍎</span>Liczenie<small>ile jest?</small></button>
+   <button class="tile" style="background:var(--c2)" data-g="add"><span class="ic">➕</span>Dodawanie<small>2 + 3</small></button>
+   <button class="tile" style="background:var(--c4)" data-g="sub"><span class="ic">➖</span>Odejmowanie<small>5 − 2</small></button>
+   <button class="tile" style="background:var(--c3)" data-g="cmp"><span class="ic">🐊</span>Porównaj<small>&lt;  =  &gt;</small></button>
+   <button class="tile" style="background:var(--c6)" data-g="seq"><span class="ic">🔢</span>Brakująca liczba<small>3, 4, ?, 6</small></button>
+   <button class="tile" style="background:#a7f3d0" data-g="bond"><span class="ic">🧩</span>Ile brakuje?<small>do 10, do 20</small></button>
+   <button class="tile" style="background:#fde68a" data-g="mul"><span class="ic">✖️</span>Mnożenie<small>3 · 4</small></button>
+   <button class="tile" style="background:#bfdbfe" data-g="div"><span class="ic">➗</span>Dzielenie<small>12 : 3</small></button>
+   <button class="tile" style="background:#fbcfe8" data-g="table"><span class="ic">📋</span>Tabliczka<small>mnożenia do 100</small></button>
+   <button class="tile" style="background:var(--c5);color:#fff" data-g="mix"><span class="ic">🎲</span>Mieszanka<small style="color:#f3efff">wszystko naraz</small></button>
+   <button class="tile" style="background:#fff" data-g="parents"><span class="ic">👨‍👩‍👦</span>Dla rodzica<small>jak ćwiczyć</small></button>
+  </div>`;
+  app.querySelectorAll(".rg").forEach(b=>b.onclick=()=>{maxN=+b.dataset.m;try{localStorage.setItem("liczydlo_max",maxN)}catch(e){};menu();});
+  const G={count:["🍎 Liczenie",tCount],add:["➕ Dodawanie",tAdd],sub:["➖ Odejmowanie",tSub],cmp:["🐊 Porównaj",tCmp],
+    seq:["🔢 Brakująca liczba",tSeq],bond:["🧩 Ile brakuje?",tBond],mul:["✖️ Mnożenie",tMul],div:["➗ Dzielenie",tDiv],mix:["🎲 Mieszanka",tMix]};
+  app.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{ if(t.dataset.g==="parents") return parents(); if(t.dataset.g==="showsay") return showSay(); if(t.dataset.g==="hear") return game("👂 Usłysz i wskaż",tHear); if(t.dataset.g==="table") return table(); const g=G[t.dataset.g]; game(g[0],g[1]); });
+}
+
+// ---------- POKAŻ I POWIEDZ / USŁYSZ I WSKAŻ ----------
+function weakN(){try{return JSON.parse(localStorage.getItem("liczydlo_weak")||"{}")}catch(e){return {}}}
+function setWeakN(w){try{localStorage.setItem("liczydlo_weak",JSON.stringify(w))}catch(e){}}
+function nextNum(prev){
+  const lo=0, hi=maxN, w=weakN(), bag=[];
+  for(let v=lo;v<=hi;v++){const n=1+Math.min(3,w[v]||0)*2; for(let i=0;i<n;i++) bag.push(v)}
+  let v; do{v=pick(bag)}while(v===prev); return v;
+}
+function dots(v){ if(v>20) return tensView(v); return v?group(v,"🔵"):'<div class="hint">zero – nic</div>'; }
+function showSay(){
+  let v=nextNum(), ok=0, all=0;
+  const draw=()=>{
+    app.innerHTML=`<div class="bar"><button class="back" id="bk">⬅</button><h2>🗣️ Pokaż i powiedz</h2></div>
+      <div class="panel"><p class="hint">Jaka to liczba? Powiedz ją głośno! (zakres do ${maxN})</p>
+      <div class="q" style="font-size:140px;margin:0">${v}</div><div id="ans" style="min-height:60px"></div>
+      <button class="btn" id="chk" style="background:var(--c3)">🔊 Sprawdź</button>
+      <div id="judge" style="display:none"><button class="btn" id="yes">✅ Umiem</button><button class="btn" style="background:#fecaca" id="no">❌ Jeszcze nie</button></div>
+      <p class="hint">Dobrze: ${ok} z ${all}</p></div>`;
+    $("#bk").onclick=menu;
+    $("#chk").onclick=()=>{$("#ans").innerHTML=dots(v);say(String(v),0.8);$("#judge").style.display="block"};
+    $("#yes").onclick=e=>{const W=weakN();W[v]=Math.max(0,(W[v]||0)-1);setWeakN(W);ok++;all++;cheer(e.clientX,e.clientY);say(pick(PRAISE));v=nextNum(v);setTimeout(draw,700)};
+    $("#no").onclick=()=>{const W=weakN();W[v]=(W[v]||0)+1;setWeakN(W);all++;say("Nic nie szkodzi. Ta liczba wróci jeszcze.");v=nextNum(v);setTimeout(draw,500)};
+  };
+  draw();
+}
+function tHear(){
+  const v=nextNum(), set=new Set([v]);
+  if(v>=10){const t=Math.floor(v/10),u=v%10; if(u&&t!==u&&u*10+t<=maxN) set.add(u*10+t); if(v>=11&&v<=19&&(v-10)*10<=maxN) set.add((v-10)*10);}
+  let tries=0; while(set.size<6&&tries<200){tries++;const d=pick([-1,1,-2,2,-10,10]);const x=v+d;if(x>=0&&x<=maxN)set.add(x)}
+  while(set.size<Math.min(6,maxN+1)) set.add(R(0,maxN));
+  return {html:`<div class="big-emoji" style="font-size:60px">👂</div><p class="hint">Posłuchaj i dotknij liczby. 🔊 powtarza.</p>`,
+    opts:shuffle([...set]), ans:v, speak:"Pokaż liczbę "+v, after:"", afterSpeak:String(v),
+    hint:v>=10?`Najpierw dziesiątki: ${Math.floor(v/10)}, potem jedności: ${v%10}`:"Posłuchaj jeszcze raz 🔊",
+    onOk:()=>{const W=weakN();W[v]=Math.max(0,(W[v]||0)-1);setWeakN(W)}};
+}
+
+function parents(){
+  app.innerHTML=`<div class="bar"><button class="back" id="bk">⬅</button><h2>👨‍👩‍👦 Dla rodzica</h2></div>
+  <div class="tip"><h3>Jak korzystać</h3><ul>
+   <li><b>Zakres</b> wybierasz na górze menu: <b>do 10</b> (start, z obrazkami), <b>do 20</b> (przejście przez dziesiątkę), <b>do 100</b> (dziesiątki i jedności pokazane jako słupki i kostki).</li>
+   <li><b>Kolejność:</b> Liczenie → Porównaj → Dodawanie → Odejmowanie → Ile brakuje? → Brakująca liczba → Mieszanka.</li>
+   <li><b>Pokaż i powiedz</b>: aplikacja pokazuje cyfrę lub liczbę, dziecko mówi ją na głos, dotyka 🔊, żeby sprawdzić, i zaznacza ✅ „Umiem” albo ❌ „Jeszcze nie”. Liczby z ❌ wracają częściej. Aplikacja nie słyszy dziecka (brak dostępu do mikrofonu), więc oceniacie razem.</li>
+   <li><b>Usłysz i wskaż</b>: lektor mówi liczbę, dziecko ją zaznacza. Przy zakresie do 100 w odpowiedziach są „pułapki” typu 37 i 73 albo 16 i 60.</li>
+   <li><b>Liczenie palcem:</b> dziecko może dotykać obrazków – każdy dostaje kolejny numer i lektor go wypowiada. To uczy liczenia „jeden do jednego”.</li>
+   <li><b>Odejmowanie:</b> odejmowane obrazki są przekreślone, dziecko liczy te, które zostały.</li>
+   <li><b>Ile brakuje do 10?</b> to najważniejsza umiejętność przed liczeniem do 20 (np. 7 + 3 = 10, więc 7 + 5 = 10 + 2).</li>
+   <li><b>Mnożenie</b> pokazuje grupy obrazków (3 · 4 = 3 grupy po 4), a <b>dzielenie</b> to rozdzielanie po równo. Przy zakresie „do 100” losowane są działania z całej tabliczki mnożenia. Podpowiedź zamienia mnożenie na dodawanie.</li>
+   <li><b>Tabliczka</b> to ściąga do oglądania: dotknięte pole lektor czyta na głos. Kwadraty liczb (2·2, 3·3…) są wyróżnione.</li>
+   <li><b>Porównywanie:</b> „dzióbek krokodyla” znaku &lt; lub &gt; zawsze otwiera się do większej liczby.</li>
+   <li>Runda ma 10 zadań. Gwiazdka ⭐ za każdą dobrą odpowiedź, punkt w wyniku tylko za odpowiedź za pierwszym razem. Po drugiej pomyłce pojawia się podpowiedź.</li>
+   <li>10–15 minut dziennie wystarczy. Gwiazdki i zakres zapisują się w tej przeglądarce.</li>
+  </ul></div>
+  <div class="tip"><h3>Czytanie na głos</h3>Lektor używa polskiego głosu telefonu. Przycisk 🔊 czyta zadanie jeszcze raz. Jeśli nic nie słychać, wyłącz tryb cichy.</div>
+  <div style="text-align:center"><button class="btn" id="test">🔊 Test głosu</button><button class="btn" style="background:var(--c1)" id="reset">🔄 Wyzeruj gwiazdki</button></div>`;
+  $("#bk").onclick=menu; $("#test").onclick=()=>say("Cześć! Liczymy razem: jeden, dwa, trzy."); $("#reset").onclick=()=>{stars=0;saveStars()};
+}
+menu();
+</script>
+<a href="../index.html" id="homeBtn" aria-label="Wszystkie gry" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)">🏠 Wszystkie gry</a>
+</body>
+</html>

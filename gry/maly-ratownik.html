@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Mały ratownik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff1f1;--ink:#1f2a44;--muted:#6b7590;--ok:#16a34a;--bad:#dc2626;
+--c1:#ffd166;--c2:#06d6a0;--c3:#4cc9f0;--c4:#f78fb3;--c5:#b197fc;--c6:#ff9f43;--sh:rgba(0,0,0,.08)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif}
+body{min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 var(--sh);position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:700;font-size:18px}
+main{flex:1;width:100%;max-width:820px;margin:0 auto;padding:16px}
+button{font-family:inherit}
+.hello{text-align:center;margin:6px 0 12px;font-size:20px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.tile{border:none;border-radius:24px;padding:20px 12px;font-size:21px;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:44px;display:block;margin-bottom:6px}
+.tile small{display:block;font-size:14px;font-weight:400;color:#334;margin-top:4px}
+.seg{display:flex;gap:8px;justify-content:center;margin:0 0 14px;flex-wrap:wrap}
+.sg{border:none;border-radius:14px;padding:10px 14px;font-size:17px;font-weight:700;background:#fff;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.sg.on{background:var(--c5);color:#fff}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar h2{margin:0;font-size:22px;flex:1}
+.back{border:none;background:#fff;border-radius:14px;padding:10px 14px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 3px 0 var(--sh)}
+.spk{border:none;background:var(--c3);border-radius:14px;padding:10px 14px;font-size:18px;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.progress{height:12px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden;margin:4px 0 14px}
+.progress i{display:block;height:100%;background:var(--c2);transition:width .3s}
+.panel{background:#fff;border-radius:28px;padding:20px 14px;text-align:center;box-shadow:0 6px 0 var(--sh);margin-bottom:14px}
+.q{font-size:30px;font-weight:700;line-height:1.25;margin:4px 0 12px}
+.hint{color:var(--muted);font-size:15px;margin:4px 0 8px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:520px;margin:0 auto}
+.opts.c1{grid-template-columns:1fr}.opts.c3{grid-template-columns:repeat(3,1fr)}
+.opt{border:none;background:var(--c1);border-radius:22px;font-size:26px;font-weight:700;padding:14px 8px;cursor:pointer;box-shadow:0 5px 0 #d7a300;color:#3d2c00;min-height:70px}
+.opt:active{transform:translateY(3px);box-shadow:0 2px 0 #d7a300}
+.opt.good{background:#86efac;box-shadow:0 5px 0 #22a35a}
+.opt.wrong{animation:shake .4s;background:#fecaca;box-shadow:0 5px 0 #f87171}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.msg{font-size:24px;font-weight:700;min-height:34px;margin-top:10px}
+.msg.ok{color:var(--ok)} .msg.no{color:var(--bad)}
+.big-emoji{font-size:80px;line-height:1.1}
+.btn{border:none;border-radius:18px;padding:14px 20px;font-size:20px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:var(--c2);color:#033;margin:6px}
+.btn.y{background:var(--c1);color:#3d2c00}.btn.b{background:var(--c3);color:#06263a}
+.tip{background:#fff;border-radius:20px;padding:16px 18px;margin-top:14px;font-size:15.5px;line-height:1.5;box-shadow:0 4px 0 var(--sh)}
+.tip h3{margin:0 0 6px;font-size:18px}.tip ul{margin:6px 0 0;padding-left:20px}
+.burst{position:fixed;pointer-events:none;font-size:32px;z-index:20;animation:fly 1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+.opts.c1 .opt{font-size:21px;text-align:left;padding:14px 16px}
+.scene{font-size:72px;line-height:1.1}
+.sit{font-size:22px;font-weight:700;margin:6px 0 12px}
+.why{background:#ecfdf5;border-radius:16px;padding:10px 12px;font-size:17px;margin-top:10px;text-align:left;display:none}
+.phone{max-width:300px;margin:0 auto;background:#1f2a44;border-radius:34px;padding:18px}
+.screen{background:#0b1020;color:#7CFC9A;font:700 40px monospace;border-radius:14px;padding:10px;min-height:66px;text-align:center;letter-spacing:6px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.key{border:none;border-radius:50%;width:70px;height:70px;margin:0 auto;font:700 28px Andika,sans-serif;background:#e5e7eb;cursor:pointer}
+.key.call{background:#22c55e;color:#fff}.key.end{background:#ef4444;color:#fff}
+.disp{background:#eff6ff;border-radius:18px;padding:12px;margin:10px 0;font-size:21px;font-weight:700;text-align:left}
+.disp b{color:#1d4ed8}
+.fld{display:block;width:100%;font:700 20px Andika,sans-serif;padding:10px;border-radius:12px;border:3px solid #fecaca;margin:6px 0 12px}
+</style>
+</head>
+<body>
+<header><h1 id="home">🚑 Mały ratownik</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<script>
+const APP="ratownik";
+const $=s=>document.querySelector(s), app=$("#app");
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(APP+"_"+k);localStorage.setItem(APP+"_"+k,v)}catch(e){return null}}
+let stars=+store("stars")||0;
+function saveStars(){$("#stars").textContent=stars;store("stars",stars)}
+saveStars();
+// mowa
+let voices={};
+function pickVoices(){try{const v=speechSynthesis.getVoices();voices.pl=v.find(x=>/^pl/i.test(x.lang))||null;voices.en=v.find(x=>/^en-GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}catch(e){}}
+if("speechSynthesis" in window){pickVoices();speechSynthesis.onvoiceschanged=pickVoices;}
+function say(t,lang="pl",rate=0.85,queue=false){try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang==="en"?"en-GB":"pl-PL";if(voices[lang])u.voice=voices[lang];u.rate=rate;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!","Doskonale!"];
+function cheer(x,y,add=true){
+  if(add){stars++;saveStars();}
+  const l=["⭐","🌟","✨","🎉","💛"];
+  for(let i=0;i<12;i++){const b=document.createElement("div");b.className="burst";b.textContent=l[i%5];
+    b.style.left=(x||innerWidth/2)+"px";b.style.top=(y||innerHeight/2)+"px";
+    const a=Math.random()*Math.PI*2,r=90+Math.random()*120;
+    b.style.setProperty("--dx",Math.cos(a)*r+"px");b.style.setProperty("--dy",Math.sin(a)*r+"px");
+    document.body.appendChild(b);setTimeout(()=>b.remove(),1000);}
+}
+function bar(title,speak){return `<div class="bar"><button class="back" id="bk">⬅</button><h2>${title}</h2>${speak?'<button class="spk" id="sp">🔊</button>':""}</div>`}
+function bindBar(onSpeak){$("#bk").onclick=menu; if(onSpeak&&$("#sp"))$("#sp").onclick=onSpeak;}
+// silnik quizu: task = {html, opts:[{label,val}], ans, speak, speakLang, after, afterSpeak, hint, cols, onShow}
+function game(title,makeTask,ROUND=10){
+  let n=0,score=0;
+  const next=()=>{
+    if(n>=ROUND) return finish();
+    const t=makeTask(); let tries=0;
+    app.innerHTML=bar(title,!!t.speak)+`<div class="progress"><i style="width:${n/ROUND*100}%"></i></div>
+      <div class="panel">${t.html}
+      <div class="opts ${t.cols?"c"+t.cols:""}">${t.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.label}</button>`).join("")}</div>
+      <div class="msg" id="msg"></div></div>`;
+    const sp=()=>say(t.speak,t.speakLang||"pl",t.rate||0.85);
+    bindBar(sp); if(t.speak) sp(); if(t.onShow) t.onShow();
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=e=>{
+      const o=t.opts[+b.dataset.i];
+      if(o.val===t.ans){
+        b.classList.add("good"); app.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+        const p=pick(PRAISE); $("#msg").className="msg ok"; $("#msg").innerHTML=p+(t.after?" "+t.after:"");
+        say(p+(t.afterSpeak?" "+t.afterSpeak:"")); if(tries===0)score++; cheer(e.clientX,e.clientY);
+        n++; setTimeout(next,t.wait||2000);
+      }else{
+        tries++; b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+        $("#msg").className="msg no"; $("#msg").innerHTML=(t.hint&&tries>1)?t.hint:"Spróbuj jeszcze raz 🙂"; say(t.wrongSay||"Spróbuj jeszcze raz");
+      }
+    });
+  };
+  const finish=()=>{
+    const txt=score>=ROUND-1?"Jesteś mistrzem!":score>=ROUND*0.6?"Bardzo ładnie!":"Dobra robota, ćwiczymy dalej!";
+    app.innerHTML=bar(title)+`<div class="panel"><div class="big-emoji">🏆</div><div class="q" style="font-size:52px">${score} / ${ROUND}</div>
+      <div class="msg ok">${txt}</div><button class="btn" id="ag">🔁 Jeszcze raz</button><button class="btn y" id="mn">🏠 Menu</button></div>`;
+    bindBar(); $("#mn").onclick=menu; $("#ag").onclick=()=>game(title,makeTask,ROUND); say(txt);
+  };
+  next();
+}
+function menuOf(hello,tiles,extraTop=""){
+  try{speechSynthesis.cancel()}catch(e){}
+  app.innerHTML=`<p class="hello">${hello}</p>${extraTop}<div class="menu">${tiles.map((t,i)=>`<button class="tile" style="background:${t.bg}" data-i="${i}"><span class="ic">${t.ic}</span>${t.name}<small>${t.sub||""}</small></button>`).join("")}</div>`;
+  app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>tiles[+b.dataset.i].go());
+}
+function parentsPage(html){
+  app.innerHTML=bar("👨‍👩‍👦 Dla rodzica")+html+`<div style="text-align:center"><button class="btn" id="test">🔊 Test głosu</button><button class="btn y" id="reset">🔄 Wyzeruj gwiazdki</button></div>`;
+  bindBar(); $("#test").onclick=()=>say("Cześć! Gotowy do zabawy?"); $("#reset").onclick=()=>{stars=0;saveStars()};
+}
+$("#home").onclick=()=>menu();
+// sytuacje: [emoji, sytuacja, poprawna, [złe...], wyjaśnienie]
+const SCENES=[
+ ["👵💤","Babcia leży na podłodze i nie odpowiada.","Wołam dorosłego i dzwonimy pod 112",["Idę dalej się bawić","Daję jej cukierka"],"Gdy ktoś nie odpowiada, od razu wołamy pomoc i dzwonimy pod 112."],
+ ["🚗🧍","Ktoś leży na ulicy, a obok jeżdżą samochody.","Najpierw patrzę, czy jest bezpiecznie, i wołam dorosłego",["Biegnę od razu na jezdnię","Uciekam do domu i nic nie mówię"],"Ratownik najpierw dba o siebie. Na ulicę wchodzi tylko dorosły, gdy jest bezpiecznie."],
+ ["👂😮‍💨","Jak sprawdzić, czy ktoś oddycha?","Pochylam się: patrzę na klatkę piersiową, słucham i czuję oddech na policzku",["Szczypię go mocno w nos","Dmucham mu w ucho"],"Patrz, słuchaj i czuj – przez 10 sekund."],
+ ["😴","Kolega oddycha, ale nie da się go obudzić.","Dorosły układa go na boku i dzwoni pod 112",["Zostawiamy go na plecach i idziemy","Dajemy mu się napić wody"],"Na boku język nie zatka mu gardła, a wymioty wypłyną. Taka pozycja nazywa się pozycją boczną."],
+ ["☕🖐️","Oblałeś rękę gorącą herbatą.","Polewam chłodną wodą z kranu przez długi czas i wołam dorosłego",["Smaruję masłem","Przykładam kostkę lodu"],"Chłodna (nie lodowata) woda przez około 20 minut. Masło i lód szkodzą."],
+ ["🩸✋","Skaleczyłeś się i z ręki leci krew.","Przyciskam czystą chusteczką lub ręcznikiem i wołam dorosłego",["Liżę ranę","Chowam rękę, żeby nikt nie widział"],"Mocny ucisk czystym materiałem zatrzymuje krwawienie."],
+ ["👃🩸","Leci ci krew z nosa.","Siadam, pochylam głowę do przodu i ściskam miękką część nosa",["Odchylam głowę do tyłu","Kładę się na plecach"],"Głowa do przodu, żeby krew nie spływała do gardła. Ściskamy nos przez około 10 minut."],
+ ["😮🍬","Kolega zakrztusił się cukierkiem, ale mocno kaszle.","Mówię: „Kaszl mocno!” i wołam dorosłego",["Wkładam mu palce do buzi","Daję mu jeszcze jednego cukierka"],"Kaszel to najlepszy sposób, żeby wypluć cukierek. Gdy przestaje kaszleć i nie może mówić – dorosły musi pomóc od razu."],
+ ["🔥🏠","W domu jest pożar i dużo dymu.","Szybko wychodzę na zewnątrz, nisko pod dymem, i wołam pomoc",["Chowam się pod łóżkiem","Zabieram wszystkie zabawki"],"Nigdy się nie chowaj. Wyjdź jak najszybciej, a z zewnątrz dorosły zadzwoni pod 112."],
+ ["🛒😟","Zgubiłeś się w sklepie.","Zostaję w miejscu i proszę o pomoc panią przy kasie albo ochroniarza",["Wychodzę sam na parking","Idę z obcą osobą, która daje cukierka"],"Zostań w jednym miejscu i poproś o pomoc pracownika sklepu. Powiedz, jak się nazywasz."],
+ ["💊","Znalazłeś kolorowe tabletki na stole.","Nie biorę ich do buzi i oddaję dorosłemu",["Próbuję jedną, bo wygląda jak cukierek","Częstuję młodszego brata"],"Leki mogą być bardzo groźne. Tylko dorosły podaje leki."],
+ ["🐝","Użądliła cię osa w rękę.","Mówię dorosłemu i przykładamy coś chłodnego",["Drapię mocno","Nic nikomu nie mówię"],"Chłodny okład zmniejsza ból. Gdy puchnie twarz albo trudno oddychać – od razu 112."],
+ ["🐕","Na podwórku jest obcy pies bez pana.","Nie podchodzę i nie dotykam go",["Głaszczę go","Uciekam z krzykiem i machaniem rękami"],"Obcego psa nie dotykamy. Stój spokojnie albo powoli odejdź i zawołaj dorosłego."],
+ ["📞😜","Czy można zadzwonić pod 112 dla żartu?","Nie, bo wtedy ktoś, kto naprawdę potrzebuje pomocy, musi czekać",["Tak, to fajna zabawa","Tak, jeśli się nudzę"],"Dyspozytor 112 pomaga ludziom w niebezpieczeństwie. Dzwonimy tylko naprawdę."],
+ ["⚡","Z gniazdka wystaje kabel, a obok leży ktoś nieprzytomny.","Nie dotykam go i wołam dorosłego",["Ciągnę go za rękę","Dotykam kabla"],"Prąd może porazić też ratownika. Dorosły najpierw wyłącza prąd."]
+];
+const NUMS=[["Numer alarmowy do wszystkich służb","112"],["Pogotowie ratunkowe 🚑","999"],["Straż pożarna 🚒","998"],["Policja 🚓","997"]];
+function sceneTasks(){
+  let order=shuffle(SCENES),k=0;
+  return ()=>{const [e,s,ok,bad,why]=order[k++%order.length];
+    const opts=shuffle([ok,...bad]).map(x=>({label:x,val:x}));
+    return {html:`<div class="scene">${e}</div><div class="sit">${s}</div><p class="hint">Co zrobisz?</p>`,opts,ans:ok,cols:1,
+      speak:s+" Co zrobisz?",after:`<div style="font-size:18px;font-weight:400;color:#14532d;margin-top:6px">${why}</div>`,afterSpeak:why,wait:5200};};
+}
+function numTask(){
+  const [d,n]=pick(NUMS); const opts=["112","999","998","997","911"].filter(x=>x!==n);
+  return {html:`<div class="scene">☎️</div><div class="sit">${d}</div>`,opts:shuffle([n,...shuffle(opts).slice(0,2)]).map(x=>({label:x,val:x})),ans:n,cols:3,
+    speak:d+". Jaki to numer?",after:"",afterSpeak:n.split("").join(" "),
+    hint:"112 działa zawsze, z każdego telefonu"};
+}
+// misio – kroki po kolei
+const STEPS=[
+ ["🧸","Miś leży i się nie rusza. Co najpierw?","Rozglądam się, czy jest bezpiecznie",["Od razu biegnę do misia","Robię mu zdjęcie"]],
+ ["🧸","Jest bezpiecznie. Co teraz?","Delikatnie potrząsam za ramiona i głośno pytam: „Halo, słyszysz mnie?”",["Krzyczę z daleka","Czekam, aż sam wstanie"]],
+ ["🧸","Miś nie odpowiada.","Głośno wołam: „Pomocy!”, żeby przyszedł dorosły",["Idę po zabawki","Siedzę cicho"]],
+ ["🧸","Przyszedł dorosły. Co sprawdzamy?","Czy miś oddycha: patrzę, słucham i czuję przez 10 sekund",["Czy ma czyste łapki","Czy jest głodny"]],
+ ["🧸","Miś oddycha, ale nadal śpi.","Układamy go na boku i dzwonimy pod 112",["Sadzamy go na krześle","Dajemy mu jeść"]],
+ ["🧸📞","Rozmawiamy z dyspozytorem 112.","Słucham, co mówi, i nie rozłączam się, dopóki nie powie",["Rozłączam się szybko","Oddaję telefon kotu"]]
+];
+function stepTasks(){let k=0;return ()=>{const [e,s,ok,bad]=STEPS[k++];
+  return {html:`<div class="scene">${e}</div><p class="hint">Krok ${k} z ${STEPS.length}</p><div class="sit">${s}</div>`,
+    opts:shuffle([ok,...bad]).map(x=>({label:x,val:x})),ans:ok,cols:1,speak:s,after:"",afterSpeak:"",wait:2600};}}
+// symulacja telefonu
+function getMe(){return {name:store("name")||"",addr:store("addr")||"",city:store("city")||""}}
+function phone(){
+  let num="";
+  app.innerHTML=bar("📱 Zadzwoń pod 112",true)+`<div class="panel"><p class="hint">To tylko zabawa – telefon jest na niby. Wybierz numer alarmowy i zielony przycisk.</p>
+    <div class="phone"><div class="screen" id="scr">&nbsp;</div><div class="keys">
+    ${[1,2,3,4,5,6,7,8,9,"⌫",0,"📞"].map(k=>`<button class="key ${k==="📞"?"call":""}" data-k="${k}">${k}</button>`).join("")}</div></div><div class="msg" id="msg"></div></div>`;
+  bindBar(()=>say("Wybierz numer alarmowy jeden, jeden, dwa, i naciśnij zieloną słuchawkę."));
+  say("Wybierz numer alarmowy jeden, jeden, dwa, i naciśnij zieloną słuchawkę.");
+  app.querySelectorAll(".key").forEach(b=>b.onclick=e=>{
+    const k=b.dataset.k;
+    if(k==="⌫"){num=num.slice(0,-1)}
+    else if(k==="📞"){ if(num==="112"){cheer(e.clientX,e.clientY);say("Brawo! Łączę z numerem alarmowym.");setTimeout(dispatcher,1500)} else {$("#msg").className="msg no";$("#msg").textContent="Numer alarmowy to 112";say("Numer alarmowy to jeden, jeden, dwa");num=""} }
+    else if(num.length<6){num+=k; say(k,"pl",1)}
+    $("#scr").innerHTML=num||"&nbsp;";
+  });
+}
+function dispatcher(){
+  const me=getMe();
+  const addr=me.addr?`${me.addr}${me.city?", "+me.city:""}`:"";
+  const fakeA=["ul. Słoneczna 5","ul. Kwiatowa 12, m. 3","ul. Leśna 8"];
+  const Q=[
+   {d:"Numer alarmowy 112, w czym mogę pomóc?",ok:"Mama upadła i nie odpowiada",bad:["Dzień dobry, nudzę się","Chciałem tylko sprawdzić, czy działa"]},
+   {d:"Gdzie jesteś? Podaj adres.",ok:addr||"Mówię nazwę ulicy, numer domu i miasto",bad:addr?fakeA.filter(x=>x!==me.addr).slice(0,2):["Nie wiem, w domu","Tam, gdzie zawsze"]},
+   {d:"Jak masz na imię?",ok:me.name?`Mam na imię ${me.name}`:"Mówię swoje imię i nazwisko",bad:["Nie powiem","Batman"]},
+   {d:"Czy mama oddycha? Pochyl się, patrz na klatkę piersiową, słuchaj i poczuj oddech.",ok:"Tak, oddycha",bad:["Nie wiem, nie sprawdzałem","Mama śpi, więc nic nie robię"]},
+   {d:"Dobrze. Karetka już jedzie. Czy jest ktoś dorosły obok?",ok:"Nie, jestem sam z mamą",bad:["Rozłączam się","Idę do kolegi"]},
+   {d:"Zostań przy mamie i nie rozłączaj się. Otwórz drzwi, gdy przyjadą ratownicy.",ok:"Dobrze, czekam przy telefonie",bad:["Rozłączam się i idę oglądać bajki","Zamykam drzwi na klucz"]}
+  ];
+  let k=0;
+  const ask=()=>{
+    if(k>=Q.length){app.innerHTML=bar("📱 Rozmowa z 112")+`<div class="panel"><div class="big-emoji">🚑🏅</div><div class="sit">Świetnie! Ratownicy już jadą.</div>
+      <p>Pamiętaj: mów spokojnie, podaj adres, odpowiadaj na pytania i nie rozłączaj się.</p><button class="btn" id="ag">🔁 Jeszcze raz</button><button class="btn y" id="mn">🏠 Menu</button></div>`;
+      bindBar();$("#ag").onclick=phone;$("#mn").onclick=menu;say("Świetnie! Ratownicy już jadą.");cheer();return;}
+    const q=Q[k]; const opts=shuffle([q.ok,...q.bad]);
+    app.innerHTML=bar("📱 Rozmowa z 112",true)+`<div class="panel"><div class="scene">👩‍💼🎧</div><div class="disp"><b>Dyspozytor:</b> ${q.d}</div>
+      <p class="hint">Co odpowiesz?</p><div class="opts c1">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div><div class="msg" id="msg"></div></div>`;
+    bindBar(()=>say(q.d)); say(q.d);
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=e=>{
+      if(opts[+b.dataset.i]===q.ok){b.classList.add("good");cheer(e.clientX,e.clientY);k++;setTimeout(ask,1500)}
+      else{b.classList.add("wrong");$("#msg").className="msg no";$("#msg").textContent="Pomyśl jeszcze raz 🙂";say("Pomyśl jeszcze raz")}
+    });
+  };
+  ask();
+}
+function myData(){
+  const me=getMe();
+  app.innerHTML=bar("🏠 Mój adres",true)+`<div class="panel" style="text-align:left">
+   <p class="hint">Rodzic wpisuje dane. Zapisują się tylko w tej przeglądarce i są używane w rozmowie z 112.</p>
+   <label>Imię i nazwisko dziecka<input class="fld" id="fn" value="${me.name.replace(/"/g,"")}" placeholder="np. Ola Kowalska"></label>
+   <label>Ulica i numer domu / mieszkania<input class="fld" id="fa" value="${me.addr.replace(/"/g,"")}" placeholder="np. ul. Lipowa 7"></label>
+   <label>Miejscowość<input class="fld" id="fc" value="${me.city.replace(/"/g,"")}" placeholder="np. Kraków"></label>
+   <div style="text-align:center"><button class="btn" id="sv">💾 Zapisz</button><button class="btn b" id="hear">🔊 Posłuchaj i powtórz</button></div><div class="msg" id="msg" style="text-align:center"></div></div>`;
+  const speakMe=()=>{const m=getMe(); if(!m.addr){say("Najpierw rodzic wpisuje adres.");return} say(`Nazywam się ${m.name}. Mieszkam: ${m.addr}, ${m.city}. Powtórz za mną.`,"pl",0.75)};
+  bindBar(speakMe);
+  $("#sv").onclick=()=>{store("name",$("#fn").value.trim());store("addr",$("#fa").value.trim());store("city",$("#fc").value.trim());$("#msg").className="msg ok";$("#msg").textContent="Zapisane ✔"};
+  $("#hear").onclick=speakMe;
+}
+function menu(){
+  menuOf("Cześć! Zostań małym ratownikiem 🚑",[
+    {ic:"📱",name:"Zadzwoń pod 112",sub:"rozmowa z dyspozytorem",bg:"var(--c4)",go:phone},
+    {ic:"🧸",name:"Pomóż misiowi",sub:"krok po kroku",bg:"var(--c1)",go:()=>game("🧸 Pomóż misiowi",stepTasks(),STEPS.length)},
+    {ic:"🤔",name:"Co zrobisz?",sub:"scenki",bg:"var(--c2)",go:()=>game("🤔 Co zrobisz?",sceneTasks(),10)},
+    {ic:"☎️",name:"Numery alarmowe",sub:"112, 999, 998, 997",bg:"var(--c3)",go:()=>game("☎️ Numery alarmowe",numTask,8)},
+    {ic:"🏠",name:"Mój adres",sub:"naucz się na pamięć",bg:"var(--c6)",go:myData},
+    {ic:"👨‍👩‍👦",name:"Dla rodzica",sub:"jak ćwiczyć",bg:"#fff",go:parents}
+  ]);
+}
+function parents(){parentsPage(`<div class="tip"><h3>Jak korzystać</h3><ul>
+ <li><b>Najpierw wpisz dane w „Mój adres”</b>. Wtedy w rozmowie z 112 dziecko wybiera swój prawdziwy adres spośród zmyślonych. Dane zostają tylko w tej przeglądarce.</li>
+ <li><b>Zadzwoń pod 112</b>: telefon jest na niby – nic się nie łączy. Dziecko wybiera 1-1-2, a potem odpowiada na pytania dyspozytora. Uczy: co się stało, gdzie, kto dzwoni, nie rozłączaj się.</li>
+ <li><b>Pomóż misiowi</b>: kolejność działań – bezpieczeństwo, „Halo, słyszysz mnie?”, wołanie o pomoc, sprawdzenie oddechu, pozycja boczna, 112. Warto potem przećwiczyć na prawdziwym misiu lub na rodzicu.</li>
+ <li><b>Co zrobisz?</b>: 15 scenek (oparzenie, krwawienie, krew z nosa, zadławienie, pożar, zgubienie się, leki, osa, pies, prąd). Po dobrej odpowiedzi lektor czyta krótkie wyjaśnienie.</li>
+ <li>Numery: <b>112</b> działa zawsze i z każdego telefonu, także bez karty SIM i z zablokowanego telefonu. 999 – pogotowie, 998 – straż, 997 – policja.</li>
+ <li>Resuscytacji (uciskania klatki) nie uczymy w tej aplikacji – 6-latek nie ma siły, a dyspozytor 112 instruuje dorosłego przez telefon.</li>
+</ul></div>`)}
+menu();
+</script>
+<a href="../index.html" id="homeBtn" aria-label="Wszystkie gry" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)">🏠 Wszystkie gry</a>
+</body>
+</html>
