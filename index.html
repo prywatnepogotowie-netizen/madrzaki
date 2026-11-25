@@ -6,6 +6,10 @@
 <title>Bystrzaki – gry edukacyjne dla dzieci (wersja testowa)</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Bystrzaki – polskie gry edukacyjne dla dzieci 4–8 lat: czytanie, liczenie, logika i pierwsza pomoc. Z lektorem, bez reklam.">
+<meta property="og:title" content="Bystrzaki – gry edukacyjne i zabawy dla dzieci">
+<meta property="og:description" content="Polskie gry edukacyjne z lektorem, bez reklam, i pomysły na zabawy na dworze. Dla dzieci 4–17 lat i ich rodziców.">
+<meta property="og:image" content="https://bystrzaki.online/ikona-512.png">
+<meta property="og:url" content="https://bystrzaki.online/">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="ikona.svg">
 <meta name="theme-color" content="#ffd166">
@@ -76,10 +80,19 @@ a.game:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
 .parents li{display:flex;gap:12px;align-items:flex-start;font-size:17px;line-height:1.45}
 .parents li span{font-size:30px;line-height:1}
 .home{margin-top:20px;background:#fff8ec;border-radius:22px;padding:16px 18px;font-size:16px;line-height:1.55}
-footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40px}
-footer .wave{font-size:28px;letter-spacing:6px}
+footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
 
 
+
+.outdoor{display:flex;align-items:center;gap:18px;text-decoration:none;color:var(--ink);background:linear-gradient(120deg,#c9f2c0,#9be7ff);border-radius:30px;padding:22px 24px;box-shadow:0 8px 0 rgba(0,0,0,.12);font-size:17px;line-height:1.45}
+.outdoor b{font:800 28px "Baloo 2",sans-serif}
+.outdoor .oi{font-size:64px;line-height:1}
+.outdoor .go{margin-left:auto;background:#fff;border-radius:999px;padding:10px 20px;font-weight:800;white-space:nowrap}
+@media(max-width:560px){.outdoor{flex-direction:column;text-align:center}.outdoor .go{margin:0}}
+.foot{max-width:1000px;margin:0 auto;padding:30px 18px 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;font-size:14px;color:var(--muted);line-height:1.6}
+.foot h4{color:var(--ink);font:800 17px "Baloo 2",sans-serif;margin:0 0 6px}
+.foot a{color:var(--muted)}
+.copy{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 30px}
 /* GRUPY WIEKOWE */
 .ages{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 .age-btn{border:none;cursor:pointer;border-radius:30px;padding:20px 14px 18px;text-align:center;font-family:inherit;color:var(--ink);box-shadow:0 8px 0 rgba(0,0,0,.14);transition:transform .12s;position:relative}
@@ -111,7 +124,8 @@ footer .wave{font-size:28px;letter-spacing:6px}
 <nav>
   <a class="brand" href="#"><img src="ikona.svg" alt="">Bystrzaki</a>
   <div class="links">
-    <a href="#gry">🎮 Gry</a>
+    <a href="#wiek">🎮 Gry</a>
+    <a href="zabawy.html">🌳 Zabawy na dworze</a>
     <a class="hide-sm" href="#jak">✨ Jak to działa</a>
     <a href="#rodzice">👨‍👩‍👧 Dla rodzica</a>
   </div>
@@ -160,6 +174,14 @@ footer .wave{font-size:28px;letter-spacing:6px}
   </div>
 </section>
 
+<section id="dwor">
+  <a class="outdoor" href="zabawy.html">
+    <span class="oi">🪁</span>
+    <span><b>Zabawy na dworze</b><br>Podchody, latawiec, berek, bieg na orientację i sporty – gotowe instrukcje dla rodziców, świetna zabawa dla dzieci.</span>
+    <span class="go">Zobacz ▶</span>
+  </a>
+</section>
+
 <section id="jak">
   <h2 class="title">Jak to działa?</h2>
   <p class="sub">Proste jak 1, 2, 3</p>
@@ -174,10 +196,10 @@ footer .wave{font-size:28px;letter-spacing:6px}
   <div class="parents">
     <h2 class="title" style="margin-bottom:18px">👨‍👩‍👧 Dla rodzica</h2>
     <ul>
-      <li><span>🇵🇱</span>Wszystko po polsku, z lektorem – nauka metodą sylabową i przez zabawę.</li>
-      <li><span>🔒</span>Bez reklam, bez zakupów w grach i bez zbierania danych dziecka.</li>
-      <li><span>🚑</span>„Mały ratownik” przygotowany przez ratownika medycznego – uczy, jak wezwać pomoc pod numerem 112.</li>
-      <li><span>📈</span>Gry same podsuwają częściej to, co dziecku sprawia trudność.</li>
+      <li><span>🇵🇱</span><em style="font-style:normal">Wszystko po polsku, z lektorem – nauka metodą sylabową i przez zabawę.</em></li>
+      <li><span>🔒</span><em style="font-style:normal">Bez reklam, bez zakupów w grach i bez zbierania danych dziecka.</em></li>
+      <li><span>🚑</span><em style="font-style:normal">„Mały ratownik” przygotowany przez ratownika medycznego – uczy, jak wezwać pomoc pod numerem 112.</em></li>
+      <li><span>📈</span><em style="font-style:normal">Gry same podsuwają częściej to, co dziecku sprawia trudność.</em></li>
     </ul>
     <div class="home"><b>📱 Dodaj Bystrzaki na ekran telefonu – będą działać jak aplikacja:</b><br>
       iPhone / iPad: Safari → przycisk „Udostępnij” → „Do ekranu początkowego”.<br>
@@ -186,8 +208,13 @@ footer .wave{font-size:28px;letter-spacing:6px}
 </section>
 
 <footer>
-  <div class="wave">⭐ 🦉 ⭐</div>
-  © 2026 Bystrzaki · MedKrak Sp. z o.o. · Kontakt: biuro@medkrak.pl
+  <div class="foot">
+    <div><h4>🦉 Bystrzaki</h4>Polskie gry edukacyjne i pomysły na zabawy dla dzieci 4–17 lat. Bez reklam, z lektorem.</div>
+    <div><h4>Na skróty</h4><a href="#wiek">Gry według wieku</a><br><a href="zabawy.html">Zabawy na dworze</a><br><a href="#rodzice">Dla rodzica</a></div>
+    <div><h4>Informacje</h4><a href="polityka-prywatnosci.html">Polityka prywatności</a><br>Kontakt: <a href="mailto:biuro@medkrak.pl">biuro@medkrak.pl</a></div>
+    <div><h4>Wydawca</h4>MedKrak Sp. z o.o.<br>ul. Ujastek 1, 31-752 Kraków<br>NIP 9452286086</div>
+  </div>
+  <div class="copy">© 2026 Bystrzaki · Wszelkie prawa zastrzeżone</div>
 </footer>
 
 
