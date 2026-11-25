@@ -1,0 +1,13 @@
+{
+  "name": "Bystrzaki – gry edukacyjne dla dzieci",
+  "short_name": "Bystrzaki",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#fff8ec",
+  "theme_color": "#ffd166",
+  "lang": "pl",
+  "icons": [
+    { "src": "/ikona.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/ikona-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

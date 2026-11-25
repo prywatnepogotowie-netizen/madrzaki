@@ -1,0 +1,33 @@
+BYSTRZAKI – gry edukacyjne dla dzieci
+Instrukcja: jak postawić stronę na własnej domenie
+=====================================================
+
+CO JEST W PACZCE
+- index.html        – strona startowa z menu gier
+- gry/czytanka.html, gry/liczydelko.html, gry/glowkowanie.html, gry/maly-ratownik.html
+- manifest.json, ikona.svg, ikona-512.png – żeby strona dała się dodać na ekran telefonu jak aplikacja
+- Każda gra ma w lewym dolnym rogu przycisk „🏠 Wszystkie gry”.
+- „Bystrzaki” to nazwa robocza – zmienię ją wszędzie, jak wybierzesz domenę.
+
+KROK 1 – KUP DOMENĘ
+Sprawdź dostępność u rejestratora (np. home.pl, OVH, nazwa.pl, cyber_Folks).
+Propozycje nazw (wpisz w wyszukiwarkę domen):
+  bystrzaki.pl, bystrzaki.pl, sowiaki.pl, uczymysiegrajac.pl, gryuczace.pl, malygeniusz.pl
+Koszt: pierwszy rok często kilka–kilkanaście zł, odnowienie .pl zwykle ok. 50–150 zł/rok.
+WAŻNE: domenę i hosting rejestruj na siebie / swoją spółkę – nie na wspólny hosting z dawnym wspólnikiem.
+
+KROK 2 – HOSTING (jedna z dwóch opcji)
+A) Tak jak app.medkrak.pl: zwykły hosting + FTP.
+   W panelu hostingu dodaj domenę, potem przez FTP (np. FileZilla) wrzuć CAŁĄ zawartość folderu
+   (index.html, folder gry, manifest.json, ikony) do katalogu domeny, np. /domains/TWOJADOMENA.pl/public_html/
+B) Za darmo: Cloudflare Pages (pages.cloudflare.com) → „Upload assets” → przeciągnij folder → podłącz domenę.
+
+KROK 3 – SPRAWDŹ
+Otwórz https://TWOJADOMENA.pl na telefonie, kliknij każdą grę, sprawdź lektor (głośność!).
+Włącz certyfikat SSL (https) w panelu hostingu – zwykle jeden przycisk „Let's Encrypt”.
+
+PÓŹNIEJ – OPŁATA (model freemium)
+- Za darmo: część gier albo pierwsze poziomy każdej gry.
+- Płatne: abonament (np. 15–25 zł/mies.) lub dostęp roczny, płatność rodzica przez Stripe lub Przelewy24.
+- Bez reklam – przy stronach dla dzieci RODO i zasady Google mocno ograniczają reklamy.
+- Do płatnej wersji potrzebne będą: logowanie rodzica, regulamin i polityka prywatności – przygotuję.
