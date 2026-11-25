@@ -78,6 +78,16 @@ a.game:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
 .home{margin-top:20px;background:#fff8ec;border-radius:22px;padding:16px 18px;font-size:16px;line-height:1.55}
 footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40px}
 footer .wave{font-size:28px;letter-spacing:6px}
+
+/* BALONY + CONFETTI */
+#party{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.balloon{position:absolute;bottom:-160px;width:60px;height:74px;border-radius:50% 50% 48% 52%/55% 55% 45% 45%;animation:rise linear forwards;opacity:.92;box-shadow:inset -8px -10px 0 rgba(0,0,0,.12)}
+.balloon::before{content:"";position:absolute;top:12px;left:13px;width:12px;height:20px;border-radius:50%;background:rgba(255,255,255,.55);transform:rotate(25deg)}
+.balloon::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:70px;background:rgba(43,45,66,.35);transform:translateX(-50%)}
+.balloon i{position:absolute;left:50%;top:97%;width:0;height:0;margin-left:-6px;border:6px solid transparent;border-bottom-color:inherit}
+@keyframes rise{0%{transform:translate(0,0) rotate(-4deg)}25%{transform:translate(18px,-30vh) rotate(4deg)}50%{transform:translate(-14px,-60vh) rotate(-4deg)}75%{transform:translate(16px,-90vh) rotate(4deg)}100%{transform:translate(0,-125vh) rotate(0)}}
+.conf{position:absolute;width:10px;height:16px;border-radius:3px;will-change:transform}
+@media (prefers-reduced-motion:reduce){#party{display:none}}
 </style>
 </head>
 <body>
@@ -153,5 +163,43 @@ footer .wave{font-size:28px;letter-spacing:6px}
   © 2026 Bystrzaki · MedKrak Sp. z o.o. · Kontakt: biuro@medkrak.pl
 </footer>
 
+
+<div id="party" aria-hidden="true"></div>
+<script>
+(function(){
+  var party=document.getElementById('party');
+  if(!party||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var cols=['#ef476f','#ff9f43','#ffd166','#06d6a0','#4cc9f0','#7b61ff','#f78fb3','#b197fc'];
+  function rnd(a,b){return a+Math.random()*(b-a)}
+  function balloon(){
+    var b=document.createElement('div');b.className='balloon';
+    var c=cols[Math.floor(Math.random()*cols.length)];var sc=rnd(.7,1.3);
+    b.style.background=c;b.style.borderBottomColor=c;b.style.left=rnd(0,95)+'vw';
+    b.style.width=60*sc+'px';b.style.height=74*sc+'px';
+    b.style.animationDuration=rnd(9,16)+'s';b.appendChild(document.createElement('i'));
+    party.appendChild(b);setTimeout(function(){b.remove()},17000);
+  }
+  function burst(x,y,n){
+    for(var i=0;i<n;i++){
+      var c=document.createElement('div');c.className='conf';
+      c.style.background=cols[i%cols.length];c.style.left=x+'px';c.style.top=y+'px';
+      if(Math.random()<.35){c.style.borderRadius='50%';c.style.width=c.style.height='10px';}
+      party.appendChild(c);
+      var ang=rnd(-Math.PI*.95,-Math.PI*.05),sp=rnd(7,16),vx=Math.cos(ang)*sp,vy=Math.sin(ang)*sp,rot=rnd(0,360),vr=rnd(-15,15),px=0,py=0,t=0;
+      (function(el,vx,vy,rot,vr,px,py,t){
+        function step(){t++;vy+=.35;vx*=.99;px+=vx;py+=vy;rot+=vr;
+          el.style.transform='translate('+px+'px,'+py+'px) rotate('+rot+'deg)';el.style.opacity=t>90?1-(t-90)/40:1;
+          if(t<130)requestAnimationFrame(step);else el.remove();}
+        requestAnimationFrame(step);
+      })(c,vx,vy,rot,vr,px,py,t);
+    }
+  }
+  function cannons(){var h=window.innerHeight,w=window.innerWidth;burst(w*.08,h*.9,45);burst(w*.92,h*.9,45);burst(w*.5,h*.35,35);}
+  for(var i=0;i<14;i++)setTimeout(balloon,i*350);
+  setInterval(balloon,1300);
+  setTimeout(cannons,400);setInterval(cannons,7000);
+  document.addEventListener('click',function(e){burst(e.clientX,e.clientY,40);});
+})();
+</script>
 </body>
 </html>
