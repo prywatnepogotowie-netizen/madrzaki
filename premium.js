@@ -14,7 +14,7 @@
   soroban:{t:["Tabliczka w rytmie"],fn:[/sTask\((\d+)\)/,3]},
   kalendarz:{t:["Ułóż miesiące","Pory roku"]},
   rysuj:{fn:[/open_\('(kot|rakieta|serce)'\)/,0]},
-  szachy:{t:["Hetman","Król","Skoczek","Pionek","Bitwa pionków"]},
+  szachy:{t:["Hetman","Król","Skoczek","Pionek","Bitwa pionków","Zagadki","Mini partia"]},
   zegar:{t:["Kwadranse","Co 5 minut"]},
   sklepik:{t:["Do 50 zł","Do 100 zł"]},
   kosz:{fn:[/start\('(to10|add20)'\)/,0]},
