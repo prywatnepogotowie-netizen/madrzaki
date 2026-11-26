@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Japońskie liczenie – soroban, wisienki, tabliczka – Bystrzaki</title>
+<meta name="description" content="Japońska nauka liczenia dla dzieci: liczydło soroban, metoda wisienki (dodawanie przez 10) i tabliczka mnożenia w rytmie.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<script>
+window.bestPl=function(list){list=(list||[]).filter(function(v){return /^pl/i.test(v.lang)});if(!list.length)return null;
+var bad=/eloquence|grandma|grandpa|rocko|shelley|flo|reed|sandy|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph/i;
+function sc(v){var n=v.name,s=0;if(bad.test(n))s-=100;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced|ulepszon/i.test(n))s+=45;if(/google/i.test(n))s+=40;if(/zosia|zofia|paulina|agnieszka|ewa|maja|marta/i.test(n))s+=10;if(v.localService===false)s+=5;return s}
+return list.sort(function(a,b){return sc(b)-sc(a)})[0];};
+</script>
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#fff5f5;--r:#e63946;--y:#ffd166;--g:#06d6a0;--b:#4cc9f0;--v:#b197fc;--o:#ff9f43;--wood:#b07a4f;--wood2:#8a5a36}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2,h3{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f6d7d7;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:860px;margin:0 auto;padding:16px}
+.hello{text-align:center;font-size:19px;margin:6px 0 14px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.tile{border:none;border-radius:26px;padding:22px 14px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 7px 0 rgba(0,0,0,.13);text-align:center}
+.tile .ic{font-size:56px;display:block}.tile b{display:block;font:800 25px "Baloo 2";margin:4px 0}.tile small{font-size:15px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.top h2{flex:1;margin:0;font-size:26px}
+.back,.btn{border:none;border-radius:16px;padding:11px 16px;font:700 18px "Andika";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.btn.main{background:var(--r);color:#fff;box-shadow:0 5px 0 #a3242e}
+.btn.green{background:var(--g)}
+.panel{background:#fff;border-radius:28px;padding:20px 16px;box-shadow:0 6px 0 #f1d2d2;text-align:center;margin-bottom:16px}
+.task{font:800 34px "Baloo 2";margin:4px 0 12px}
+.info{color:var(--muted);font-size:16px;margin:8px 0 0}
+/* SOROBAN */
+.abacus{display:inline-flex;gap:14px;background:var(--wood);border:10px solid var(--wood2);border-radius:18px;padding:12px 18px;position:relative;box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)}
+.rod{position:relative;width:62px;height:330px}
+.rod::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:#5b3a20;border-radius:3px}
+.beam{position:absolute;left:-18px;right:-18px;top:98px;height:12px;background:var(--wood2);z-index:2}
+.bead{position:absolute;left:50%;width:58px;height:34px;margin-left:-29px;border-radius:50%/60%;cursor:pointer;transition:top .18s;z-index:3;
+ background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ff6b6b,#c1121f);box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.bead.heaven{background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ffd166,#e09f00)}
+.rodlbl{position:absolute;bottom:-34px;left:0;right:0;text-align:center;color:#fff;font-weight:800;font-size:14px}
+.val{font:800 44px "Baloo 2";margin:14px 0 4px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+/* WISIENKI */
+.eq{font:800 46px "Baloo 2";display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.cherry{position:relative;display:inline-flex;gap:26px;margin-top:6px;padding-top:30px}
+.cherry::before{content:"";position:absolute;top:0;left:50%;width:70px;height:34px;margin-left:-35px;border:4px solid #2d6a4f;border-bottom:none;border-radius:40px 40px 0 0}
+.berry{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8fa3 0 15%,#e63946 16%);color:#fff;display:grid;place-items:center;font:800 32px "Baloo 2";box-shadow:0 4px 0 #9d0208}
+.berry.empty{background:#fde2e4;color:#c9184a}
+.frame{display:inline-grid;grid-template-columns:repeat(5,34px);gap:5px;background:#fff;border:3px solid #ddd;border-radius:12px;padding:6px;margin:12px 6px 0}
+.frame span{width:34px;height:34px;border-radius:50%;background:#eee}
+.frame span.a{background:var(--b)}.frame span.b{background:var(--o)}
+.opts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.opt{min-width:76px;border:none;border-radius:20px;padding:14px 10px;font:800 32px "Baloo 2";cursor:pointer;background:var(--y);box-shadow:0 5px 0 #c99a1b;color:var(--ink)}
+.opt.ok{background:var(--g);box-shadow:0 5px 0 #04986f}.opt.bad{background:#ffb3c1;box-shadow:0 5px 0 #c9184a}
+.step{font-size:20px;font-weight:700;margin-top:14px}
+/* KUKU */
+.tables{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tables button{border:none;border-radius:18px;padding:16px 0;font:800 28px "Baloo 2";cursor:pointer;background:var(--v);box-shadow:0 5px 0 #7c62d6;color:#fff}
+.lines{display:grid;gap:6px;text-align:left;max-width:360px;margin:10px auto 0}
+.line{font:800 26px "Baloo 2";padding:6px 14px;border-radius:14px;background:#f6f1ff;transition:transform .2s}
+.line.on{background:var(--v);color:#fff;transform:scale(1.06)}
+.fb{font:800 26px "Baloo 2";min-height:36px;margin-top:10px}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #f1d2d2;font-size:16px;line-height:1.55}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+@media(max-width:520px){.rod{width:52px}.bead{width:50px;margin-left:-25px}.abacus{gap:8px;padding:10px}}
+</style>
+</head>
+<body>
+<header><h1 onclick="go('menu')">🇯🇵 Japońskie liczenie</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+
+<script>
+// ---------- mowa ----------
+var plVoice=null;
+function pickVoice(){try{plVoice=bestPl(speechSynthesis.getVoices())}catch(e){}}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t,queue){try{if(!queue)speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plVoice)u.voice=plVoice;u.rate=0.95;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+var NUM=["zero","jeden","dwa","trzy","cztery","pięć","sześć","siedem","osiem","dziewięć","dziesięć","jedenaście","dwanaście","trzynaście","czternaście","piętnaście","szesnaście","siedemnaście","osiemnaście","dziewiętnaście"];
+// ---------- gwiazdki ----------
+var stars=0;try{stars=+localStorage.getItem("bystrzaki-soroban-stars")||0}catch(e){}
+function star(n){stars+=n||1;document.getElementById("stars").textContent=stars;try{localStorage.setItem("bystrzaki-soroban-stars",stars)}catch(e){}}
+document.getElementById("stars").textContent=stars;
+var PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Doskonale!"];
+function praise(){var p=PRAISE[Math.floor(Math.random()*PRAISE.length)];say(p);return p;}
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var app=document.getElementById("app");
+
+// ---------- MENU ----------
+function menu(){
+ app.innerHTML='<p class="hello">Liczymy jak dzieci w Japonii! 🌸 Wybierz zabawę:</p>'+
+ '<div class="menu">'+
+ '<button class="tile" style="background:#ffb4a2" onclick="go(\'soroban\')"><span class="ic">🧮</span><b>Soroban</b><small>japońskie liczydło</small></button>'+
+ '<button class="tile" style="background:#ffccd5" onclick="go(\'wisienki\')"><span class="ic">🍒</span><b>Wisienki</b><small>dodawanie przez 10</small></button>'+
+ '<button class="tile" style="background:#cdb4db" onclick="go(\'kuku\')"><span class="ic">🎶</span><b>Tabliczka w rytmie</b><small>japońskie „kuku”</small></button>'+
+ '<button class="tile" style="background:#fff" onclick="go(\'rodzic\')"><span class="ic">👨‍👩‍👧</span><b>Dla rodzica</b><small>jak ćwiczyć</small></button>'+
+ '</div>';
+}
+
+// ---------- SOROBAN ----------
+var RODS=3, state=[0,0,0], target=null, sMode="free";
+function soroban(){
+ state=[0,0,0];target=null;sMode="free";
+ app.innerHTML='<div class="top"><button class="back" onclick="go(\'menu\')">⬅</button><h2>🧮 Soroban</h2></div>'+
+ '<div class="panel"><div class="task" id="stask">Przesuwaj koraliki!</div>'+
+ '<div class="abacus" id="abacus"></div>'+
+ '<div class="val" id="sval">0</div>'+
+ '<div class="row"><button class="btn" onclick="sFree()">✋ Swobodnie</button><button class="btn main" onclick="sTask(1)">🎯 Ułóż liczbę (do 20)</button><button class="btn main" onclick="sTask(2)">🎯 Do 99</button><button class="btn main" onclick="sTask(3)">🎯 Do 999</button></div>'+
+ '<div class="row" id="scheck" style="display:none"><button class="btn green" onclick="sCheck()">✅ Sprawdź</button><button class="btn" onclick="sClear()">🧹 Wyczyść</button></div>'+
+ '<p class="info">Żółty koralik nad belką = <b>5</b>. Czerwone pod belką = <b>1</b>. Przesuń koralik do belki, żeby go policzyć.</p></div>';
+ drawAbacus();
+}
+function drawAbacus(){
+ var ab=document.getElementById("abacus");if(!ab)return;
+ var names=["setki","dziesiątki","jedności"],h="";
+ for(var r=0;r<RODS;r++){
+  var d=state[r],five=d>=5,ones=d%5;
+  h+='<div class="rod"><div class="beam"></div>';
+  h+='<div class="bead heaven" style="top:'+(five?58:6)+'px" onclick="tapHeaven('+r+')"></div>';
+  for(var i=0;i<4;i++){var up=i<ones;var top=up?(114+i*36):(114+36*(i)+ (ones<=i?60:0));
+   h+='<div class="bead" style="top:'+(up?114+i*36:174+i*36)+'px" onclick="tapEarth('+r+','+i+')"></div>';}
+  h+='<div class="rodlbl">'+names[r]+'</div></div>';
+ }
+ ab.innerHTML=h;
+ var v=state[0]*100+state[1]*10+state[2];
+ document.getElementById("sval").textContent=(sMode==="task"?"?":v);
+}
+function tapHeaven(r){var d=state[r];state[r]=d>=5?d-5:d+5;drawAbacus();if(sMode==="free")sayVal();}
+function tapEarth(r,i){var d=state[r],five=d>=5?5:0,ones=d%5;ones=(i<ones)?i:i+1;state[r]=five+ones;drawAbacus();if(sMode==="free")sayVal();}
+function sayVal(){var v=state[0]*100+state[1]*10+state[2];say(String(v));}
+function sFree(){sMode="free";target=null;document.getElementById("stask").textContent="Przesuwaj koraliki!";document.getElementById("scheck").style.display="none";drawAbacus();}
+function sTask(l){sMode="task";target=l===1?rnd(1,20):l===2?rnd(10,99):rnd(100,999);state=[0,0,0];
+ document.getElementById("stask").textContent="Ułóż liczbę: "+target;document.getElementById("scheck").style.display="flex";drawAbacus();say("Ułóż liczbę "+target);}
+function sClear(){state=[0,0,0];drawAbacus();}
+function sCheck(){var v=state[0]*100+state[1]*10+state[2];
+ if(v===target){star();document.getElementById("stask").textContent="⭐ "+praise()+" To jest "+target+"!";sMode="free";drawAbacus();
+  setTimeout(function(){document.getElementById("scheck").style.display="none"},10);}
+ else{document.getElementById("stask").textContent="Masz "+v+". Spróbuj jeszcze: "+target;say("Masz "+v+". Spróbuj jeszcze raz.");}}
+
+// ---------- WISIENKI ----------
+var W={};
+function wisienki(){
+ var a=rnd(6,9),b=rnd(11-a,9);W={a:a,b:b,to10:10-a,rest:b-(10-a),step:1};
+ app.innerHTML='<div class="top"><button class="back" onclick="go(\'menu\')">⬅</button><h2>🍒 Wisienki</h2></div>'+
+ '<div class="panel"><div class="eq"><span>'+a+'</span><span>+</span><span>'+b+'</span><span>=</span><span id="wres">?</span></div>'+
+ '<div><div class="cherry" id="cherry"><div class="berry empty" id="w1">?</div><div class="berry empty" id="w2">?</div></div></div>'+
+ '<div><div class="frame" id="f1"></div><div class="frame" id="f2"></div></div>'+
+ '<div class="step" id="wstep"></div><div class="opts" id="wopts"></div><div class="fb" id="wfb"></div></div>'+
+ '<p class="info" style="text-align:center">Rozbijamy drugą liczbę na dwie wisienki: jedna dopełnia do 10, druga to reszta.</p>';
+ drawFrames(0);wStep();
+}
+function drawFrames(add){
+ var f1=document.getElementById("f1"),f2=document.getElementById("f2"),h1="",h2="";
+ for(var i=0;i<10;i++){h1+='<span class="'+(i<W.a?"a":(i<W.a+add?"b":""))+'"></span>';}
+ var rest=Math.max(0,W.b-add);for(var j=0;j<10;j++){h2+='<span class="'+(j<rest?"b":"")+'"></span>';}
+ f1.innerHTML=h1;f2.innerHTML=h2;
+}
+function wStep(){
+ var st=document.getElementById("wstep"),o=document.getElementById("wopts"),ans,q;
+ if(W.step===1){q="Ile brakuje do 10 od "+W.a+"?";ans=W.to10;}
+ else if(W.step===2){q="Ile zostało z "+W.b+"? ("+W.b+" − "+W.to10+")";ans=W.rest;}
+ else {q="10 + "+W.rest+" = ?";ans=10+W.rest;}
+ st.textContent=q;say(q.replace("−","minus"));
+ var set=[ans];while(set.length<3){var x=ans+rnd(-3,3);if(x>0&&set.indexOf(x)<0)set.push(x);}
+ o.innerHTML=shuffle(set).map(function(n){return '<button class="opt" onclick="wAns(this,'+n+','+ans+')">'+n+'</button>'}).join("");
+}
+function wAns(btn,n,ans){
+ var fb=document.getElementById("wfb");
+ if(n!==ans){btn.classList.add("bad");fb.textContent="Spróbuj jeszcze 🙂";say("Spróbuj jeszcze");return;}
+ btn.classList.add("ok");
+ if(W.step===1){var e=document.getElementById("w1");e.textContent=W.to10;e.classList.remove("empty");drawFrames(W.to10);}
+ if(W.step===2){var e2=document.getElementById("w2");e2.textContent=W.rest;e2.classList.remove("empty");}
+ if(W.step===3){document.getElementById("wres").textContent=10+W.rest;star();fb.textContent="⭐ "+praise();
+   setTimeout(function(){say(W.a+" plus "+W.b+" to "+(10+W.rest),true)},700);
+   document.getElementById("wopts").innerHTML='<button class="btn main" onclick="wisienki()">➡ Następne</button>';document.getElementById("wstep").textContent="";return;}
+ fb.textContent="";W.step++;setTimeout(wStep,450);
+}
+
+// ---------- KUKU ----------
+var K={};
+function kuku(){
+ var h='<div class="top"><button class="back" onclick="go(\'menu\')">⬅</button><h2>🎶 Tabliczka w rytmie</h2></div><div class="panel"><p class="step">Wybierz liczbę:</p><div class="tables">';
+ for(var n=2;n<=9;n++)h+='<button onclick="kuTable('+n+')">'+n+'</button>';
+ h+='</div><p class="info">W Japonii dzieci recytują tabliczkę mnożenia rytmicznie jak wierszyk – to się nazywa „kuku”.</p></div>';
+ app.innerHTML=h;
+}
+var WORD={1:"raz",2:"dwa",3:"trzy",4:"cztery",5:"pięć",6:"sześć",7:"siedem",8:"osiem",9:"dziewięć"};
+function kuTable(n){
+ K={n:n};var h='<div class="top"><button class="back" onclick="go(\'kuku\')">⬅</button><h2>🎶 Razy '+n+'</h2></div><div class="panel"><div class="lines">';
+ for(var i=1;i<=9;i++)h+='<div class="line" id="l'+i+'">'+n+' × '+i+' = '+(n*i)+'</div>';
+ h+='</div><div class="row"><button class="btn main" onclick="kuSing()">🎵 Posłuchaj w rytmie</button><button class="btn green" onclick="kuQuiz(0)">🎯 Sprawdź się</button></div></div>';
+ app.innerHTML=h;
+}
+function kuSing(){
+ try{speechSynthesis.cancel()}catch(e){}
+ var n=K.n,i=1;
+ (function next(){
+  document.querySelectorAll(".line").forEach(function(l){l.classList.remove("on")});
+  if(i>9||!document.getElementById("l1"))return;
+  var el=document.getElementById("l"+i);el.classList.add("on");
+  var t=WORD[n]+" razy "+WORD[i]+" – "+(n*i);
+  try{var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plVoice)u.voice=plVoice;u.rate=1.0;u.onend=function(){i++;setTimeout(next,250)};speechSynthesis.speak(u);}catch(e){i++;setTimeout(next,1500)}
+ })();
+}
+function kuQuiz(k){
+ if(k===0)K.score=0;
+ if(k>=5){star(K.score);app.innerHTML='<div class="panel"><div class="task">⭐ Zdobyte gwiazdki: '+K.score+'/5</div><div class="row"><button class="btn main" onclick="kuTable('+K.n+')">🔁 Jeszcze raz</button><button class="btn" onclick="go(\'kuku\')">Inna liczba</button></div></div>';say("Zdobyłeś "+K.score+" na 5 gwiazdek");return;}
+ var i=rnd(2,9),ans=K.n*i,set=[ans];while(set.length<4){var x=ans+K.n*rnd(-2,2)+rnd(-1,1);if(x>0&&set.indexOf(x)<0)set.push(x);}
+ app.innerHTML='<div class="top"><button class="back" onclick="kuTable('+K.n+')">⬅</button><h2>🎯 Pytanie '+(k+1)+' z 5</h2></div><div class="panel"><div class="task">'+K.n+' × '+i+' = ?</div><div class="opts">'+
+ shuffle(set).map(function(n){return '<button class="opt" onclick="kuAns(this,'+n+','+ans+','+k+')">'+n+'</button>'}).join("")+'</div><div class="fb" id="kfb"></div></div>';
+ say(WORD[K.n]+" razy "+WORD[i]);
+}
+function kuAns(btn,n,ans,k){
+ document.querySelectorAll(".opt").forEach(function(b){b.disabled=true});
+ if(n===ans){btn.classList.add("ok");K.score++;document.getElementById("kfb").textContent="⭐ "+praise();}
+ else{btn.classList.add("bad");document.getElementById("kfb").textContent="To jest "+ans;say("To jest "+ans);}
+ setTimeout(function(){kuQuiz(k+1)},1300);
+}
+
+// ---------- RODZIC ----------
+function rodzic(){
+ app.innerHTML='<div class="top"><button class="back" onclick="go(\'menu\')">⬅</button><h2>👨‍👩‍👧 Dla rodzica</h2></div><div class="parent">'+
+ '<p><b>🧮 Soroban</b> – japońskie liczydło. Każdy pręt to rząd wielkości (setki, dziesiątki, jedności). Żółty koralik nad belką to 5, czerwone pod belką to 1. Dziecko widzi, z czego składa się liczba, a z czasem liczy „w głowie”, wyobrażając sobie koraliki.</p>'+
+ '<p><b>🍒 Wisienki</b> (sakuranbo keisan) – przy dodawaniu z przekroczeniem dziesiątki rozbijamy drugą liczbę na dwie części: jedna dopełnia do 10, druga to reszta. 8 + 5 = 8 + 2 + 3 = 13.</p>'+
+ '<p><b>🎶 Tabliczka w rytmie</b> (kuku) – japońskie dzieci recytują tabliczkę mnożenia jak wierszyk. Rytm pomaga zapamiętać wyniki.</p>'+
+ '<p>💡 Ćwiczcie <b>krótko i codziennie</b> – 10 minut wystarczy. Dla wieku: soroban do 20 i wisienki od ok. 6 lat, tabliczka mnożenia od ok. 8 lat.</p>'+
+ '<p>📝 Więcej przeczytasz na blogu: <a href="../blog/japonska-nauka-liczenia.html">Japońska nauka liczenia – soroban, wisienki i kuku</a>.</p></div>';
+}
+function go(v){try{speechSynthesis.cancel()}catch(e){}
+ ({menu:menu,soroban:soroban,wisienki:wisienki,kuku:kuku,rodzic:rodzic})[v]();window.scrollTo(0,0);}
+go("menu");
+</script>
+</body>
+</html>
