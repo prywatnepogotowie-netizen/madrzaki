@@ -164,14 +164,14 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     <a class="game" data-ages="a b" style="background:var(--y)" href="gry/czytanka.html"><span class="age">4–7 lat</span><span class="ic">📖</span><h3>Czytanka</h3><p>Literki, sylaby, słowa i krótkie bajeczki</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:var(--g)" href="gry/liczydelko.html"><span class="age">4–8 lat</span><span class="ic">🔢</span><h3>Liczydełko</h3><p>Liczenie, dodawanie, odejmowanie i tabliczka</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:var(--v)" href="gry/glowkowanie.html"><span class="age">5–8 lat</span><span class="ic">🧩</span><h3>Główkowanie</h3><p>Zagadki logiczne, wzory i myślenie</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="a b" style="background:#bde0fe" href="gry/english.html"><span class="age">4–9 lat</span><span class="ic">🇬🇧</span><h3>English</h3><p>Słówka z lektorem: zwierzęta, kolory, liczby i więcej</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="b c" style="background:#ffb4a2" href="gry/soroban.html"><span class="age">6–12 lat</span><span class="ic">🧮</span><h3>Japońskie liczenie</h3><p>Soroban, wisienki i tabliczka mnożenia w rytmie</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b c" style="background:var(--p)" href="gry/maly-ratownik.html"><span class="age">5–8 lat</span><span class="ic">🚑</span><h3>Mały ratownik</h3><p>Telefon 112, oparzenia, zadławienie, bezpieczeństwo</p><span class="play">Graj ▶</span></a>
   </div>
   <div class="soon">
     <div><b>🕐</b>Zegarek<small>wkrótce</small></div>
     <div><b>🛒</b>Sklepik<small>wkrótce</small></div>
-    <div><b>🇬🇧</b>English<small>wkrótce</small></div>
-    <div><b>📅</b>Kalendarz<small>wkrótce</small></div>
+        <div><b>📅</b>Kalendarz<small>wkrótce</small></div>
     <div><b>✏️</b>Piszę po śladzie<small>wkrótce</small></div>
   </div>
 </section>
@@ -223,7 +223,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
 <script>
 (function(){
   var names={a:'Jestem małym bąkiem 🐣 (4–6 lat)',b:'Rosnę jak na drożdżach 🌱 (6–9 lat)',c:'Chcę już być duży! 🚀 (9–13 lat)',d:'Jestem już prawie dorosły i odpowiedzialny 🦸 (13–17 lat)'};
-  var soon={c:['Tabliczka mnożenia na czas','Ułamki','English – zdania','Pierwsza pomoc – resuscytacja','Mapa Polski'],d:['Pierwsza pomoc jak ratownik medyczny','Własne pieniądze i budżet','Przepisy drogowe – teoria','English – rozmowy','Bezpieczeństwo w internecie']};
+  var soon={c:['Tabliczka mnożenia na czas','Ułamki','English – zdania i rozmowy','Pierwsza pomoc – resuscytacja','Mapa Polski'],d:['Pierwsza pomoc jak ratownik medyczny','Własne pieniądze i budżet','Przepisy drogowe – teoria','English – rozmowy','Bezpieczeństwo w internecie']};
   function pick(k,scroll){
     document.querySelectorAll('.age-btn').forEach(function(b){b.classList.toggle('on',b.dataset.age===k)});
     var n=0;document.querySelectorAll('a.game').forEach(function(g){var ok=(g.dataset.ages||'').split(' ').indexOf(k)>-1;g.style.display=ok?'':'none';if(ok)n++;});
