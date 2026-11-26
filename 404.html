@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nie znaleziono strony – Bystrzaki</title>
+<meta name="robots" content="noindex">
+<script>
+/* Adresy wpisane wielkimi literami (np. /BLOG) przenosimy na właściwe (małe litery) */
+(function(){
+  var p=location.pathname, low=p.toLowerCase();
+  if(p!==low){ location.replace(low+location.search+location.hash); }
+})();
+</script>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#fff8ec;color:#2b2d42;font:18px/1.6 system-ui,sans-serif;text-align:center;padding:20px}
+h1{font-size:40px;margin:10px 0}
+a{display:inline-block;margin:8px;background:#ef476f;color:#fff;text-decoration:none;font-weight:800;padding:12px 24px;border-radius:999px}
+a.alt{background:#2b2d42}
+</style>
+</head>
+<body>
+<div>
+  <div style="font-size:80px">🦉</div>
+  <h1>Ups! Ciocia Mądrala nie zna tej strony</h1>
+  <p>Ta strona nie istnieje albo zmieniła adres.</p>
+  <a href="/">🏠 Strona główna</a><a class="alt" href="/blog/">📝 Blog</a><a class="alt" href="/zabawy.html">🌳 Zabawy</a>
+</div>
+</body>
+</html>
