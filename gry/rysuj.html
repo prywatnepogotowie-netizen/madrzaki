@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
+<script src="../profil.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Rysuję i koloruję – kolorowanki online dla dzieci – Bystrzaki</title>
 <meta name="description" content="Kolorowanki online dla dzieci 4–8 lat: robot, koszykówka, domek, kotek, rakieta. Malowanie palcem, wiadro z farbą, zapis i druk rysunku.">
@@ -123,7 +124,7 @@ function fill(x,y){var img=ctx.getImageData(0,0,S,S),d=img.data,i0=(y*S+x)*4,tr=
  ctx.putImageData(img,0,0);if(lineLayer)ctx.drawImage(lineLayer,0,0);
  var praise=["Pięknie!","Super kolor!","Ślicznie!","Ale ładnie!"];if(Math.random()<.35)say(praise[Math.floor(Math.random()*praise.length)]);
 }
-function save(){try{var a=document.createElement("a");a.download="moj-rysunek-bystrzaki.png";a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();say("Zapisane! Brawo, artysto!")}catch(e){}}
+function save(){try{var a=document.createElement("a");a.download="moj-rysunek-bystrzaki.png";a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();say("Zapisane! Brawo, artysto! Masz gwiazdkę.");try{localStorage.setItem("bystrzaki-rysuj-stars",(+localStorage.getItem("bystrzaki-rysuj-stars")||0)+1)}catch(_){}}catch(e){}}
 menu();
 </script>
 <script src="../glos.js"></script>
