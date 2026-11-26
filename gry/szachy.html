@@ -89,6 +89,7 @@ var P={
   how:"idzie tylko do przodu jak mały żołnierzyk, po jednym polu, a za pierwszym razem może dwa. Bije wrogów na ukos. Gdy dojdzie do końca planszy, zamienia się w hetmana!",
   lv:[{s:[5,2],t:[[3,2],[2,2],[0,2]]},{s:[5,1],t:[[4,2,"e"],[3,1,"e"],[1,1]]}]}
 };
+function KG(cls){return '<svg class="pw '+cls+'" viewBox="0 0 45 45"><path d="M21 5h3v3.5h3.5v3H24v3.2c1.3.4 2.3 1.4 2.7 2.7 2.5-2.6 7.8-2.9 10.3.3 2.7 3.4.4 8.8-3.5 12.3L33 36H12l-.5-6c-3.9-3.5-6.2-8.9-3.5-12.3 2.5-3.2 7.8-2.9 10.3-.3.4-1.3 1.4-2.3 2.7-2.7v-3.2h-3.5v-3H21z"/><path d="M11 37.5h23v3.5H11z"/></svg>'}
 function PW(cls){return '<svg class="pw '+cls+'" viewBox="0 0 45 45"><path d="M22.5 9c-2.2 0-4 1.8-4 4 0 .9.3 1.7.8 2.4-1.9 1.1-3.3 3.2-3.3 5.6 0 2 .9 3.8 2.4 5-3 1.1-7.4 5.6-7.4 13.5h23c0-7.9-4.4-12.4-7.4-13.5 1.5-1.2 2.4-3 2.4-5 0-2.4-1.4-4.5-3.3-5.6.5-.7.8-1.5.8-2.4 0-2.2-1.8-4-4-4z"/></svg>'}
 var ORDER=["wieza","goniec","hetman","krol","skoczek","pion"];
 function nm(k){return NAMES[k]||P[k].n}
@@ -98,8 +99,10 @@ function menu(){try{speechSynthesis.cancel()}catch(e){}
  var h='<p class="hello">Poznaj szachowe postacie! Każdą możesz nazwać po swojemu. 👑</p><div class="list">';
  ORDER.forEach(function(k,i){var u=unlocked(i);h+='<button class="pc'+(DONE[k]?" done":"")+(u?"":" lock")+'" onclick="'+(u?"intro('"+k+"')":"say('Najpierw poznaj poprzednią postać')")+'"><span class="g">'+P[k].g+'</span><b>'+nm(k)+'</b><small>'+(NAMES[k]?P[k].n:"&nbsp;")+'</small></button>'});
  var all=ORDER.every(function(k){return DONE[k]});
- h+='<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"battle()":"say('Bitwa pionków odblokuje się, gdy poznasz wszystkie postacie')")+'"><span class="g">⚔️</span><b>Bitwa pionków</b><small>'+(all?"Zagraj z komputerem!":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button></div>'+
- '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> uczymy po jednej figurze, na małej planszy 6×6. Najpierw wieża, bo chodzi najprościej, a skoczek i pionek na końcu. Zielone kropki pokazują, gdzie figura może pójść. Gdy dziecko nada figurom imiona, dużo łatwiej je zapamięta. Po każdej lekcji postawcie figurę na prawdziwej szachownicy i powtórzcie jej ruch. Bitwa pionków to klasyczna pierwsza gra trenerów szachowych.</div>';
+ h+='<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"battle()":"say('Bitwa pionków odblokuje się, gdy poznasz wszystkie postacie')")+'"><span class="g">⚔️</span><b>Bitwa pionków</b><small>'+(all?"Zagraj z komputerem!":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button>'+
+ '<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"puzzles()":"say('Zagadki odblokują się, gdy poznasz wszystkie postacie')")+'"><span class="g">🧩</span><b>Zagadki</b><small>'+(all?"Która figura zbije?":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button>'+
+ '<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"game()":"say('Mini partia odblokuje się, gdy poznasz wszystkie postacie')")+'"><span class="g">♚\uFE0E</span><b>Mini partia</b><small>'+(all?"Prawdziwe szachy z komputerem!":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button></div>'+
+ '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> uczymy po jednej figurze, na małej planszy 6×6. Najpierw wieża, bo chodzi najprościej, a skoczek i pionek na końcu. Zielone kropki pokazują, gdzie figura może pójść. Gdy dziecko nada figurom imiona, dużo łatwiej je zapamięta. Po każdej lekcji postawcie figurę na prawdziwej szachownicy i powtórzcie jej ruch. Bitwa pionków to klasyczna pierwsza gra trenerów szachowych. Potem są Zagadki (która figura zbije?) i Mini partia: prawdziwe szachy na planszy 6×6 z komputerem, z szachem i matem, bez roszady i bicia w przelocie.</div>';
  app.innerHTML=h;}
 function intro(k){var p=P[k];
  app.innerHTML='<div class="panel"><div class="g">'+p.g+'</div><h2 style="margin:4px 0">To jest '+p.n.toLowerCase()+'</h2><p>'+(NAMES[k]?"Nazywa się <b>"+NAMES[k]+"</b>. ":"")+p.n+' '+p.how+'</p>'+
@@ -138,7 +141,7 @@ function drawL(){var k=Ls.k,p=P[k];
  '<div class="tip"><button class="say" onclick="say(\''+(nm(k)+" "+p.how).replace(/'/g,"")+'\')">🔊</button><span>'+nm(k)+' '+p.how.split(".")[0]+'.</span></div><div class="board">';
  for(var r=0;r<6;r++)for(var c=0;c<6;c++){var t=tAt(r,c),isMv=mv.some(function(m){return m[0]===r&&m[1]===c});
   h+='<div class="sq '+((r+c)%2?"d":"l")+(isMv?" mv":"")+(isMv&&t?" cap":"")+(Ls.last&&Ls.last[0]===r&&Ls.last[1]===c?" last":"")+'" onclick="tapL('+r+','+c+')">'+
-  (r===Ls.r&&c===Ls.c?(k==='pion'?PW('w'):'<span class="w">'+p.g+'</span>'):t?(t[2]==="e"?PW('b'):"⭐"):"")+'</div>';}
+  (r===Ls.r&&c===Ls.c?(k==='pion'?PW('w'):k==='krol'?KG('w'):'<span class="w">'+p.g+'</span>'):t?(t[2]==="e"?PW('b'):"⭐"):"")+'</div>';}
  h+='</div><div class="fb" id="fb">Zostało gwiazdek: '+Ls.t.filter(function(x){return !x[2]}).length+(Ls.t.some(function(x){return x[2]})?" · wrogów: "+Ls.t.filter(function(x){return x[2]}).length:"")+'</div>';
  app.innerHTML=h;}
 function tapL(r,c){if(r===Ls.r&&c===Ls.c){say(nm(Ls.k)+" "+P[Ls.k].how);return}
@@ -187,7 +190,78 @@ function ai(){var ms=allMoves("b");if(!ms.length){end("w","Komputer nie ma ruchu
 function check(){if(B.w.some(function(p){return p[0]===0})||!B.b.length){end("w","🏆 Wygrałeś! Twój pionek zostaje hetmanem!");return true}
  if(B.b.some(function(p){return p[0]===5})||!B.w.length){end("b","Tym razem wygrał komputer. Spróbuj jeszcze raz!");return true}return false}
 function end(who,msg){B.over=true;drawB(msg);if(who==="w")star(3);say(msg.replace(/[🏆]/g,""));
- var nx=document.createElement("div");nx.className="row";nx.innerHTML='<button class="btn main" onclick="battle()">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Postacie</button>';document.getElementById("fb").after(nx);}
+ var nx=document.createElement("div");nx.className="row";nx.innerHTML='<button class="btn main" onclick="battle()">🔁 Jeszcze raz</button><button class="btn main" onclick="puzzles()">🧩 Zagadki</button><button class="btn main" onclick="game()">♚\uFE0E Mini partia</button><button class="btn" onclick="menu()">Postacie</button>';document.getElementById("fb").after(nx);}
+// ---- wspólne: figury na planszy ----
+var GL={K:"♚︎",Q:"♛︎",R:"♜︎",B:"♝︎",N:"♞︎"},KEY={K:"krol",Q:"hetman",R:"wieza",B:"goniec",N:"skoczek",P:"pion"},VAL={P:1,N:3,B:3,R:5,Q:9,K:100};
+function pc(p){if(!p)return"";return p.k==="P"?PW(p.s):p.k==="K"?KG(p.s):'<span class="'+p.s+'">'+GL[p.k]+'</span>'}
+function pname(k){return nm(KEY[k])}
+function gen(bd,r,c,caps){var p=bd[r][c],out=[];if(!p)return out;var s=p.s,f=s==="w"?-1:1;
+ function add(rr,cc){if(!inb(rr,cc))return false;var t=bd[rr][cc];if(t&&t.s===s)return false;out.push([rr,cc]);return !t}
+ if(p.k==="P"){if(!caps&&inb(r+f,c)&&!bd[r+f][c])out.push([r+f,c]);[-1,1].forEach(function(d){var rr=r+f,cc=c+d;if(inb(rr,cc)&&bd[rr][cc]&&bd[rr][cc].s!==s)out.push([rr,cc])});return out}
+ var D={R:[[1,0],[-1,0],[0,1],[0,-1]],B:[[1,1],[1,-1],[-1,1],[-1,-1]]};D.Q=D.R.concat(D.B);
+ if(D[p.k]){D[p.k].forEach(function(d){for(var i=1;i<6;i++)if(!add(r+d[0]*i,c+d[1]*i))break});return out}
+ if(p.k==="K"){for(var a=-1;a<=1;a++)for(var b=-1;b<=1;b++)if(a||b)add(r+a,c+b);return out}
+ if(p.k==="N"){[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(function(d){add(r+d[0],c+d[1])});return out}
+ return out}
+function attacked(bd,r,c,by){for(var i=0;i<6;i++)for(var j=0;j<6;j++){var p=bd[i][j];if(p&&p.s===by&&gen(bd,i,j,true).some(function(m){return m[0]===r&&m[1]===c}))return true}return false}
+function kingAt(bd,s){for(var i=0;i<6;i++)for(var j=0;j<6;j++){var p=bd[i][j];if(p&&p.s===s&&p.k==="K")return[i,j]}return null}
+function apply(bd,f,t){var n=bd.map(function(row){return row.slice()}),p=n[f[0]][f[1]];n[t[0]][t[1]]=(p.k==="P"&&(t[0]===0||t[0]===5))?{s:p.s,k:"Q"}:p;n[f[0]][f[1]]=null;return n}
+function inCheck(bd,s){var k=kingAt(bd,s);return k&&attacked(bd,k[0],k[1],s==="w"?"b":"w")}
+function legal(bd,r,c){var s=bd[r][c].s;return gen(bd,r,c).filter(function(m){return !inCheck(apply(bd,[r,c],m),s)})}
+function allLegal(bd,s){var o=[];for(var i=0;i<6;i++)for(var j=0;j<6;j++){var p=bd[i][j];if(p&&p.s===s)legal(bd,i,j).forEach(function(m){o.push({f:[i,j],t:m})})}return o}
+function board(bd,cls,tap){var h='<div class="board">';for(var r=0;r<6;r++)for(var c=0;c<6;c++)h+='<div class="sq '+((r+c)%2?"d":"l")+(cls(r,c)||"")+'" onclick="'+tap+'('+r+','+c+')">'+pc(bd[r][c])+'</div>';return h+'</div>'}
+function emptyB(){var b=[];for(var i=0;i<6;i++)b.push([null,null,null,null,null,null]);return b}
+
+// ---- zagadki: która figura zbije? ----
+var Z=null;
+function puzzles(){Z={n:0,ok:0,miss:0};nextPz()}
+function rnd(n){return Math.floor(Math.random()*n)}
+function makePz(){for(var tries=0;tries<500;tries++){var bd=emptyB(),cells=[];for(var i=0;i<36;i++)cells.push(i);cells.sort(function(){return Math.random()-.5});
+ var tk=["Q","R","N","B","K"][rnd(5)],T=cells.pop();bd[T/6|0][T%6]={s:"b",k:tk};
+ var kinds=["R","B","N","Q","P","K"].sort(function(){return Math.random()-.5}).slice(0,3+(Z.n>4?1:0)),ws=[];
+ kinds.forEach(function(k){var x=cells.pop(),r=x/6|0;if(k==="P"&&(r===0||r===5))r=r===0?1:4;if(bd[r][x%6])return;bd[r][x%6]={s:"w",k:k};ws.push([r,x%6])});
+ if(Math.random()<.5){var x=cells.pop();if(!bd[x/6|0][x%6])bd[x/6|0][x%6]={s:"b",k:"P"}}
+ var tr=T/6|0,tc=T%6,hit=ws.filter(function(w){return bd[w[0]][w[1]]&&gen(bd,w[0],w[1]).some(function(m){return m[0]===tr&&m[1]===tc})});
+ if(hit.length===1&&ws.length>=3)return{bd:bd,t:[tr,tc],a:hit[0]}}return null}
+function nextPz(){if(Z.n>=8){var s=Math.max(1,8-Z.miss);star(s>=7?3:s>=5?2:1);app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>🧩 Zagadki</h2></div><div class="panel"><div class="g">🏆</div><h2>Rozwiązane wszystkie zagadki!</h2><p>Pomyłki: '+Z.miss+'</p><div class="row"><button class="btn main" onclick="puzzles()">🔁 Nowe zagadki</button><button class="btn" onclick="menu()">Postacie</button></div></div>';ls("bystrzaki-szachy-zagadki","1");say("Brawo! Rozwiązałeś wszystkie zagadki!");return}
+ Z.p=makePz();Z.n++;Z.sel=null;drawPz();var k=Z.p.bd[Z.p.t[0]][Z.p.t[1]].k;say("Zagadka "+Z.n+". Która biała figura może zbić czarnego "+(k==="Q"?"hetmana":k==="R"?"wieżę":k==="N"?"skoczka":k==="B"?"gońca":"króla")+"? Dotknij jej.")}
+function drawPz(msg){var p=Z.p,k=p.bd[p.t[0]][p.t[1]].k;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>🧩 Zagadka '+Z.n+'/8</h2></div><div class="tip"><button class="say" onclick="nextSay()">🔊</button><span>Która biała figura zbije czarną figurę w czerwonym kółku? Dotknij jej.</span></div>'+
+ board(p.bd,function(r,c){return (r===p.t[0]&&c===p.t[1]?" cap mv":"")+(Z.sel&&Z.sel[0]===r&&Z.sel[1]===c?" sel":"")},"tapPz")+'<div class="fb" id="fb">'+(msg||"")+'</div>'}
+function nextSay(){say("Która biała figura może zbić czarną figurę w czerwonym kółku?")}
+function tapPz(r,c){var p=Z.p,x=p.bd[r][c];if(Z.done||!x||x.s!=="w")return;
+ if(r===p.a[0]&&c===p.a[1]){Z.done=1;var nb=apply(p.bd,[r,c],p.t);Z.p.bd=nb;Z.sel=p.t;drawPz("✅ Brawo! "+pname(x.k)+" zbija!");say("Brawo! "+pname(x.k)+" zbija!");setTimeout(function(){Z.done=0;nextPz()},1700)}
+ else{Z.miss++;Z.sel=[r,c];drawPz("❌ "+pname(x.k)+" tam nie dosięgnie. Spróbuj innej figury.");say(pname(x.k)+" tam nie dosięgnie. Spróbuj innej figury.")}}
+
+// ---- mini partia 6x6 ----
+var G=null;
+function game(){var bd=emptyB(),row="RNQKNR";for(var c=0;c<6;c++){bd[0][c]={s:"b",k:row[c]};bd[1][c]={s:"b",k:"P"};bd[4][c]={s:"w",k:"P"};bd[5][c]={s:"w",k:row[c]}}
+ G={bd:bd,turn:"w",sel:null,over:false,last:null};drawG();
+ say("Mini partia! Grasz białymi na małej szachownicy. Wszystkie figury chodzą tak, jak już umiesz. Uważaj na swojego króla! Wygrywa ten, kto da szach mat.")}
+function drawG(msg){var mv=G.sel?legal(G.bd,G.sel[0],G.sel[1]):[];
+ var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>♚ Mini partia</h2><button class="btn" onclick="game()">🔁</button></div>'+
+ '<div class="tip"><button class="say" onclick="say(\'Dotknij swojej białej figury, a potem zielonej kropki. Szach to atak na króla. Mat to szach, przed którym nie da się uciec.\')">🔊</button><span>Dotknij białej figury, potem zielonej kropki.</span></div>'+
+ board(G.bd,function(r,c){var m=mv.some(function(x){return x[0]===r&&x[1]===c});return (m?" mv":"")+(m&&G.bd[r][c]?" cap":"")+(G.sel&&G.sel[0]===r&&G.sel[1]===c?" sel":"")+(G.last&&G.last[0]===r&&G.last[1]===c?" last":"")},"tapG")+
+ '<div class="fb" id="fb">'+(msg||(G.turn==="w"?(inCheck(G.bd,"w")?"⚠️ Szach! Ratuj króla!":"Twój ruch 🙂"):"Komputer myśli… 🤔"))+'</div>';app.innerHTML=h}
+function tapG(r,c){if(G.over||G.turn!=="w")return;var p=G.bd[r][c];
+ if(p&&p.s==="w"){G.sel=[r,c];var n=legal(G.bd,r,c).length;drawG(n?null:"Ta figura nie może się teraz ruszyć.");if(!n)say(inCheck(G.bd,"w")?"Szach! Musisz ratować króla.":"Ta figura nie może się teraz ruszyć.");return}
+ if(!G.sel)return;var ok=legal(G.bd,G.sel[0],G.sel[1]).some(function(m){return m[0]===r&&m[1]===c});
+ if(!ok){var pseudo=gen(G.bd,G.sel[0],G.sel[1]).some(function(m){return m[0]===r&&m[1]===c});say(pseudo?"Tak nie wolno! Twój król byłby w szachu.":"Tam ta figura nie może iść.");return}
+ var cap=G.bd[r][c];G.bd=apply(G.bd,G.sel,[r,c]);G.last=[r,c];G.sel=null;if(cap)say("Bach! Zbity "+pname(cap.k).toLowerCase()+"!");
+ if(after("b"))return;G.turn="b";drawG();setTimeout(aiG,900)}
+function after(next){var ms=allLegal(G.bd,next),ch=inCheck(G.bd,next);
+ if(!ms.length){G.over=true;var win=next==="b";var msg=ch?(win?"🏆 Szach mat! Wygrałeś!":"Szach mat. Tym razem wygrał komputer."):"Pat – remis! Nikt nie może się ruszyć.";
+  drawG(msg);if(win&&ch){star(5);ls("bystrzaki-szachy-partia","1")}say(msg.replace("🏆",""));
+  var nx=document.createElement("div");nx.className="row";nx.innerHTML='<button class="btn main" onclick="game()">🔁 Nowa partia</button><button class="btn" onclick="menu()">Postacie</button>';document.getElementById("fb").after(nx);return true}
+ if(ch&&next==="w")say("Szach! Ratuj króla!");return false}
+function aiG(){var ms=allLegal(G.bd,"b");
+ function sc(m){var bd=G.bd,p=bd[m.f[0]][m.f[1]],t=bd[m.t[0]][m.t[1]],s=Math.random()*12;if(t)s+=VAL[t.k]*10;var nb=apply(bd,m.f,m.t);
+  if(!allLegal(nb,"w").length&&inCheck(nb,"w"))s+=10000;if(inCheck(nb,"w"))s+=2;
+  if(attacked(nb,m.t[0],m.t[1],"w"))s-=VAL[nb[m.t[0]][m.t[1]].k]*9;
+  if(p.k==="P")s+=m.t[0]*.3;return s}
+ ms.sort(function(a,b){return sc(b)-sc(a)});var m=ms[0],cap=G.bd[m.t[0]][m.t[1]];G.bd=apply(G.bd,m.f,m.t);G.last=m.t;
+ if(cap)say("Komputer zbił "+pname(cap.k).toLowerCase()+".");if(after("w"))return;G.turn="w";drawG()}
+
 menu();
 </script>
 <script src="../glos.js"></script>
