@@ -164,6 +164,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     <a class="game" data-ages="a b" style="background:var(--y)" href="gry/czytanka.html"><span class="age">4–7 lat</span><span class="ic">📖</span><h3>Czytanka</h3><p>Literki, sylaby, słowa i krótkie bajeczki</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:var(--g)" href="gry/liczydelko.html"><span class="age">4–8 lat</span><span class="ic">🔢</span><h3>Liczydełko</h3><p>Liczenie, dodawanie, odejmowanie i tabliczka</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:var(--v)" href="gry/glowkowanie.html"><span class="age">5–8 lat</span><span class="ic">🧩</span><h3>Główkowanie</h3><p>Zagadki logiczne, wzory i myślenie</p><span class="play">Graj ▶</span></a>
+    <a class="game" data-ages="b c" style="background:#ffb4a2" href="gry/soroban.html"><span class="age">6–12 lat</span><span class="ic">🧮</span><h3>Japońskie liczenie</h3><p>Soroban, wisienki i tabliczka mnożenia w rytmie</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b c" style="background:var(--p)" href="gry/maly-ratownik.html"><span class="age">5–8 lat</span><span class="ic">🚑</span><h3>Mały ratownik</h3><p>Telefon 112, oparzenia, zadławienie, bezpieczeństwo</p><span class="play">Graj ▶</span></a>
   </div>
   <div class="soon">
@@ -229,7 +230,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     document.getElementById('gry-title').textContent='Gry dla: '+names[k];
     document.getElementById('age-hint').textContent='Wybrano: '+names[k]+' – możesz zmienić w każdej chwili';
     var box=document.getElementById('gry-box');
-    box.innerHTML=(soon[k]?'<div class="empty"><b>'+(n?'Na początek mamy dla Ciebie '+n+' grę. Wkrótce dojdą nowe:':'Gry dla Twojej grupy są w przygotowaniu! Wkrótce:')+'</b><ul>'+soon[k].map(function(t){return'<li>'+t+'</li>'}).join('')+'</ul></div><br>':'');
+    box.innerHTML=(soon[k]?'<div class="empty"><b>'+(n?'Na początek mamy dla Ciebie '+n+(n===1?' grę':' gry')+'. Wkrótce dojdą nowe:':'Gry dla Twojej grupy są w przygotowaniu! Wkrótce:')+'</b><ul>'+soon[k].map(function(t){return'<li>'+t+'</li>'}).join('')+'</ul></div><br>':'');
     try{localStorage.setItem('bystrzaki-wiek',k)}catch(e){}
     if(scroll)document.getElementById('gry').scrollIntoView({behavior:'smooth'});
   }
