@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Kalendarz – dni tygodnia, miesiące i pory roku dla dzieci – Bystrzaki</title>
+<meta name="description" content="Gra dla dzieci 5–9 lat: dni tygodnia, wczoraj i jutro, miesiące, pory roku i mój kalendarz z dzisiejszą datą. Lektor i gwiazdki.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#f1f7ec;--g:#06d6a0;--r:#ef476f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #d6e8cb;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:640px;margin:0 auto;padding:14px 14px 90px}
+.hello{text-align:center;font-size:19px;margin:4px 0 14px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{border:none;border-radius:22px;padding:18px 10px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:46px;display:block}.tile b{display:block;font:800 21px "Baloo 2"}.tile small{color:#444}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}.top h2{flex:1;margin:0;font-size:22px}
+.btn{border:none;border-radius:16px;padding:11px 16px;font:800 18px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.btn.main{background:var(--g);box-shadow:0 5px 0 #04986f}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.card{background:#fff;border-radius:26px;padding:16px;box-shadow:0 6px 0 #d6e8cb;text-align:center}
+.q{font:800 25px "Baloo 2";margin:6px 0}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:10px}
+.opt{border:none;border-radius:18px;padding:14px 6px;font:800 21px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 5px 0 #d6e8cb;color:var(--ink)}
+.opt.ok{background:var(--g);color:#fff}.opt.bad{background:#ffccd5}
+.slots{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.slot{min-height:46px;border-radius:14px;border:3px dashed #c5dcb6;display:flex;align-items:center;padding:0 12px;font:800 20px "Baloo 2";gap:10px}
+.slot.f{border-style:solid;color:#fff}
+.slot .n{width:28px;height:28px;border-radius:50%;background:#eef5e8;color:var(--muted);display:grid;place-items:center;font-size:15px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{border:none;border-radius:14px;padding:10px 14px;font:800 18px "Baloo 2";cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.seasons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.season{border:none;border-radius:20px;padding:14px 6px;cursor:pointer;font:800 20px "Baloo 2";color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.season .e{font-size:40px;display:block}
+.season.ok{outline:5px solid var(--g)}.season.bad{outline:5px solid var(--r)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.cal div{padding:8px 0;border-radius:10px;font:700 17px "Baloo 2";background:#f6faf3}
+.cal .h{background:none;color:var(--muted);font-size:14px}
+.cal .t{background:#ef476f;color:#fff;transform:scale(1.08)}
+.cal .w{color:#c9184a}
+.today{font:800 26px "Baloo 2";line-height:1.35}
+.fb{text-align:center;font:800 22px "Baloo 2";min-height:32px;margin-top:10px}
+.prog{text-align:center;color:var(--muted);margin-bottom:6px}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #d6e8cb;font-size:16px;line-height:1.55;margin-top:16px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">📅 Kalendarz</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plV)u.voice=plV;u.rate=0.97;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var stars=+ls("bystrzaki-kalendarz-stars")||0;document.getElementById("stars").textContent=stars;
+function star(n){stars+=n;document.getElementById("stars").textContent=stars;ls("bystrzaki-kalendarz-stars",stars)}
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var DAYS=["poniedziałek","wtorek","środa","czwartek","piątek","sobota","niedziela"];
+var DCOL=["#ef476f","#f78c6b","#e9b200","#06d6a0","#118ab2","#7b61ff","#c9184a"];
+var MONTHS=["styczeń","luty","marzec","kwiecień","maj","czerwiec","lipiec","sierpień","wrzesień","październik","listopad","grudzień"];
+var MGEN=["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
+var MEMO=["⛄","❤️","🌱","🐣","🌷","🍓","☀️","🏖️","🎒","🍂","🍄","🎄"];
+// pora roku "szkolna": zima XII–II, wiosna III–V, lato VI–VIII, jesień IX–XI
+var SEAS=[{n:"Zima",e:"❄️",c:"#cfe8ff",m:[11,0,1]},{n:"Wiosna",e:"🌷",c:"#d8f5c8",m:[2,3,4]},{n:"Lato",e:"☀️",c:"#fff1a8",m:[5,6,7]},{n:"Jesień",e:"🍂",c:"#ffd8b0",m:[8,9,10]}];
+var ORD=["","pierwszy","drugi","trzeci","czwarty","piąty","szósty","siódmy","ósmy","dziewiąty","dziesiąty","jedenasty","dwunasty","trzynasty","czternasty","piętnasty","szesnasty","siedemnasty","osiemnasty","dziewiętnasty","dwudziesty"];
+function ordDay(d){if(d<=20)return ORD[d];var t=d<30?"dwudziesty":"trzydziesty";return d%10?t+" "+ORD[d%10]:t}
+var app=document.getElementById("app"),G={};
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ app.innerHTML='<p class="hello">Dni, tygodnie, miesiące i pory roku. Zostań mistrzem kalendarza! 🗓️</p><div class="menu">'+
+ '<button class="tile" style="background:#ffc6dd" onclick="today()"><span class="ic">📍</span><b>Jaki dziś dzień?</b><small>Mój kalendarz</small></button>'+
+ '<button class="tile" style="background:#ffd166" onclick="order(\'d\')"><span class="ic">🔢</span><b>Ułóż dni tygodnia</b><small>Po kolei od poniedziałku</small></button>'+
+ '<button class="tile" style="background:#bde0fe" onclick="quiz()"><span class="ic">⏪⏩</span><b>Wczoraj i jutro</b><small>Jaki dzień był, jaki będzie?</small></button>'+
+ '<button class="tile" style="background:#caffbf" onclick="order(\'m\')"><span class="ic">🗓️</span><b>Ułóż miesiące</b><small>Od stycznia do grudnia</small></button>'+
+ '<button class="tile" style="background:#ffe5b4" onclick="seasons()"><span class="ic">🍂</span><b>Pory roku</b><small>Do której pory pasuje miesiąc?</small></button></div>'+
+ '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> codziennie rano zaglądajcie do „Jaki dziś dzień?” i mówcie datę na głos. Ułóżcie razem rymowankę z dniami tygodnia albo śpiewajcie je jak piosenkę. W grze pory roku są podzielone po szkolnemu (zima to grudzień, styczeń i luty). Możecie też porozmawiać, że kalendarzowa wiosna zaczyna się 21 marca.</div>';}
+// --- dziś
+function today(){var d=new Date(),dow=(d.getDay()+6)%7,y=d.getFullYear(),m=d.getMonth(),dd=d.getDate();
+ var first=(new Date(y,m,1).getDay()+6)%7,dim=new Date(y,m+1,0).getDate(),s=SEAS.filter(function(x){return x.m.indexOf(m)>-1})[0];
+ var cal='<div class="cal">'+["pn","wt","śr","cz","pt","so","nd"].map(function(x,i){return '<div class="h'+(i>4?" w":"")+'">'+x+'</div>'}).join("");
+ for(var i=0;i<first;i++)cal+='<div style="background:none"></div>';
+ for(var k=1;k<=dim;k++){var w=(first+k-1)%7;cal+='<div class="'+(k===dd?"t":"")+(w>4?" w":"")+'">'+k+'</div>'}cal+='</div>';
+ var txt="Dzisiaj jest "+DAYS[dow]+", "+ordDay(dd)+" "+MGEN[m]+" "+y+" roku. Pora roku: "+s.n.toLowerCase()+".";
+ var yd=DAYS[(dow+6)%7],tm=DAYS[(dow+1)%7];
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Jaki dziś dzień?</h2></div><div class="card"><div style="font-size:54px">'+MEMO[m]+' '+s.e+'</div>'+
+ '<div class="today">Dzisiaj jest <span style="color:'+DCOL[dow]+'">'+DAYS[dow]+'</span><br>'+dd+' '+MGEN[m]+' '+y+'</div>'+
+ '<p style="font-size:18px">Wczoraj był'+(yd==="środa"||yd==="sobota"||yd==="niedziela"?"a":"")+' <b>'+yd+'</b>, jutro będzie <b>'+tm+'</b>.</p>'+
+ '<h3 style="margin:8px 0 0;font-family:Baloo\\ 2">'+MONTHS[m][0].toUpperCase()+MONTHS[m].slice(1)+' '+y+'</h3>'+cal+'</div><div class="row"><button class="btn main" onclick="say(\''+txt+'\')">🔊 Przeczytaj datę</button></div>';
+ say(txt);}
+// --- układanie
+function order(kind){var src=kind==="d"?DAYS:MONTHS;G={kind:kind,src:src,pos:0,err:0,pool:shuffle(src.map(function(_,i){return i}))};drawO();
+ say(kind==="d"?"Ułóż dni tygodnia po kolei. Zacznij od poniedziałku.":"Ułóż miesiące po kolei. Pierwszy jest styczeń.");}
+function col(i){return G.kind==="d"?DCOL[i]:["#118ab2","#ef476f","#06a77d","#f78c6b","#e9b200","#c9184a","#ff8c42","#f4a261","#7b61ff","#a0522d","#6b7090","#2a9d8f"][i]}
+function drawO(){var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>'+(G.kind==="d"?"Dni tygodnia":"Miesiące")+'</h2></div><div class="card"><div class="slots">';
+ for(var i=0;i<G.src.length;i++)h+='<div class="slot'+(i<G.pos?" f":"")+'" style="'+(i<G.pos?"background:"+col(i):"")+'"><span class="n">'+(i+1)+'</span>'+(i<G.pos?(G.kind==="m"?MEMO[i]+" ":"")+G.src[i]:"")+'</div>';
+ h+='</div></div><div class="pool" style="margin-top:12px">'+G.pool.map(function(i){return '<button class="chip" style="background:'+col(i)+'" onclick="pickO('+i+')">'+G.src[i]+'</button>'}).join("")+'</div><div class="fb" id="fb"></div>';app.innerHTML=h;}
+function pickO(i){if(i===G.pos){G.pos++;G.pool.splice(G.pool.indexOf(i),1);drawO();
+  if(G.pos===G.src.length){var s=G.err===0?3:G.err<4?2:1;star(s);document.getElementById("fb").innerHTML="🎉 Wszystko po kolei! ⭐ "+s+'<div class="row"><button class="btn main" onclick="order(\''+G.kind+'\')">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Menu</button></div>';
+   say("Brawo! "+G.src.join(", ")+"."+(G.kind==="d"?" Tydzień ma siedem dni.":" Rok ma dwanaście miesięcy."));}
+  else say(G.src[i]);}
+ else{G.err++;document.getElementById("fb").textContent="Hmm, jeszcze nie ten. Co jest "+(G.pos===0?"pierwsze":"po: "+G.src[G.pos-1])+"?";say(G.pos===0?(G.kind==="d"?"Tydzień zaczyna się od poniedziałku.":"Rok zaczyna się od stycznia."):"Co jest po "+(G.kind==="d"?"":"miesiącu ")+G.src[G.pos-1]+"?");}}
+// --- wczoraj / jutro
+function quiz(){G={n:0,ok:0};nextQ()}
+function nextQ(){if(G.n>=8){endQ();return}var d=rnd(0,6),t=rnd(0,3),q,a,sp;
+ if(t===0){q="Dziś jest "+DAYS[d]+". Jaki dzień będzie jutro?";a=(d+1)%7}
+ else if(t===1){q="Dziś jest "+DAYS[d]+". Jaki dzień był wczoraj?";a=(d+6)%7}
+ else if(t===2){q="Jaki dzień jest po: "+DAYS[d]+"?";a=(d+1)%7}
+ else{q="Dziś jest "+DAYS[d]+". Jaki dzień będzie pojutrze?";a=(d+2)%7}
+ var o=[a];while(o.length<3){var x=rnd(0,6);if(o.indexOf(x)<0)o.push(x)}shuffle(o);G.a=a;G.o=o;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Wczoraj i jutro</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 8</div><div class="card"><div class="q">'+q+'</div>'+
+ '<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:8px">'+DAYS.map(function(x,i){return '<span style="background:'+(i===d?DCOL[i]:"#eef5e8")+';color:'+(i===d?"#fff":"#6b7090")+';border-radius:10px;padding:4px 8px;font:700 14px Andika">'+x.slice(0,3)+'</span>'}).join("")+'</div></div>'+
+ '<div class="opts">'+o.map(function(v,i){return '<button class="opt" onclick="ansQ(this,'+i+')">'+DAYS[v]+'</button>'}).join("")+'</div><div class="fb" id="fb"></div>';say(q);}
+function ansQ(b,i){document.querySelectorAll(".opt").forEach(function(x){x.disabled=true});var fb=document.getElementById("fb");
+ if(G.o[i]===G.a){b.classList.add("ok");G.ok++;fb.textContent="✅ Brawo!";say("Brawo! "+DAYS[G.a]+".");}
+ else{b.classList.add("bad");fb.textContent="To "+DAYS[G.a];say("To "+DAYS[G.a]+".");document.querySelectorAll(".opt").forEach(function(x,k){if(G.o[k]===G.a)x.classList.add("ok")});}
+ G.n++;setTimeout(nextQ,2200);}
+function endQ(){var s=G.ok>=7?3:G.ok>=5?2:G.ok>=3?1:0;star(s);app.innerHTML='<div class="card"><div style="font-size:80px">🏆</div><h2>Dobrze: '+G.ok+' z 8</h2><p style="font-size:20px">Zdobyte gwiazdki: ⭐ '+s+'</p><div class="row"><button class="btn main" onclick="'+G.again+'">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Menu</button></div></div>';say(G.ok>=7?"Wspaniale!":"Dobra robota!");}
+// --- pory roku
+function seasons(){G={n:0,ok:0,again:"seasons()",list:shuffle([0,1,2,3,4,5,6,7,8,9,10,11]).slice(0,8)};nextS()}
+function nextS(){if(G.n>=8){endQ();return}var m=G.list[G.n];G.m=m;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Pory roku</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 8</div><div class="card"><div style="font-size:70px">'+MEMO[m]+'</div><div class="q">'+MONTHS[m]+'</div><p>Do której pory roku pasuje?</p></div>'+
+ '<div class="seasons">'+SEAS.map(function(s,i){return '<button class="season" style="background:'+s.c+'" onclick="ansS(this,'+i+')"><span class="e">'+s.e+'</span>'+s.n+'</button>'}).join("")+'</div><div class="fb" id="fb"></div>';say("Do której pory roku pasuje "+MONTHS[m]+"?");}
+function ansS(b,i){var ok=SEAS[i].m.indexOf(G.m)>-1,right=SEAS.filter(function(s){return s.m.indexOf(G.m)>-1})[0];document.querySelectorAll(".season").forEach(function(x){x.disabled=true});
+ b.classList.add(ok?"ok":"bad");if(ok)G.ok++;document.getElementById("fb").textContent=ok?"✅ Tak! "+right.e:"To "+right.n.toLowerCase()+" "+right.e;
+ say((ok?"Tak! ":"")+MONTHS[G.m]+" to "+right.n.toLowerCase()+".");G.n++;setTimeout(nextS,2200);}
+G.again="quiz()";
+var _q=quiz;quiz=function(){_q();G.again="quiz()"};
+menu();
+</script>
+<script src="../glos.js"></script>
+</body>
+</html>

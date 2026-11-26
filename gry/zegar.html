@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Zegarek – nauka zegara dla dzieci – Bystrzaki</title>
+<meta name="description" content="Nauka odczytywania godzin na zegarze dla dzieci 5–9 lat: pełne godziny, wpół do, kwadranse i co 5 minut. Ustaw wskazówki, lektor, gwiazdki.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#eef9ff;--r:#ef476f;--g:#06d6a0;--b:#4cc9f0;--y:#ffd166}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #cfe9f7;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:620px;margin:0 auto;padding:14px 14px 90px}
+.hello{text-align:center;font-size:19px;margin:4px 0 14px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{border:none;border-radius:22px;padding:18px 10px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:46px;display:block}.tile b{display:block;font:800 21px "Baloo 2"}.tile small{color:#444}
+.lv{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.lv button{border:none;border-radius:14px;padding:10px 14px;font:800 16px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 3px 0 #cfe9f7;color:var(--ink)}
+.lv button.on{background:var(--ink);color:#fff}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}.top h2{flex:1;margin:0;font-size:22px}
+.btn{border:none;border-radius:16px;padding:11px 16px;font:800 18px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.btn.main{background:var(--g);box-shadow:0 5px 0 #04986f}
+.clockwrap{background:#fff;border-radius:28px;padding:14px;box-shadow:0 6px 0 #cfe9f7;text-align:center}
+svg.clock{width:min(100%,330px);height:auto;display:block;margin:0 auto}
+.q{font:800 24px "Baloo 2";text-align:center;margin:10px 0}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt{border:none;border-radius:18px;padding:14px 4px;font:800 28px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 5px 0 #cfe9f7;color:var(--ink)}
+.opt.ok{background:var(--g);color:#fff}.opt.bad{background:#ffccd5}
+.set{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.set .grp{background:#fff;border-radius:18px;padding:10px;box-shadow:0 4px 0 #cfe9f7;text-align:center}
+.set .grp b{display:block;font:800 17px "Baloo 2";margin-bottom:6px}
+.set .grp button{border:none;border-radius:14px;width:64px;height:54px;font-size:26px;cursor:pointer;margin:0 3px}
+.hr{background:#ffccd5}.mn{background:#bde0fe}
+.dig{font:800 34px "Baloo 2";letter-spacing:2px;background:#2b2d42;color:#ffd166;border-radius:14px;display:inline-block;padding:4px 16px;margin-top:8px;font-family:monospace}
+.fb{text-align:center;font:800 24px "Baloo 2";min-height:34px;margin-top:10px}
+.prog{text-align:center;color:var(--muted);margin-bottom:6px}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #cfe9f7;font-size:16px;line-height:1.55;margin-top:16px}
+.day{display:grid;gap:10px}
+.day .it{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:10px 14px;box-shadow:0 4px 0 #cfe9f7;cursor:pointer;font-size:19px}
+.day .it .e{font-size:36px}.day .it .t{margin-left:auto;font:800 22px monospace;background:#eef9ff;border-radius:10px;padding:4px 10px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">🕐 Zegarek</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plV)u.voice=plV;u.rate=0.95;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var stars=+ls("bystrzaki-zegar-stars")||0;document.getElementById("stars").textContent=stars;
+function star(n){stars+=n;document.getElementById("stars").textContent=stars;ls("bystrzaki-zegar-stars",stars)}
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var NOM=["dwunasta","pierwsza","druga","trzecia","czwarta","piąta","szósta","siódma","ósma","dziewiąta","dziesiąta","jedenasta","dwunasta"];
+var GEN=["dwunastej","pierwszej","drugiej","trzeciej","czwartej","piątej","szóstej","siódmej","ósmej","dziewiątej","dziesiątej","jedenastej","dwunastej"];
+var MW={5:"pięć",10:"dziesięć",15:"kwadrans",20:"dwadzieścia",25:"dwadzieścia pięć"};
+function h12(h){h=h%12;return h===0?12:h}
+function words(h,m){var a=h12(h),n=h12(h+1);
+ if(m===0)return "godzina "+NOM[a];if(m===30)return "wpół do "+GEN[n];
+ if(m<30)return MW[m]+" po "+GEN[a];return "za "+MW[60-m]+" "+NOM[n];}
+function dig(h,m){return h12(h)+":"+(m<10?"0":"")+m}
+var LEVELS=[{n:"Pełne godziny",st:60},{n:"Wpół do",st:30},{n:"Kwadranse",st:15},{n:"Co 5 minut",st:5}];
+var LV=+ls("bystrzaki-zegar-lv")||0;
+function randTime(){var st=LEVELS[LV].st,m;do{m=rnd(0,59/st|0)*st}while(m>=60);if(LV>0&&Math.random()<.6&&st<60){/* nowe minuty częściej */}return{h:rnd(1,12),m:m}}
+function clockSVG(h,m,id){var s='<svg class="clock" id="'+(id||"ck")+'" viewBox="-14 -14 248 248"><circle cx="110" cy="110" r="102" fill="#fff" stroke="#2b2d42" stroke-width="7"/>';
+ for(var i=0;i<60;i++){var a=i*6*Math.PI/180,r1=i%5?92:86,x1=110+Math.sin(a)*r1,y1=110-Math.cos(a)*r1,x2=110+Math.sin(a)*96,y2=110-Math.cos(a)*96;s+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#2b2d42" stroke-width="'+(i%5?1.5:3.5)+'"/>'}
+ var col=["#ef476f","#f78c6b","#ffd166","#06d6a0","#118ab2","#7b61ff"];
+ for(var k=1;k<=12;k++){var a2=k*30*Math.PI/180;s+='<text x="'+(110+Math.sin(a2)*70)+'" y="'+(110-Math.cos(a2)*70+9)+'" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="25" fill="'+col[k%6]+'">'+k+'</text>'}
+ if(LV>=3)for(var q=0;q<12;q++){var a3=q*30*Math.PI/180;s+='<text x="'+(110+Math.sin(a3)*108)+'" y="'+(110-Math.cos(a3)*108+4)+'" text-anchor="middle" font-size="9" fill="#6b7090" font-family="sans-serif">'+(q*5<10?"0":"")+q*5+'</text>'}
+ var ha=((h%12)+m/60)*30,ma=m*6;
+ s+='<g id="hh" transform="rotate('+ha+' 110 110)"><line x1="110" y1="118" x2="110" y2="58" stroke="#ef476f" stroke-width="10" stroke-linecap="round"/></g>';
+ s+='<g id="mh" transform="rotate('+ma+' 110 110)"><line x1="110" y1="122" x2="110" y2="30" stroke="#118ab2" stroke-width="6" stroke-linecap="round"/></g>';
+ s+='<circle cx="110" cy="110" r="8" fill="#2b2d42"/></svg>';return s}
+var app=document.getElementById("app"),G={};
+function lvBar(){return '<div class="lv">'+LEVELS.map(function(l,i){return '<button class="'+(i===LV?"on":"")+'" onclick="LV='+i+';ls(\'bystrzaki-zegar-lv\','+i+');menu()">'+l.n+'</button>'}).join("")+'</div>'}
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ app.innerHTML='<p class="hello">Naucz się, która jest godzina! Krótka czerwona wskazówka pokazuje <b>godzinę</b>, a długa niebieska <b>minuty</b>.</p>'+lvBar()+
+ '<div class="menu"><button class="tile" style="background:#ffd166" onclick="quiz()"><span class="ic">❓</span><b>Która godzina?</b><small>Odczytaj zegar</small></button>'+
+ '<button class="tile" style="background:#bde0fe" onclick="setGame()"><span class="ic">🖐️</span><b>Ustaw zegar</b><small>Przesuń wskazówki</small></button>'+
+ '<button class="tile" style="background:#caffbf" onclick="dayGame()"><span class="ic">🌞</span><b>Mój dzień</b><small>Co robię o której?</small></button>'+
+ '<button class="tile" style="background:#ffc6ff" onclick="learn()"><span class="ic">👀</span><b>Pooglądaj zegar</b><small>Kręć i słuchaj</small></button></div>'+
+ '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> zacznijcie od „Pełnych godzin” i „Pooglądaj zegar”. Gdy dziecko pewnie odczytuje godziny, przejdźcie do „Wpół do”, potem do kwadransów. Najważniejsza zasada: <b>krótka wskazówka to godzina, długa to minuty</b>. W domu pytaj co jakiś czas: „Która jest godzina na zegarze w kuchni?”.</div>';}
+// --- quiz
+function quiz(){G={mode:"quiz",n:0,ok:0};nextQ()}
+function nextQ(){if(G.n>=8){end();return}var t=randTime();G.t=t;var opts=[t],guard=0;
+ while(opts.length<3&&guard++<50){var o=randTime();if(Math.random()<.5){o={h:t.h,m:(t.m+LEVELS[LV].st*rnd(1,3))%60};if(LV===0)o={h:(t.h%12)+1,m:0}}
+  if(!opts.some(function(x){return x.h===o.h&&x.m===o.m}))opts.push(o)}
+ shuffle(opts);G.opts=opts;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Która godzina?</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 8</div><div class="clockwrap">'+clockSVG(t.h,t.m)+'</div>'+
+ '<div class="opts" style="margin-top:12px">'+opts.map(function(o,i){return '<button class="opt" onclick="ans(this,'+i+')">'+dig(o.h,o.m)+'</button>'}).join("")+'</div><div class="fb" id="fb"></div>';
+ say("Która godzina jest na zegarze?");}
+function ans(b,i){var o=G.opts[i],t=G.t;document.querySelectorAll(".opt").forEach(function(x){x.disabled=true});
+ if(o.h===t.h&&o.m===t.m){b.classList.add("ok");G.ok++;document.getElementById("fb").textContent="✅ Brawo! "+words(t.h,t.m);say("Brawo! Jest "+words(t.h,t.m));}
+ else{b.classList.add("bad");document.getElementById("fb").textContent="Jest "+dig(t.h,t.m)+": "+words(t.h,t.m);say("Prawie. Jest "+words(t.h,t.m));
+  document.querySelectorAll(".opt").forEach(function(x,k){if(G.opts[k].h===t.h&&G.opts[k].m===t.m)x.classList.add("ok")});}
+ G.n++;setTimeout(nextQ,2300);}
+function end(){var s=G.ok>=7?3:G.ok>=5?2:G.ok>=3?1:0;star(s);
+ app.innerHTML='<div class="clockwrap"><div style="font-size:80px">🏆</div><h2>Dobrze: '+G.ok+' z 8</h2><p style="font-size:20px">Zdobyte gwiazdki: ⭐ '+s+'</p><div class="lv"><button class="btn main" onclick="'+(G.mode==="quiz"?"quiz()":"setGame()")+'">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Menu</button></div></div>';
+ say(G.ok>=7?"Wspaniale! Znasz się na zegarze!":"Dobra robota! Poćwicz jeszcze trochę.");}
+// --- ustaw zegar
+function setGame(){G={mode:"set",n:0,ok:0};nextSet()}
+function nextSet(){if(G.n>=6){end();return}G.t=randTime();G.h=12;G.m=0;drawSet();say("Ustaw zegar na: "+words(G.t.h,G.t.m));}
+function drawSet(){var st=LEVELS[LV].st;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Ustaw zegar</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 6</div>'+
+ '<div class="q">Ustaw: <span class="dig" style="font-size:26px">'+dig(G.t.h,G.t.m)+'</span><br><small style="font:700 17px Andika">'+words(G.t.h,G.t.m)+'</small></div>'+
+ '<div class="clockwrap">'+clockSVG(G.h,G.m)+'</div>'+
+ '<div class="set"><div class="grp"><b style="color:#ef476f">Godzina (krótka)</b><button class="hr" onclick="mv(-60)">⟲</button><button class="hr" onclick="mv(60)">⟳</button></div>'+
+ (st<60?'<div class="grp"><b style="color:#118ab2">Minuty (długa)</b><button class="mn" onclick="mv(-'+st+')">⟲</button><button class="mn" onclick="mv('+st+')">⟳</button></div>':'<div class="grp" style="opacity:.5"><b>Minuty</b>na tym poziomie zawsze :00</div>')+
+ '</div><div class="lv"><button class="btn" onclick="say(\'Ustaw zegar na: '+words(G.t.h,G.t.m)+'\')">🔊 Powtórz</button><button class="btn main" onclick="checkSet()">✅ Sprawdź</button></div><div class="fb" id="fb"></div>';}
+function mv(d){var tot=(G.h%12)*60+G.m+d;tot=((tot%720)+720)%720;G.h=Math.floor(tot/60)||12;G.m=tot%60;
+ var ha=((G.h%12)+G.m/60)*30,ma=G.m*6;document.getElementById("hh").setAttribute("transform","rotate("+ha+" 110 110)");document.getElementById("mh").setAttribute("transform","rotate("+ma+" 110 110)");}
+function checkSet(){var ok=h12(G.h)===h12(G.t.h)&&G.m===G.t.m,fb=document.getElementById("fb");
+ if(ok){G.ok++;fb.textContent="✅ Super! Zegar pokazuje "+dig(G.t.h,G.t.m);say("Super! Dokładnie tak!");G.n++;setTimeout(nextSet,1800);}
+ else{var hint=G.m!==G.t.m?"Sprawdź długą wskazówkę, czyli minuty.":"Sprawdź krótką wskazówkę, czyli godzinę.";fb.textContent="Jeszcze nie. "+hint;say("Jeszcze nie. "+hint);}}
+// --- mój dzień
+var DAY=[["⏰","Budzę się",7,0],["🥣","Jem śniadanie",7,30],["🏫","Idę do szkoły",8,0],["🍲","Jem obiad",14,0],["⚽","Bawię się na dworze",16,0],["🛁","Kąpię się",19,30],["😴","Idę spać",20,0]];
+function dayGame(){G={mode:"day"};app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Mój dzień</h2></div><p class="hello">Dotknij, żeby zobaczyć zegar i usłyszeć godzinę.</p><div class="clockwrap" id="dc">'+clockSVG(7,0)+'<div class="dig" id="dd">7:00</div></div><div class="day" style="margin-top:12px">'+
+ DAY.map(function(d,i){return '<div class="it" onclick="dayShow('+i+')"><span class="e">'+d[0]+'</span>'+d[1]+'<span class="t">'+d[2]+":"+(d[3]<10?"0":"")+d[3]+'</span></div>'}).join("")+'</div>'+
+ '<div class="parent">👨‍👩‍👧 Pogadajcie, jak wygląda Wasz dzień. O której naprawdę wstajecie? Po południu godziny mówimy na dwa sposoby: 14:00 to „czternasta” albo „druga po południu”.</div>';say("Zobacz, co robię w ciągu dnia. Dotknij obrazka.");}
+function dayShow(i){var d=DAY[i];document.getElementById("dc").innerHTML=clockSVG(d[2],d[3])+'<div class="dig">'+d[2]+":"+(d[3]<10?"0":"")+d[3]+'</div>';
+ var extra=d[2]>12?" Czyli "+(d[2]===14?"czternasta":d[2]===16?"szesnasta":d[2]===19?"dziewiętnasta":"dwudziesta")+(d[3]===30?" trzydzieści":"")+".":"";
+ say(d[1]+" o godzinie "+words(d[2],d[3]).replace("godzina ","")+"."+extra);}
+// --- pooglądaj
+function learn(){G={mode:"learn",h:3,m:0};var st=Math.min(LEVELS[LV].st,15);
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Pooglądaj zegar</h2></div><div class="clockwrap">'+clockSVG(3,0)+'<div class="dig" id="ld">3:00</div><div class="q" id="lw" style="font-size:20px">godzina trzecia</div></div>'+
+ '<div class="set"><div class="grp"><b style="color:#ef476f">Godzina</b><button class="hr" onclick="lmv(-60)">⟲</button><button class="hr" onclick="lmv(60)">⟳</button></div><div class="grp"><b style="color:#118ab2">Minuty</b><button class="mn" onclick="lmv(-'+st+')">⟲</button><button class="mn" onclick="lmv('+st+')">⟳</button></div></div>'+
+ '<p class="hello" style="margin-top:12px">Patrz: gdy długa wskazówka robi całe kółko, krótka przesuwa się o jedną liczbę.</p>';say("Kręć wskazówkami i słuchaj, która jest godzina.");}
+function lmv(d){mv(d);document.getElementById("ld").textContent=dig(G.h,G.m);var w=words(G.h,G.m);document.getElementById("lw").textContent=w;say(w);}
+menu();
+</script>
+<script src="../glos.js"></script>
+</body>
+</html>

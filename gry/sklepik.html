@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Sklepik – nauka pieniędzy dla dzieci – Bystrzaki</title>
+<meta name="description" content="Gra w sklep dla dzieci 5–9 lat: płacenie monetami i banknotami, wydawanie reszty i zakupy za kieszonkowe. Polskie złotówki, lektor, gwiazdki.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#fff8e6;--g:#06d6a0;--r:#ef476f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f3e2b5;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:640px;margin:0 auto;padding:14px 14px 90px}
+.hello{text-align:center;font-size:19px;margin:4px 0 14px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{border:none;border-radius:22px;padding:18px 10px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.tile .ic{font-size:46px;display:block}.tile b{display:block;font:800 21px "Baloo 2"}.tile small{color:#444}
+.lv{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.lv button{border:none;border-radius:14px;padding:10px 14px;font:800 16px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 3px 0 #f3e2b5;color:var(--ink)}
+.lv button.on{background:var(--ink);color:#fff}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}.top h2{flex:1;margin:0;font-size:22px}
+.btn{border:none;border-radius:16px;padding:11px 16px;font:800 18px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.btn.main{background:var(--g);box-shadow:0 5px 0 #04986f}
+.card{background:#fff;border-radius:26px;padding:16px;box-shadow:0 6px 0 #f3e2b5;text-align:center}
+.item{font-size:84px;line-height:1}
+.tag{display:inline-block;background:#ffd166;border-radius:12px;padding:4px 14px;font:800 30px "Baloo 2";margin-top:6px;box-shadow:0 3px 0 #d9a92a}
+.tray{min-height:84px;background:#f6efe0;border-radius:18px;margin:12px 0;padding:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center}
+.tray .empty{color:var(--muted)}
+.sum{font:800 22px "Baloo 2"}
+.wallet{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.coin{border:none;cursor:pointer;display:grid;place-items:center;font:800 18px "Baloo 2";color:#5a4100;border-radius:50%;box-shadow:inset 0 0 0 4px rgba(0,0,0,.12),0 4px 0 rgba(0,0,0,.2)}
+.coin.c1{width:58px;height:58px;background:radial-gradient(circle at 35% 30%,#f1f1f1,#b8b8b8);color:#333}
+.coin.c2{width:62px;height:62px;background:radial-gradient(circle at 35% 30%,#ffe9a8,#d9a92a)}
+.coin.c5{width:68px;height:68px;background:radial-gradient(circle,#ffe08a 0 52%,#d0d0d0 54%)}
+.coin.gr{width:48px;height:48px;font-size:13px;background:radial-gradient(circle at 35% 30%,#ffd6b0,#c97a3e);color:#4a2400}
+.note{border:none;cursor:pointer;width:104px;height:56px;border-radius:8px;font:800 22px "Baloo 2";color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.2);position:relative;overflow:hidden}
+.note::after{content:"";position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.3)}
+.note.n10{background:#a0522d}.note.n20{background:#6a4c93}.note.n50{background:#1d6fa5}.note.n100{background:#2e8b57}
+.tray .coin,.tray .note{transform:scale(.8)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.opt{border:none;border-radius:18px;padding:14px 4px;font:800 26px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 5px 0 #f3e2b5;color:var(--ink)}
+.opt.ok{background:var(--g);color:#fff}.opt.bad{background:#ffccd5}
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.prod{border:none;background:#fff;border-radius:18px;padding:10px 4px;cursor:pointer;box-shadow:0 4px 0 #f3e2b5;font-family:inherit;color:var(--ink)}
+.prod .e{font-size:44px;display:block}.prod b{font:800 18px "Baloo 2"}
+.prod.in{background:#caffbf}
+.fb{text-align:center;font:800 22px "Baloo 2";min-height:32px;margin-top:10px}
+.prog{text-align:center;color:var(--muted);margin-bottom:6px}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #f3e2b5;font-size:16px;line-height:1.55;margin-top:16px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">🛒 Sklepik</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plV)u.voice=plV;u.rate=0.97;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var stars=+ls("bystrzaki-sklepik-stars")||0;document.getElementById("stars").textContent=stars;
+function star(n){stars+=n;document.getElementById("stars").textContent=stars;ls("bystrzaki-sklepik-stars",stars)}
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function zl(n){var a=n%10,b=n%100;return n===1?"złoty":(a>=2&&a<=4&&(b<12||b>14))?"złote":"złotych"}
+function zlW(n){return n+" "+zl(n)}
+var PRODUCTS=[["🍎","jabłko"],["🍌","banan"],["🥛","mleko"],["🍞","chleb"],["🧃","sok"],["🍦","lody"],["🍪","ciastko"],["🥕","marchewka"],["✏️","ołówek"],["📒","zeszyt"],["🎈","balon"],["⚽","piłka"],["🧸","miś"],["🚗","autko"],["🖍️","kredki"],["🤖","robot"],["🏀","piłka do kosza"],["🧩","puzzle"]];
+var LEVELS=[{n:"Do 10 zł",max:10,m:[1,2,5]},{n:"Do 20 zł",max:20,m:[1,2,5,10]},{n:"Do 50 zł",max:50,m:[1,2,5,10,20]},{n:"Do 100 zł",max:100,m:[1,2,5,10,20,50]}];
+var LV=+ls("bystrzaki-sklepik-lv")||0;
+function money(v,click){var cls=v>=10?"note n"+v:"coin c"+v;return '<button class="'+cls+'"'+(click?' onclick="'+click+'"':'')+'>'+v+(v>=10?" zł":"<small style=\"font-size:11px;display:block;margin-top:-6px\">zł</small>")+'</button>'}
+var app=document.getElementById("app"),G={};
+function lvBar(){return '<div class="lv">'+LEVELS.map(function(l,i){return '<button class="'+(i===LV?"on":"")+'" onclick="LV='+i+';ls(\'bystrzaki-sklepik-lv\','+i+');menu()">'+l.n+'</button>'}).join("")+'</div>'}
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ app.innerHTML='<p class="hello">Witaj w Sklepiku Cioci Mądrali! Płać, wydawaj resztę i rób zakupy. 🛍️</p>'+lvBar()+
+ '<div class="menu"><button class="tile" style="background:#ffd166" onclick="pay()"><span class="ic">🪙</span><b>Zapłać</b><small>Odlicz dokładnie tyle, ile kosztuje</small></button>'+
+ '<button class="tile" style="background:#bde0fe" onclick="change()"><span class="ic">💱</span><b>Ile reszty?</b><small>Zapłaciłem więcej, ile dostanę?</small></button>'+
+ '<button class="tile" style="background:#caffbf" onclick="budget()"><span class="ic">👛</span><b>Kieszonkowe</b><small>Co kupię za moje pieniądze?</small></button>'+
+ '<button class="tile" style="background:#ffc6ff" onclick="meet()"><span class="ic">🔍</span><b>Poznaj pieniądze</b><small>Monety i banknoty</small></button></div>'+
+ '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> najpierw „Poznaj pieniądze”, potem „Zapłać” na poziomie do 10 zł. Zachęcaj do płacenia <b>jak najmniejszą liczbą monet</b>: 7 zł to 5 + 2, a nie siedem jedynek. Najlepsza lekcja jest w prawdziwym sklepie: niech dziecko samo zapłaci za bułki i sprawdzi resztę.</div>';}
+// --- poznaj
+function meet(){var all=[1,2,5,10,20,50,100];
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Poznaj pieniądze</h2></div><p class="hello">Dotknij monety albo banknotu.</p><div class="card"><div class="wallet">'+all.map(function(v){return money(v,"meetSay("+v+")")}).join("")+'</div><div class="fb" id="mi"></div></div>'+
+ '<div class="parent">💡 1 złoty to 100 groszy. Monety mamy też groszowe: 1, 2, 5, 10, 20 i 50 groszy. W grze liczymy na razie same złotówki.</div>';say("Poznaj polskie pieniądze. Dotknij monety albo banknotu.");}
+function meetSay(v){var t=(v>=10?"Banknot ":"Moneta ")+zlW(v);document.getElementById("mi").textContent=t;say(t);}
+// --- zapłać
+function pay(){G={mode:"pay",n:0,ok:0};nextPay()}
+function nextPay(){if(G.n>=6){end();return}var p=PRODUCTS[rnd(0,PRODUCTS.length-1)],L=LEVELS[LV];G.p=p;G.price=rnd(LV?Math.ceil(L.max/3):2,L.max);G.tray=[];drawPay();
+ say(p[1]+" kosztuje "+zlW(G.price)+". Zapłać dokładnie tyle.");}
+function drawPay(){var L=LEVELS[LV],s=G.tray.reduce(function(a,b){return a+b},0);
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Zapłać</h2></div><div class="prog">Zakup '+(G.n+1)+' z 6</div>'+
+ '<div class="card"><div class="item">'+G.p[0]+'</div><div class="tag">'+G.price+' zł</div>'+
+ '<div class="tray">'+(G.tray.length?G.tray.map(function(v,i){return money(v,"untray("+i+")")}).join(""):'<span class="empty">👇 Dotykaj pieniędzy, żeby położyć je na ladzie</span>')+'</div>'+
+ '<div class="sum">Na ladzie: '+s+' zł</div></div><div class="wallet" style="margin-top:12px">'+L.m.map(function(v){return money(v,"tray("+v+")")}).join("")+'</div>'+
+ '<div class="lv"><button class="btn main" onclick="checkPay()">✅ Płacę</button></div><div class="fb" id="fb"></div>';}
+function tray(v){if(G.tray.length>=14)return;G.tray.push(v);drawPay();var s=G.tray.reduce(function(a,b){return a+b},0);say(zlW(s));}
+function untray(i){G.tray.splice(i,1);drawPay();}
+function minCoins(n,ms){var c=0;ms.slice().sort(function(a,b){return b-a}).forEach(function(m){while(n>=m){n-=m;c++}});return c}
+function checkPay(){var s=G.tray.reduce(function(a,b){return a+b},0),fb=document.getElementById("fb");
+ if(s===G.price){G.ok++;var best=minCoins(G.price,LEVELS[LV].m),extra=G.tray.length>best?" Można też mniejszą liczbą: wystarczy "+best+".":" I to najmniejszą liczbą monet!";
+  fb.textContent="✅ Dziękuję! Zapłacone."+(G.tray.length>best?"":" 🌟");say("Dziękuję, zapłacone!"+extra);G.n++;setTimeout(nextPay,2600);}
+ else if(s<G.price){fb.textContent="Za mało: brakuje "+(G.price-s)+" zł";say("Za mało. Brakuje "+zlW(G.price-s));}
+ else{fb.textContent="Za dużo o "+(s-G.price)+" zł. Zabierz coś z lady.";say("Za dużo o "+zlW(s-G.price)+". Dotknij pieniądza na ladzie, żeby go zabrać.");}}
+// --- reszta
+function change(){G={mode:"change",n:0,ok:0};nextChange()}
+function nextChange(){if(G.n>=8){end();return}var L=LEVELS[LV],p=PRODUCTS[rnd(0,PRODUCTS.length-1)],notes=L.m.concat(LV>=2?[100]:[]).filter(function(v){return v>=5});
+ var paid=notes[rnd(Math.max(0,notes.length-3),notes.length-1)];if(LV===0)paid=10;var price=rnd(1,paid-1);G.p=p;G.paid=paid;G.price=price;G.ans=paid-price;
+ var o=[G.ans];while(o.length<3){var x=G.ans+rnd(-3,3);if(x>0&&x<paid&&o.indexOf(x)<0)o.push(x)}shuffle(o);G.o=o;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Ile reszty?</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 8</div>'+
+ '<div class="card"><div class="item">'+p[0]+'</div><div class="tag">'+price+' zł</div><p style="font-size:20px">Płacę: '+money(paid)+'</p><p style="font:800 22px Baloo\\ 2">Ile dostanę reszty?</p></div>'+
+ '<div class="opts">'+o.map(function(v,i){return '<button class="opt" onclick="ansC(this,'+i+')">'+v+' zł</button>'}).join("")+'</div><div class="fb" id="fb"></div>';
+ say(p[1]+" kosztuje "+zlW(price)+". Płacę "+zlW(paid)+". Ile dostanę reszty?");}
+function ansC(b,i){document.querySelectorAll(".opt").forEach(function(x){x.disabled=true});var fb=document.getElementById("fb");
+ if(G.o[i]===G.ans){b.classList.add("ok");G.ok++;fb.textContent="✅ Tak! "+G.paid+" − "+G.price+" = "+G.ans+" zł";say("Tak! Reszta to "+zlW(G.ans));}
+ else{b.classList.add("bad");fb.textContent="Reszta to "+G.ans+" zł ("+G.paid+" − "+G.price+")";say("Policzmy razem: od "+G.price+" do "+G.paid+" brakuje "+G.ans+". Reszta to "+zlW(G.ans));
+  document.querySelectorAll(".opt").forEach(function(x,k){if(G.o[k]===G.ans)x.classList.add("ok")});}
+ G.n++;setTimeout(nextChange,2600);}
+// --- kieszonkowe
+function budget(){var L=LEVELS[LV],b=[10,20,50,100][LV];var items=shuffle(PRODUCTS.slice()).slice(0,9).map(function(p){return{e:p[0],n:p[1],c:rnd(1,Math.max(3,Math.round(b/3)))}});
+ G={mode:"budget",b:b,items:items,cart:[]};drawB();say("Masz "+zlW(b)+" kieszonkowego. Wybierz, co chcesz kupić, ale nie wydaj więcej, niż masz!");}
+function drawB(){var s=G.cart.reduce(function(a,i){return a+G.items[i].c},0),left=G.b-s;
+ app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Kieszonkowe</h2></div>'+
+ '<div class="card"><div style="font:800 24px Baloo\\ 2">👛 Mam: '+G.b+' zł</div><div class="sum" style="color:'+(left<0?"#c9184a":"#06a77d")+'">Wydaję: '+s+' zł · Zostaje: '+left+' zł</div></div>'+
+ '<div class="shelf" style="margin-top:12px">'+G.items.map(function(it,i){return '<button class="prod'+(G.cart.indexOf(i)>-1?" in":"")+'" onclick="tog('+i+')"><span class="e">'+it.e+'</span><b>'+it.c+' zł</b></button>'}).join("")+'</div>'+
+ '<div class="lv"><button class="btn main" onclick="buy()">🛍️ Kupuję</button><button class="btn" onclick="budget()">🔁 Nowe zakupy</button></div><div class="fb" id="fb"></div>';}
+function tog(i){var k=G.cart.indexOf(i);if(k>-1)G.cart.splice(k,1);else G.cart.push(i);drawB();var s=G.cart.reduce(function(a,j){return a+G.items[j].c},0);say(k>-1?"Odkładam "+G.items[i].n:G.items[i].n+", "+zlW(G.items[i].c)+". Razem "+zlW(s));}
+function buy(){var s=G.cart.reduce(function(a,j){return a+G.items[j].c},0),fb=document.getElementById("fb");
+ if(!G.cart.length){say("Najpierw coś wybierz.");return}
+ if(s>G.b){fb.textContent="Za drogo! Brakuje "+(s-G.b)+" zł. Coś odłóż.";say("Ojej, za drogo! Brakuje "+zlW(s-G.b)+". Odłóż coś na półkę.");return}
+ star(1);fb.textContent="✅ Kupione! Zostało ci "+(G.b-s)+" zł ⭐";say("Kupione! Zostało ci "+zlW(G.b-s)+". "+(G.b-s>0?"Możesz je odłożyć do skarbonki.":"Wydałeś wszystko co do grosza!"));}
+function end(){var tot=G.mode==="pay"?6:8,s=G.ok>=tot-1?3:G.ok>=tot/2?2:G.ok>0?1:0;star(s);
+ app.innerHTML='<div class="card"><div style="font-size:80px">🏆</div><h2>Dobrze: '+G.ok+' z '+tot+'</h2><p style="font-size:20px">Zdobyte gwiazdki: ⭐ '+s+'</p><div class="lv"><button class="btn main" onclick="'+(G.mode==="pay"?"pay()":"change()")+'">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Menu</button></div></div>';
+ say(G.ok>=tot-1?"Brawo! Jesteś świetnym sprzedawcą!":"Dobra robota! Poćwicz jeszcze.");}
+menu();
+</script>
+<script src="../glos.js"></script>
+</body>
+</html>
