@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>English dla dzieci – słówka z lektorem – Bystrzaki</title>
+<meta name="description" content="Nauka angielskich słówek dla dzieci 4–9 lat: zwierzęta, kolory, liczby, owoce, jedzenie, ubrania i więcej. Z lektorem i gwiazdkami.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#eef6ff;--r:#ef476f;--y:#ffd166;--g:#06d6a0;--b:#4cc9f0;--v:#b197fc;--o:#ff9f43;--p:#f78fb3}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #d6e6fb;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:860px;margin:0 auto;padding:16px 16px 80px}
+.hello{text-align:center;font-size:19px;margin:6px 0 14px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.cat{border:none;border-radius:24px;padding:18px 8px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.13);text-align:center}
+.cat .ic{font-size:50px;display:block}.cat b{display:block;font:800 21px "Baloo 2"}.cat small{font-size:14px;color:#3d405b}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.top h2{flex:1;margin:0;font-size:25px}
+.back,.btn{border:none;border-radius:16px;padding:11px 16px;font:700 18px "Andika";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.mode{border:none;border-radius:24px;padding:20px 10px;cursor:pointer;font-family:inherit;box-shadow:0 6px 0 rgba(0,0,0,.13);color:var(--ink)}
+.mode .ic{font-size:46px;display:block}.mode b{font:800 22px "Baloo 2";display:block}
+.panel{background:#fff;border-radius:28px;padding:20px 16px;box-shadow:0 6px 0 #d6e6fb;text-align:center}
+.word{font:800 46px "Baloo 2";margin:4px 0}
+.pl{font-size:20px;color:var(--muted)}
+.big{font-size:110px;line-height:1.1;cursor:pointer;user-select:none}
+.hear{border:none;background:var(--b);color:#fff;font:800 22px "Baloo 2";border-radius:999px;padding:12px 26px;cursor:pointer;box-shadow:0 5px 0 #2a9fc4;margin:6px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.opt{border:none;border-radius:22px;background:#f4f8ff;font-size:64px;padding:12px 0;cursor:pointer;box-shadow:0 5px 0 #d6e6fb}
+.opt.txt{font:800 28px "Baloo 2";padding:20px 6px;color:var(--ink)}
+.opt.ok{background:var(--g);box-shadow:0 5px 0 #04986f}.opt.bad{background:#ffb3c1;box-shadow:0 5px 0 #c9184a}
+.prog{height:12px;background:#e3edf9;border-radius:999px;overflow:hidden;margin:4px 0 14px}.prog i{display:block;height:100%;background:var(--g);transition:width .3s}
+.fb{font:800 26px "Baloo 2";min-height:36px;margin-top:10px}
+.nav{display:flex;justify-content:center;gap:10px;margin-top:16px}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #d6e6fb;font-size:16px;line-height:1.55;margin-top:18px}
+#warn{display:none;background:#fff3cd;border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:15px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header><h1 onclick="home()">🇬🇧 English</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var CATS=[
+ {id:"animals",pl:"Zwierzęta",ic:"🐶",c:"#ffd166",w:[["dog","pies","🐶"],["cat","kot","🐱"],["cow","krowa","🐮"],["horse","koń","🐴"],["pig","świnia","🐷"],["duck","kaczka","🦆"],["fish","ryba","🐟"],["bird","ptak","🐦"],["lion","lew","🦁"],["elephant","słoń","🐘"],["rabbit","królik","🐰"],["frog","żaba","🐸"]]},
+ {id:"colours",pl:"Kolory",ic:"🎨",c:"#f78fb3",w:[["red","czerwony","🟥"],["blue","niebieski","🟦"],["green","zielony","🟩"],["yellow","żółty","🟨"],["orange","pomarańczowy","🟧"],["purple","fioletowy","🟪"],["black","czarny","⬛"],["white","biały","⬜"],["brown","brązowy","🟫"]]},
+ {id:"numbers",pl:"Liczby",ic:"🔢",c:"#4cc9f0",w:[["one","jeden","1️⃣"],["two","dwa","2️⃣"],["three","trzy","3️⃣"],["four","cztery","4️⃣"],["five","pięć","5️⃣"],["six","sześć","6️⃣"],["seven","siedem","7️⃣"],["eight","osiem","8️⃣"],["nine","dziewięć","9️⃣"],["ten","dziesięć","🔟"]]},
+ {id:"fruit",pl:"Owoce i warzywa",ic:"🍎",c:"#06d6a0",w:[["apple","jabłko","🍎"],["banana","banan","🍌"],["orange","pomarańcza","🍊"],["strawberry","truskawka","🍓"],["grapes","winogrona","🍇"],["pear","gruszka","🍐"],["lemon","cytryna","🍋"],["carrot","marchewka","🥕"],["tomato","pomidor","🍅"],["potato","ziemniak","🥔"]]},
+ {id:"food",pl:"Jedzenie",ic:"🍕",c:"#ff9f43",w:[["bread","chleb","🍞"],["milk","mleko","🥛"],["cheese","ser","🧀"],["egg","jajko","🥚"],["pizza","pizza","🍕"],["cake","ciasto","🎂"],["ice cream","lody","🍦"],["water","woda","💧"],["soup","zupa","🍲"],["sandwich","kanapka","🥪"]]},
+ {id:"clothes",pl:"Ubrania",ic:"👕",c:"#b197fc",w:[["T-shirt","koszulka","👕"],["trousers","spodnie","👖"],["dress","sukienka","👗"],["shoes","buty","👟"],["hat","czapka","🧢"],["socks","skarpetki","🧦"],["coat","płaszcz","🧥"],["gloves","rękawiczki","🧤"],["scarf","szalik","🧣"]]},
+ {id:"body",pl:"Ciało",ic:"👋",c:"#ffccd5",w:[["eye","oko","👁️"],["ear","ucho","👂"],["nose","nos","👃"],["mouth","usta","👄"],["hand","ręka","✋"],["foot","stopa","🦶"],["leg","noga","🦵"],["tooth","ząb","🦷"],["hair","włosy","💇"]]},
+ {id:"home",pl:"Dom i zabawki",ic:"🏠",c:"#caffbf",w:[["house","dom","🏠"],["bed","łóżko","🛏️"],["chair","krzesło","🪑"],["door","drzwi","🚪"],["ball","piłka","⚽"],["car","samochód","🚗"],["book","książka","📖"],["teddy bear","miś","🧸"],["clock","zegar","🕐"],["bike","rower","🚲"]]},
+ {id:"weather",pl:"Pogoda i natura",ic:"☀️",c:"#bde0fe",w:[["sun","słońce","☀️"],["rain","deszcz","🌧️"],["snow","śnieg","❄️"],["cloud","chmura","☁️"],["tree","drzewo","🌳"],["flower","kwiat","🌸"],["moon","księżyc","🌙"],["star","gwiazda","⭐"],["rainbow","tęcza","🌈"]]}
+];
+// ---------- głosy ----------
+var vEN=null,vPL=null;
+function pick(){try{var v=speechSynthesis.getVoices();
+ function sc(x,l){var n=x.name,s=0;if(!new RegExp("^"+l,"i").test(x.lang))return -999;
+  if(/eloquence|grandma|grandpa|rocko|shelley|flo|reed|sandy|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph/i.test(n))s-=100;
+  if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;
+  if(l==="en"&&/en-GB/i.test(x.lang))s+=8;if(/serena|kate|daniel|sonia|libby|martha|google uk english female/i.test(n))s+=12;return s}
+ var en=v.slice().sort(function(a,b){return sc(b,"en")-sc(a,"en")})[0];vEN=en&&sc(en,"en")>-999?en:null;
+ var pl=v.slice().sort(function(a,b){return sc(b,"pl")-sc(a,"pl")})[0];vPL=pl&&sc(pl,"pl")>-999?pl:null;
+ if(v.length&&!vEN){var w=document.getElementById("warn");if(w)w.style.display="block"}
+}catch(e){}}
+if("speechSynthesis" in window){pick();speechSynthesis.onvoiceschanged=pick;}
+function sayEN(t,q){try{if(!q)speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-GB";if(vEN)u.voice=vEN;u.rate=0.85;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+function sayPL(t,q){try{if(!q)speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(vPL)u.voice=vPL;u.rate=0.95;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+// ---------- gwiazdki ----------
+var stars=0;try{stars=+localStorage.getItem("bystrzaki-english-stars")||0}catch(e){}
+function star(n){stars+=n||1;document.getElementById("stars").textContent=stars;try{localStorage.setItem("bystrzaki-english-stars",stars)}catch(e){}}
+document.getElementById("stars").textContent=stars;
+var PRAISE=["Great!","Super!","Well done!","Excellent!","Fantastic!","Brilliant!"];
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var app=document.getElementById("app"),C=null;
+function home(){try{speechSynthesis.cancel()}catch(e){}
+ var h='<div id="warn">ℹ️ Na tym urządzeniu brakuje angielskiego głosu – słówka mogą być czytane z polskim akcentem. Na iPhonie: Ustawienia → Dostępność → Treść mówiona → Głosy → English.</div><p class="hello">Hello! 👋 Wybierz temat i ucz się angielskich słówek!</p><div class="cats">';
+ CATS.forEach(function(c,i){h+='<button class="cat" style="background:'+c.c+'" onclick="cat('+i+')"><span class="ic">'+c.ic+'</span><b>'+c.pl+'</b><small>'+c.w.length+' słówek</small></button>'});
+ h+='</div><div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> zacznijcie od kart – dziecko ogląda obrazek, słucha słowa i powtarza na głos. Potem „Usłysz i wskaż” (rozumienie ze słuchu), a na koniec „Przeczytaj i wybierz” dla dzieci, które już czytają. 10 minut dziennie wystarczy.</div>';
+ app.innerHTML=h;pick();window.scrollTo(0,0);}
+function cat(i){C=CATS[i];try{speechSynthesis.cancel()}catch(e){}
+ app.innerHTML='<div class="top"><button class="back" onclick="home()">⬅</button><h2>'+C.ic+' '+C.pl+'</h2></div><div class="modes">'+
+ '<button class="mode" style="background:#ffd166" onclick="cards(0)"><span class="ic">🃏</span><b>Karty</b>poznaj słówka</button>'+
+ '<button class="mode" style="background:#4cc9f0" onclick="quiz(\'hear\')"><span class="ic">👂</span><b>Usłysz i wskaż</b>słuchaj i klikaj</button>'+
+ '<button class="mode" style="background:#06d6a0" onclick="quiz(\'read\')"><span class="ic">📖</span><b>Przeczytaj i wybierz</b>dla czytających</button>'+
+ '<button class="mode" style="background:#f78fb3" onclick="quiz(\'pic\')"><span class="ic">🖼️</span><b>Co to jest?</b>wybierz słowo</button></div>';window.scrollTo(0,0);}
+function cards(k){var w=C.w,n=w.length;k=(k+n)%n;var x=w[k];
+ app.innerHTML='<div class="top"><button class="back" onclick="cat(CATS.indexOf(C))">⬅</button><h2>🃏 Karty '+(k+1)+'/'+n+'</h2></div><div class="panel">'+
+ '<div class="big" onclick="sayEN(\''+x[0].replace(/'/g,"\\'")+'\')">'+x[2]+'</div><div class="word">'+x[0]+'</div><div class="pl">po polsku: '+x[1]+'</div>'+
+ '<button class="hear" onclick="sayEN(\''+x[0].replace(/'/g,"\\'")+'\')">🔊 Posłuchaj</button>'+
+ '<div class="nav"><button class="btn" onclick="cards('+(k-1)+')">⬅ Poprzednia</button><button class="btn" onclick="cards('+(k+1)+')">Następna ➡</button></div></div>';
+ sayEN(x[0]);}
+var Q={};
+function quiz(type){Q={type:type,list:shuffle(C.w).slice(0,Math.min(8,C.w.length)),i:0,score:0};qNext();}
+function qNext(){
+ if(Q.i>=Q.list.length){var s=Q.score;star(s);
+  app.innerHTML='<div class="panel"><div class="big">🏆</div><div class="word">'+s+' / '+Q.list.length+'</div><div class="pl">Zdobyte gwiazdki: '+s+'</div><div class="nav"><button class="btn" onclick="quiz(\''+Q.type+'\')">🔁 Jeszcze raz</button><button class="btn" onclick="cat(CATS.indexOf(C))">Inna zabawa</button></div></div>';
+  sayEN(s>=Q.list.length-1?"Excellent! Well done!":"Good job!");return;}
+ var x=Q.list[Q.i],others=shuffle(C.w.filter(function(o){return o!==x})).slice(0,3),opts=shuffle(others.concat([x]));
+ var pct=Math.round(Q.i/Q.list.length*100),h='<div class="top"><button class="back" onclick="cat(CATS.indexOf(C))">⬅</button><h2>'+(Q.i+1)+' / '+Q.list.length+'</h2></div><div class="prog"><i style="width:'+pct+'%"></i></div><div class="panel">';
+ if(Q.type==="hear"){h+='<div class="pl">Posłuchaj i wskaż obrazek:</div><button class="hear" onclick="sayEN(\''+x[0].replace(/'/g,"\\'")+'\')">🔊 Posłuchaj jeszcze raz</button>';}
+ else if(Q.type==="read"){h+='<div class="pl">Przeczytaj i wskaż obrazek:</div><div class="word">'+x[0]+'</div>';}
+ else {h+='<div class="pl">Co to jest po angielsku?</div><div class="big">'+x[2]+'</div>';}
+ h+='<div class="opts">'+opts.map(function(o){var lab=Q.type==="pic"?o[0]:o[2];return '<button class="opt'+(Q.type==="pic"?' txt':'')+'" data-w="'+o[0]+'" onclick="qAns(this)">'+lab+'</button>'}).join("")+'</div><div class="fb" id="fb"></div></div>';
+ app.innerHTML=h;if(Q.type==="hear")setTimeout(function(){sayEN(x[0])},250);
+}
+function qAns(btn){var x=Q.list[Q.i];document.querySelectorAll(".opt").forEach(function(b){b.disabled=true});
+ if(btn.dataset.w===x[0]){btn.classList.add("ok");Q.score++;var p=PRAISE[Math.floor(Math.random()*PRAISE.length)];document.getElementById("fb").textContent="⭐ "+p;sayEN(p);}
+ else{btn.classList.add("bad");document.querySelectorAll(".opt").forEach(function(b){if(b.dataset.w===x[0])b.classList.add("ok")});
+  document.getElementById("fb").textContent=x[2]+" = "+x[0]+" ("+x[1]+")";sayEN(x[0]);}
+ Q.i++;setTimeout(qNext,1500);}
+home();
+</script>
+</body>
+</html>
