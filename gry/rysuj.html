@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Rysuję i koloruję – kolorowanki online dla dzieci – Bystrzaki</title>
+<meta name="description" content="Kolorowanki online dla dzieci 4–8 lat: robot, koszykówka, domek, kotek, rakieta. Malowanie palcem, wiadro z farbą, zapis i druk rysunku.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#fff0f6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f8d4e4;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+main{max-width:820px;margin:0 auto;padding:14px 14px 90px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.pic{border:none;border-radius:22px;background:#fff;padding:10px;cursor:pointer;box-shadow:0 5px 0 #f8d4e4;font:800 18px "Baloo 2";color:var(--ink)}
+.pic canvas{width:100%;aspect-ratio:1;display:block;border-radius:14px;background:#fff}
+.pic.free{background:linear-gradient(135deg,#ffd166,#f78fb3)}
+.hello{text-align:center;font-size:19px;margin:4px 0 14px}
+.wrap{background:#fff;border-radius:24px;padding:10px;box-shadow:0 6px 0 #f8d4e4}
+#cv{width:100%;aspect-ratio:1;display:block;touch-action:none;border-radius:16px;background:#fff;cursor:crosshair}
+.tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.tool{border:none;border-radius:14px;padding:10px 12px;font:800 16px "Baloo 2";cursor:pointer;background:#fff;box-shadow:0 4px 0 #f0c6d8;color:var(--ink)}
+.tool.on{background:#2b2d42;color:#fff;box-shadow:0 4px 0 #000}
+.pal{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sw{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #ddd;cursor:pointer}
+.sw.on{box-shadow:0 0 0 4px #2b2d42;transform:scale(1.1)}
+.sizes{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.sz{width:44px;height:44px;border-radius:12px;border:none;background:#fff;box-shadow:0 3px 0 #f0c6d8;cursor:pointer;display:grid;place-items:center}
+.sz i{display:block;border-radius:50%;background:#2b2d42}
+.sz.on{outline:3px solid #2b2d42}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #f8d4e4;font-size:16px;line-height:1.55;margin-top:16px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+@media print{header,#home,.tools,.pal,.sizes,.parent,.hello{display:none!important}.wrap{box-shadow:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">🎨 Rysuję i koloruję</h1></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plV)u.voice=plV;u.rate=1.0;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+var S=800; // rozmiar płótna
+// Kolorowanki rysowane liniami (współrzędne w skali 0–800)
+function L(c){c.lineWidth=9;c.strokeStyle="#222";c.lineJoin="round";c.lineCap="round";}
+function circ(c,x,y,r){c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.stroke();}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();c.stroke();}
+function ln(c,p){c.beginPath();c.moveTo(p[0],p[1]);for(var i=2;i<p.length;i+=2)c.lineTo(p[i],p[i+1]);c.stroke();}
+var PICS={
+ robot:{n:"Robot",f:function(c){L(c);rr(c,250,120,300,220,40);circ(c,330,220,38);circ(c,470,220,38);rr(c,340,280,120,30,12);ln(c,[400,120,400,60]);circ(c,400,45,18);
+  rr(c,210,360,380,280,30);rr(c,300,410,200,140,20);circ(c,350,480,22);circ(c,450,480,22);
+  rr(c,120,380,80,200,30);rr(c,600,380,80,200,30);rr(c,270,650,100,110,20);rr(c,430,650,100,110,20);ln(c,[40,780,760,780]);}},
+ kosz:{n:"Koszykówka",f:function(c){L(c);rr(c,240,60,320,210,14);rr(c,340,150,120,90,6);ln(c,[300,280,500,280]);
+  ln(c,[310,290,340,420,460,420,490,290]);ln(c,[340,290,360,420]);ln(c,[400,290,400,420]);ln(c,[460,290,440,420]);ln(c,[325,350,475,350]);
+  ln(c,[395,40,395,60]);circ(c,400,600,150);ln(c,[250,600,550,600]);ln(c,[400,450,400,750]);
+  c.beginPath();c.arc(260,600,110,-1.1,1.1);c.stroke();c.beginPath();c.arc(540,600,110,Math.PI-1.1,Math.PI+1.1);c.stroke();}},
+ dom:{n:"Domek",f:function(c){L(c);ln(c,[140,360,400,120,660,360,140,360]);c.strokeRect(180,360,440,370);c.strokeRect(350,540,110,190);circ(c,440,640,8);
+  c.strokeRect(220,420,100,100);ln(c,[270,420,270,520]);ln(c,[220,470,320,470]);c.strokeRect(490,420,100,100);ln(c,[540,420,540,520]);ln(c,[490,470,590,470]);
+  c.strokeRect(520,170,60,110);circ(c,680,110,60);ln(c,[30,730,770,730]);}},
+ kot:{n:"Kotek",f:function(c){L(c);circ(c,400,300,170);ln(c,[260,200,250,70,350,140]);ln(c,[540,200,550,70,450,140]);
+  circ(c,340,280,30);circ(c,460,280,30);ln(c,[385,340,400,355,415,340,385,340]);ln(c,[400,355,400,380]);c.beginPath();c.arc(375,380,25,0,Math.PI);c.stroke();c.beginPath();c.arc(425,380,25,0,Math.PI);c.stroke();
+  ln(c,[300,350,170,330]);ln(c,[300,370,170,390]);ln(c,[500,350,630,330]);ln(c,[500,370,630,390]);
+  c.beginPath();c.ellipse(400,610,180,140,0,0,Math.PI*2);c.stroke();c.beginPath();c.moveTo(575,640);c.bezierCurveTo(720,640,720,450,650,470);c.stroke();}},
+ rakieta:{n:"Rakieta",f:function(c){L(c);c.beginPath();c.moveTo(400,60);c.bezierCurveTo(520,180,520,420,500,560);c.lineTo(300,560);c.bezierCurveTo(280,420,280,180,400,60);c.closePath();c.stroke();
+  circ(c,400,300,55);ln(c,[300,460,200,600,300,560]);ln(c,[500,460,600,600,500,560]);ln(c,[330,560,360,700,400,620,440,700,470,560]);
+  ln(c,[110,150,130,190,110,230,90,190,110,150]);ln(c,[680,250,700,290,680,330,660,290,680,250]);circ(c,150,450,14);circ(c,660,520,14);}},
+ serce:{n:"Serce i tęcza",f:function(c){L(c);for(var i=0;i<4;i++){c.beginPath();c.arc(400,460,330-i*50,Math.PI,0);c.stroke();}
+  c.beginPath();c.moveTo(400,700);c.bezierCurveTo(200,580,250,420,400,500);c.bezierCurveTo(550,420,600,580,400,700);c.stroke();ln(c,[30,460,170,460]);ln(c,[630,460,770,460]);}}
+};
+var COLORS=["#222222","#ef476f","#ff8c42","#ffd166","#06d6a0","#118ab2","#4cc9f0","#7b61ff","#f78fb3","#8d5524","#9e9e9e","#ffffff"];
+var CN={"#222222":"czarny","#ef476f":"czerwony","#ff8c42":"pomarańczowy","#ffd166":"żółty","#06d6a0":"zielony","#118ab2":"niebieski","#4cc9f0":"błękitny","#7b61ff":"fioletowy","#f78fb3":"różowy","#8d5524":"brązowy","#9e9e9e":"szary","#ffffff":"biały (gumka)"};
+var app=document.getElementById("app"),cv,ctx,lineLayer=null,tool="fill",color="#ef476f",size=14,cur=null,undo=[];
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ var h='<p class="hello">Wybierz obrazek do kolorowania albo narysuj coś swojego! 🖍️</p><div class="menu">';
+ h+='<button class="pic free" onclick="open_(null)"><canvas width="200" height="200" id="t_free"></canvas>✏️ Czysta kartka</button>';
+ for(var k in PICS)h+='<button class="pic" onclick="open_(\''+k+'\')"><canvas width="200" height="200" id="t_'+k+'"></canvas>'+PICS[k].n+'</button>';
+ h+='</div><div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> „Wiadro” wypełnia kolorem całe pole, a „Pędzel” rysuje palcem lub myszką. Gotowy obrazek można zapisać w telefonie albo wydrukować. Zapytaj dziecko, co narysowało, i niech nada obrazkowi tytuł. To ćwiczy mowę i wyobraźnię.</div>';
+ app.innerHTML=h;
+ for(var k2 in PICS){var t=document.getElementById("t_"+k2).getContext("2d");t.scale(.25,.25);PICS[k2].f(t);}
+ var tf=document.getElementById("t_free").getContext("2d");tf.fillStyle="#fff";tf.fillRect(0,0,200,200);tf.font="90px serif";tf.textAlign="center";tf.fillText("🖍️",100,130);
+}
+function open_(k){cur=k;undo=[];
+ app.innerHTML='<div class="tools"><button class="tool" onclick="menu()">⬅</button><button class="tool" id="tb_fill" onclick="setTool(\'fill\')">🪣 Wiadro</button><button class="tool" id="tb_pen" onclick="setTool(\'pen\')">🖌️ Pędzel</button><button class="tool" onclick="doUndo()">↩️ Cofnij</button><button class="tool" onclick="clearAll()">🧹 Od nowa</button><button class="tool" onclick="save()">💾 Zapisz</button><button class="tool" onclick="window.print()">🖨️ Drukuj</button></div>'+
+ '<div class="wrap"><canvas id="cv" width="'+S+'" height="'+S+'"></canvas></div><div class="pal" style="margin-top:10px">'+COLORS.map(function(c){return '<div class="sw" data-c="'+c+'" style="background:'+c+'" onclick="setColor(\''+c+'\')"></div>'}).join("")+'</div>'+
+ '<div class="sizes" id="sizes">'+[6,14,28].map(function(s){return '<button class="sz" data-s="'+s+'" onclick="setSize('+s+')"><i style="width:'+(s*.8+4)+'px;height:'+(s*.8+4)+'px"></i></button>'}).join("")+'</div>';
+ cv=document.getElementById("cv");ctx=cv.getContext("2d",{willReadFrequently:true});
+ ctx.fillStyle="#fff";ctx.fillRect(0,0,S,S);
+ if(k){PICS[k].f(ctx);var l=document.createElement("canvas");l.width=l.height=S;var lc=l.getContext("2d");PICS[k].f(lc);lineLayer=l;}else lineLayer=null;
+ setTool(k?"fill":"pen");setColor(k?"#ef476f":"#222222");setSize(14);bind();
+ say(k?"Wybierz kolor i dotknij pola, które chcesz pomalować.":"Czysta kartka! Narysuj, co tylko chcesz.");
+}
+function setTool(t){tool=t;["fill","pen"].forEach(function(x){document.getElementById("tb_"+x).classList.toggle("on",x===t)});document.getElementById("sizes").style.visibility=t==="pen"?"visible":"hidden";}
+function setColor(c){color=c;document.querySelectorAll(".sw").forEach(function(s){s.classList.toggle("on",s.dataset.c===c)});say(CN[c]);}
+function setSize(s){size=s;document.querySelectorAll(".sz").forEach(function(b){b.classList.toggle("on",+b.dataset.s===s)});}
+function snap(){try{undo.push(ctx.getImageData(0,0,S,S));if(undo.length>15)undo.shift()}catch(e){}}
+function doUndo(){if(undo.length)ctx.putImageData(undo.pop(),0,0);}
+function clearAll(){snap();ctx.fillStyle="#fff";ctx.fillRect(0,0,S,S);if(cur)PICS[cur].f(ctx);}
+function pos(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*S/r.width,(e.clientY-r.top)*S/r.height];}
+function bind(){var down=false,last=null;
+ cv.onpointerdown=function(e){e.preventDefault();var p=pos(e);snap();
+  if(tool==="fill"){fill(Math.round(p[0]),Math.round(p[1]));return}
+  down=true;last=p;try{cv.setPointerCapture(e.pointerId)}catch(_){}dot(p);};
+ cv.onpointermove=function(e){if(!down)return;var p=pos(e);ctx.strokeStyle=color;ctx.lineWidth=size;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(last[0],last[1]);ctx.lineTo(p[0],p[1]);ctx.stroke();last=p;};
+ cv.onpointerup=cv.onpointercancel=function(){if(down&&lineLayer)ctx.drawImage(lineLayer,0,0);down=false;};
+}
+function dot(p){ctx.fillStyle=color;ctx.beginPath();ctx.arc(p[0],p[1],size/2,0,Math.PI*2);ctx.fill();}
+function hex(c){return[parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)]}
+function fill(x,y){var img=ctx.getImageData(0,0,S,S),d=img.data,i0=(y*S+x)*4,tr=d[i0],tg=d[i0+1],tb=d[i0+2],nc=hex(color);
+ if(tr<90&&tg<90&&tb<90&&color!=="#222222")return; // kliknięto w linię
+ if(Math.abs(tr-nc[0])<4&&Math.abs(tg-nc[1])<4&&Math.abs(tb-nc[2])<4)return;
+ function m(i){return Math.abs(d[i]-tr)+Math.abs(d[i+1]-tg)+Math.abs(d[i+2]-tb)<90}
+ var st=[x,y],seen=new Uint8Array(S*S);
+ while(st.length){var py=st.pop(),px=st.pop(),i=py*S+px;if(px<0||py<0||px>=S||py>=S||seen[i])continue;seen[i]=1;
+  if(!m(i*4))continue;var k=i*4;d[k]=nc[0];d[k+1]=nc[1];d[k+2]=nc[2];d[k+3]=255;st.push(px+1,py,px-1,py,px,py+1,px,py-1);}
+ // domknij szczeliny antyaliasingu: piksele przy wypełnieniu, jasne, też malujemy
+ ctx.putImageData(img,0,0);if(lineLayer)ctx.drawImage(lineLayer,0,0);
+ var praise=["Pięknie!","Super kolor!","Ślicznie!","Ale ładnie!"];if(Math.random()<.35)say(praise[Math.floor(Math.random()*praise.length)]);
+}
+function save(){try{var a=document.createElement("a");a.download="moj-rysunek-bystrzaki.png";a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();say("Zapisane! Brawo, artysto!")}catch(e){}}
+menu();
+</script>
+</body>
+</html>

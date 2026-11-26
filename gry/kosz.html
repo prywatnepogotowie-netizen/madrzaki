@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Rzuty do kosza – liczenie z koszykówką – Bystrzaki</title>
+<meta name="description" content="Gra matematyczna z koszykówką dla dzieci 5–8 lat: rozwiąż działanie i rzuć piłkę do kosza. Dodawanie, odejmowanie, uzupełnianie do 10.">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--court:#f4a261;--court2:#e76f51;--r:#ef476f;--g:#06d6a0;--b:#4cc9f0;--y:#ffd166}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#fff4e6;color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f6dcc0;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:760px;margin:0 auto;padding:16px 16px 80px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tile{border:none;border-radius:24px;padding:20px 10px;cursor:pointer;font-family:inherit;color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.13)}
+.tile .ic{font-size:50px;display:block}.tile b{display:block;font:800 22px "Baloo 2"}
+.hello{text-align:center;font-size:19px;margin:6px 0 14px}
+.court{position:relative;height:380px;border-radius:28px;overflow:hidden;background:linear-gradient(#bde0fe 0 55%,var(--court) 55%);box-shadow:0 6px 0 #e0b48a}
+.court::after{content:"";position:absolute;left:-10%;right:-10%;top:72%;height:160px;border:6px solid #fff8;border-radius:50%}
+.board{position:absolute;left:50%;top:22px;width:150px;height:96px;margin-left:-75px;background:#fff;border:5px solid #2b2d42;border-radius:8px}
+.board::before{content:"";position:absolute;left:44px;top:40px;width:52px;height:38px;border:4px solid var(--r)}
+.rim{position:absolute;left:50%;top:112px;width:92px;height:12px;margin-left:-46px;background:var(--court2);border-radius:6px;z-index:3}
+.net{position:absolute;left:50%;top:122px;width:80px;height:52px;margin-left:-40px;background:repeating-linear-gradient(60deg,transparent 0 9px,#fff 9px 11px),repeating-linear-gradient(-60deg,transparent 0 9px,#fff 9px 11px);clip-path:polygon(0 0,100% 0,82% 100%,18% 100%);z-index:2;transform-origin:top}
+.net.swish{animation:swish .5s}
+@keyframes swish{40%{transform:scaleY(1.25) scaleX(.9)}}
+.q{position:absolute;left:0;right:0;top:190px;text-align:center;font:800 46px "Baloo 2";color:var(--ink);text-shadow:0 3px 0 #fff}
+.balls{position:absolute;left:0;right:0;bottom:18px;display:flex;justify-content:center;gap:22px;z-index:4}
+.ball{width:78px;height:78px;border-radius:50%;border:none;cursor:pointer;font:800 30px "Baloo 2";color:#fff;
+ background:radial-gradient(circle at 35% 30%,#ffb26b 0 12%,transparent 13%),#e8590c;box-shadow:inset 0 0 0 3px #7a2e00,0 5px 0 rgba(0,0,0,.25);position:relative;transition:transform .1s}
+.ball::before{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(90deg,transparent 47%,#7a2e00 47% 53%,transparent 53%),linear-gradient(0deg,transparent 47%,#7a2e00 47% 53%,transparent 53%);opacity:.55}
+.ball span{position:relative;z-index:1;text-shadow:0 2px 0 #7a2e00}
+.ball:active{transform:scale(.94)}
+.fly{position:absolute;z-index:6;pointer-events:none;width:64px;height:64px;border-radius:50%;background:#e8590c;box-shadow:inset 0 0 0 3px #7a2e00}
+.score{display:flex;justify-content:space-between;align-items:center;margin:12px 0;font:800 22px "Baloo 2"}
+.score .pts{background:#2b2d42;color:var(--y);border-radius:14px;padding:6px 14px;font-family:monospace;font-size:26px}
+.fb{text-align:center;font:800 34px "Baloo 2";min-height:48px;margin-top:6px}
+.btn{border:none;border-radius:16px;padding:12px 18px;font:800 19px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
+.btn.main{background:var(--r);color:#fff;box-shadow:0 5px 0 #b8304f}
+.panel{background:#fff;border-radius:28px;padding:22px;text-align:center;box-shadow:0 6px 0 #f6dcc0}
+.parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #f6dcc0;font-size:16px;line-height:1.55;margin-top:18px}
+#home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">🏀 Rzuty do kosza</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<a href="../index.html" id="home">🏠 Wszystkie gry</a>
+<script>
+var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plV)u.voice=plV;u.rate=1.0;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+var stars=0;try{stars=+localStorage.getItem("bystrzaki-kosz-stars")||0}catch(e){}
+function star(n){stars+=n;document.getElementById("stars").textContent=stars;try{localStorage.setItem("bystrzaki-kosz-stars",stars)}catch(e){}}
+document.getElementById("stars").textContent=stars;
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var app=document.getElementById("app"),G={};
+var MODES={
+ add10:{n:"Dodawanie do 10",ic:"➕",c:"#ffd166",gen:function(){var a=rnd(1,8),b=rnd(1,10-a);return{q:a+" + "+b,s:a+" plus "+b,a:a+b}}},
+ sub10:{n:"Odejmowanie do 10",ic:"➖",c:"#4cc9f0",gen:function(){var a=rnd(3,10),b=rnd(1,a-1);return{q:a+" − "+b,s:a+" minus "+b,a:a-b}}},
+ to10:{n:"Ile brakuje do 10?",ic:"🔟",c:"#06d6a0",gen:function(){var a=rnd(1,9);return{q:a+" + ? = 10",s:"Ile brakuje od "+a+" do dziesięciu?",a:10-a}}},
+ add20:{n:"Dodawanie do 20",ic:"🚀",c:"#f78fb3",gen:function(){var a=rnd(5,12),b=rnd(2,20-a);return{q:a+" + "+b,s:a+" plus "+b,a:a+b}}}
+};
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ var h='<p class="hello">Rozwiąż zadanie i rzuć piłkę z dobrym wynikiem do kosza! 🏀</p><div class="menu">';
+ for(var k in MODES){var m=MODES[k];h+='<button class="tile" style="background:'+m.c+'" onclick="start(\''+k+'\')"><span class="ic">'+m.ic+'</span><b>'+m.n+'</b></button>';}
+ h+='</div><div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> mecz to 10 rzutów. Za trafienie są 2 punkty, a za mecz gwiazdki. Zacznijcie od „Dodawania do 10”. Na podwórku zagrajcie w mini-koszykówkę: za każdy celny rzut dziecko dodaje punkty na głos.</div>';
+ app.innerHTML=h;}
+function start(k){G={m:MODES[k],k:k,shot:0,pts:0,hits:0};round();}
+function round(){
+ if(G.shot>=10){var s=Math.round(G.hits/2);star(s);
+  app.innerHTML='<div class="panel"><div style="font-size:90px">🏆</div><h2 style="font-size:34px;margin:6px 0">Koniec meczu!</h2><p style="font-size:22px">Trafienia: <b>'+G.hits+'/10</b> · Punkty: <b>'+G.pts+'</b></p><p style="font-size:20px">Zdobyte gwiazdki: ⭐ '+s+'</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn main" onclick="start(\''+G.k+'\')">🔁 Rewanż</button><button class="btn" onclick="menu()">Inne zadania</button></div></div>';
+  say("Koniec meczu! Zdobyłeś "+G.pts+" punktów!");return;}
+ var t=G.m.gen();G.t=t;var opts=[t.a];while(opts.length<3){var x=t.a+rnd(-3,3);if(x>=0&&x<=20&&opts.indexOf(x)<0)opts.push(x)}shuffle(opts);
+ app.innerHTML='<div class="score"><span>Rzut '+(G.shot+1)+' / 10</span><span class="pts">'+String(G.pts).padStart(2,"0")+'</span></div>'+
+ '<div class="court" id="court"><div class="board"></div><div class="rim" id="rim"></div><div class="net" id="net"></div><div class="q">'+t.q+'</div>'+
+ '<div class="balls">'+opts.map(function(o){return '<button class="ball" onclick="shoot(this,'+o+')"><span>'+o+'</span></button>'}).join("")+'</div></div><div class="fb" id="fb"></div>';
+ say(t.s);
+}
+function shoot(btn,v){
+ document.querySelectorAll(".ball").forEach(function(b){b.disabled=true});
+ var court=document.getElementById("court"),cr=court.getBoundingClientRect(),br=btn.getBoundingClientRect();
+ var ok=v===G.t.a,f=document.createElement("div");f.className="fly";court.appendChild(f);btn.style.visibility="hidden";
+ var x0=br.left-cr.left+7,y0=br.top-cr.top+7,x1=cr.width/2-32+(ok?0:(Math.random()<.5?-58:58)),y1=ok?92:84,t0=null,D=850;
+ function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/D),x=x0+(x1-x0)*p,y=y0+(y1-y0)*p-260*p*(1-p)*1.0;
+  f.style.left=x+"px";f.style.top=y+"px";f.style.transform="rotate("+(p*540)+"deg) scale("+(1-p*.25)+")";
+  if(p<1)requestAnimationFrame(step);else land();}
+ function land(){var fb=document.getElementById("fb");
+  if(ok){f.style.transition="top .35s ease-in";f.style.top="150px";f.style.zIndex=1;document.getElementById("net").classList.add("swish");
+   G.pts+=2;G.hits++;fb.textContent="🏀 Kosz! +2";fb.style.color="#06a77d";say("Kosz! Brawo!");}
+  else{f.style.transition="all .5s ease-out";f.style.left=(parseFloat(f.style.left)+(x1<cr.width/2-32?-90:90))+"px";f.style.top="230px";
+   fb.textContent="Obręcz! Dobry wynik to "+G.t.a;fb.style.color="#c9184a";say("Prawie! Dobry wynik to "+G.t.a);}
+  G.shot++;setTimeout(round,ok?1300:2000);}
+ requestAnimationFrame(step);
+}
+menu();
+</script>
+</body>
+</html>
