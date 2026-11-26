@@ -31,15 +31,15 @@
  var AV=["🦉","🦊","🐻","🐼","🐯","🦁","🐸","🐵","🐰","🐶","🐱","🦄","🐲","🤖","🚀","⚽","🏀","🦖"];
  var inGame=/\/gry\//.test(location.pathname),base=inGame?"../":"";
  function css(){var s=document.createElement("style");s.textContent=
-  "#bzp{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9998;background:#fff;color:#2b2d42;border:none;border-radius:999px;padding:6px 14px 6px 8px;font:700 15px system-ui,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;display:flex;align-items:center;gap:6px;max-width:44vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"+
-  "@media(max-width:620px){#bzp{left:auto;right:12px;transform:none;bottom:64px;max-width:60vw}}#bzp .a{font-size:24px}#bzpp{position:fixed;inset:0;z-index:10001;background:rgba(20,20,40,.5);display:flex;align-items:flex-end;justify-content:center}"+
+  "#bzp{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:9998;background:#fff;color:#2b2d42;border:none;border-radius:999px;padding:6px 14px 6px 8px;font:700 15px system-ui,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;display:flex;align-items:center;gap:6px;max-width:42vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"+
+  "#bzp .a{font-size:24px}#bzpp{position:fixed;inset:0;z-index:10001;background:rgba(20,20,40,.5);display:flex;align-items:flex-end;justify-content:center}"+
   "#bzpp .box{background:#fff;color:#2b2d42;width:min(520px,100%);max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px;font:16px system-ui,sans-serif}"+
   "#bzpp h3{margin:0 0 10px;font-size:22px}#bzpp .pr{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;border:2px solid #eee;margin:6px 0;cursor:pointer}"+
   "#bzpp .pr.on{border-color:#06d6a0;background:#eafff7}#bzpp .pr .a{font-size:32px}#bzpp .pr b{flex:1}#bzpp .pr small{color:#6b7090}"+
   "#bzpp .av{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}#bzpp .av button{font-size:28px;border:2px solid #eee;background:#fff;border-radius:12px;width:48px;height:48px;cursor:pointer}#bzpp .av button.on{border-color:#06d6a0;background:#eafff7}"+
   "#bzpp input{font:700 20px system-ui;padding:10px;border-radius:12px;border:2px solid #ddd;width:100%}#bzpp .go{width:100%;border:none;border-radius:14px;padding:12px;font:800 18px system-ui;cursor:pointer;margin-top:8px;background:#06d6a0}"+
   "#bzpp .gr{background:#eee}#bzpp .del{border:none;background:none;color:#c9184a;font-size:13px;cursor:pointer}"+
-  "#bzt{position:fixed;left:50%;top:18px;transform:translateX(-50%) scale(.6);opacity:0;z-index:10002;background:#2b2d42;color:#ffd166;padding:12px 18px;border-radius:18px;font:800 18px system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:all .35s;text-decoration:none}"+
+  "*{touch-action:manipulation}html{-webkit-text-size-adjust:100%}body{padding-bottom:84px!important}"+"#bzbar{position:fixed;left:0;right:0;bottom:0;height:64px;z-index:9990;background:rgba(255,255,255,.96);box-shadow:0 -2px 10px rgba(0,0,0,.08)}"+"#home{bottom:10px!important;left:10px!important}#bzg{bottom:10px!important;right:10px!important}"+"@media(max-width:560px){#home,#bzg{width:46px;max-width:46px;overflow:hidden;white-space:nowrap;padding:10px 0 10px 13px!important}#bzp{max-width:56vw;font-size:14px}}"+"#bzback{border:none;background:#2b2d42;color:#fff;border-radius:14px;padding:8px 12px;font:800 16px system-ui,sans-serif;cursor:pointer;margin-right:4px;flex:none}"+"#bzt{position:fixed;left:50%;top:18px;transform:translateX(-50%) scale(.6);opacity:0;z-index:10002;background:#2b2d42;color:#ffd166;padding:12px 18px;border-radius:18px;font:800 18px system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:all .35s;text-decoration:none}"+
   "#bzt.on{opacity:1;transform:translateX(-50%) scale(1)}@media print{#bzp,#bzt{display:none}}";document.head.appendChild(s)}
  function chip(){css();var p=me(),b=document.createElement("button");b.id="bzp";b.type="button";
   b.innerHTML='<span class="a">'+p.a+'</span>'+(p.n?p.n:"Kto gra?")+' · ⭐'+total();b.onclick=openPanel;document.body.appendChild(b)}
@@ -66,7 +66,10 @@
   a.textContent="🎉 Nowa naklejka w albumie! ("+n+"/48)";a.classList.add("on");setTimeout(function(){a.classList.remove("on")},4500)}
  function tick(){var u=unlocked();if(seen===null){seen=+(S.getItem("bystrzaki-seen")||u);if(u>seen){toast(u);}seen=u;S.setItem("bystrzaki-seen",u);return}
   if(u>seen){seen=u;S.setItem("bystrzaki-seen",u);toast(u);var c=document.getElementById("bzp");if(c)c.lastChild&&(c.innerHTML='<span class="a">'+me().a+'</span>'+(me().n||"Kto gra?")+' · ⭐'+total())}}
- function start(){chip();tick();setInterval(tick,2500);
+ function bar(){if(!document.getElementById("bzbar")){var d=document.createElement("div");d.id="bzbar";document.body.appendChild(d)}}
+ function back(){if(!inGame)return;var h=document.querySelector("header");if(!h||document.getElementById("bzback"))return;var b=document.createElement("button");b.id="bzback";b.type="button";b.textContent="⬅ Menu";b.setAttribute("aria-label","Wróć do menu gry");
+  b.onclick=function(e){e.stopPropagation();try{speechSynthesis.cancel()}catch(_){}document.querySelectorAll("#bzpw,#bzpp,#bzgp").forEach(function(x){x.remove()});if(typeof window.menu==="function"){window.menu();window.scrollTo(0,0)}else location.href="../index.html"};h.insertBefore(b,h.firstChild)}
+ function start(){bar();back();chip();tick();setInterval(tick,2500);
   // zadanie dnia: zapisz stan gwiazdek na początku dnia
   var day=new Date().toISOString().slice(0,10),snap;try{snap=JSON.parse(S.getItem("bystrzaki-day")||"null")}catch(e){snap=null}
   if(!snap||snap.d!==day){var st={};STAR_KEYS.forEach(function(k){st[k]=starsOf(k)});S.setItem("bystrzaki-day",JSON.stringify({d:day,s:st,done:0}))}}
