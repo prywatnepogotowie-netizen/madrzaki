@@ -68,8 +68,8 @@
   if(u>seen){seen=u;S.setItem("bystrzaki-seen",u);toast(u);var c=document.getElementById("bzp");if(c)c.lastChild&&(c.innerHTML='<span class="a">'+me().a+'</span>'+(me().n||"Kto gra?")+' · ⭐'+total())}}
  function bar(){if(!document.getElementById("bzbar")){var d=document.createElement("div");d.id="bzbar";document.body.appendChild(d)}}
  function back(){if(!inGame)return;var h=document.querySelector("header");if(!h||document.getElementById("bzback"))return;var b=document.createElement("button");b.id="bzback";b.type="button";b.textContent="⬅ Menu";b.setAttribute("aria-label","Wróć do menu gry");
-  b.onclick=function(e){e.stopPropagation();try{speechSynthesis.cancel()}catch(_){}document.querySelectorAll("#bzpw,#bzpp,#bzgp").forEach(function(x){x.remove()});if(typeof window.menu==="function"){window.menu();window.scrollTo(0,0)}else location.href="../index.html"};h.insertBefore(b,h.firstChild)}
- function start(){bar();back();chip();tick();setInterval(tick,2500);
+  b.onclick=function(e){e.stopPropagation();try{speechSynthesis.cancel()}catch(_){}document.querySelectorAll("#bzpw,#bzpp,#bzgp").forEach(function(x){x.remove()});if(typeof window.menu==="function"&&!window.__bzAtMenu){try{window.menu()}catch(_){}window.__bzAtMenu=true;window.scrollTo(0,0)}else location.href="../index.html"};h.insertBefore(b,h.firstChild)}
+ function start(){bar();back();window.__bzAtMenu=true;document.addEventListener("click",function(e){if(!e.target.closest("#bzback,#bzbar,#bzp,#home,#bzg,#bzgl,#bzpw,#bzpp,#bzgp,#bzt"))window.__bzAtMenu=false},true);chip();tick();setInterval(tick,2500);
   // zadanie dnia: zapisz stan gwiazdek na początku dnia
   var day=new Date().toISOString().slice(0,10),snap;try{snap=JSON.parse(S.getItem("bystrzaki-day")||"null")}catch(e){snap=null}
   if(!snap||snap.d!==day){var st={};STAR_KEYS.forEach(function(k){st[k]=starsOf(k)});S.setItem("bystrzaki-day",JSON.stringify({d:day,s:st,done:0}))}}
