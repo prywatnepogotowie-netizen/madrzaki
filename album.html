@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mój album naklejek i mapa przygody – Bystrzaki</title>
+<meta name="description" content="Album naklejek i mapa przygody Bystrzaków: zbieraj gwiazdki w grach edukacyjnych, odblokowuj naklejki i wykonuj zadanie dnia.">
+<link rel="canonical" href="https://bystrzaki.online/album.html">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="ikona.svg">
+<script src="profil.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#fff7ef;--g:#06d6a0;--y:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif}
+h1,h2,h3{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f3e2cf;position:sticky;top:0;z-index:5}
+header a{color:inherit;text-decoration:none;font:800 20px "Baloo 2"}header .sp{flex:1}
+main{max-width:760px;margin:0 auto;padding:16px 14px 100px}
+.hero{background:linear-gradient(135deg,#ffd166,#f78fb3);border-radius:28px;padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 0 #e9b8a0}
+.hero .av{font-size:64px;background:#fff;border-radius:50%;width:92px;height:92px;display:grid;place-items:center;flex:none}
+.hero h1{margin:0;font-size:28px}.hero p{margin:4px 0 0;font-size:17px}
+.bar{height:16px;background:#fff8;border-radius:10px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:#2b2d42;border-radius:10px}
+.card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 5px 0 #f3e2cf;margin-top:16px}
+.task{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.task .ic{font-size:46px}.task b{font:800 20px "Baloo 2";display:block}
+.task .st{margin-left:auto;font:800 16px "Baloo 2";padding:8px 12px;border-radius:12px;background:#eef}
+.task.done .st{background:var(--g);color:#fff}
+svg.map{width:100%;height:auto;display:block}
+.isl{cursor:pointer}.isl text{font-family:"Baloo 2",sans-serif}
+.stk{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:10px;margin-top:10px}
+.stk div{aspect-ratio:1;border-radius:18px;display:grid;place-items:center;font-size:38px;background:#fff3d6;box-shadow:0 3px 0 #f0d9a8;position:relative}
+.stk div.l{background:#eee;box-shadow:none;filter:grayscale(1);opacity:.45;font-size:26px}
+.stk div.n::after{content:"NOWA";position:absolute;top:-6px;right:-6px;background:#ef476f;color:#fff;font:800 10px system-ui;padding:2px 6px;border-radius:8px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+.parent{font-size:15px;line-height:1.55;color:#444}
+</style>
+</head>
+<body>
+<header><a href="index.html">🦉 Bystrzaki</a><span class="sp"></span><a href="index.html#gry">🎮 Gry</a></header>
+<main>
+ <div class="hero"><div class="av" id="av">🦉</div><div style="flex:1"><h1 id="nm">Mój album</h1><p id="sub"></p><div class="bar"><i id="bar"></i></div><p id="next" style="font-size:14px"></p></div></div>
+ <div class="card"><h2 style="margin:0 0 8px">🎯 Zadanie dnia</h2><a class="task" id="task"></a></div>
+ <div class="card"><h2 style="margin:0">🗺️ Mapa przygody</h2><p style="margin:4px 0 0;color:#6b7090">Każda wyspa to gra. Dotknij, żeby zagrać. Za gwiazdki zdobywasz medale wysp.</p><div id="map"></div>
+  <div class="legend"><span>🥉 3 gwiazdki</span><span>🥈 10 gwiazdek</span><span>🥇 25 gwiazdek</span><span>👑 50 gwiazdek</span></div></div>
+ <div class="card"><h2 style="margin:0">📒 Album naklejek <span id="cnt" style="font-size:18px;color:#6b7090"></span></h2><p style="margin:4px 0 0;color:#6b7090">Co 3 gwiazdki to nowa naklejka. Za zadanie dnia dostajesz naklejkę w prezencie!</p><div class="stk" id="stk"></div></div>
+ <div class="card parent">👨‍👩‍👧 <b>Dla rodzica:</b> gwiazdki zbierają się ze wszystkich gier. Każde dziecko ma swój profil (przycisk na dole ekranu), więc rodzeństwo nie miesza sobie postępów. Wszystko zapisuje się tylko na tym urządzeniu, nic nie wysyłamy do internetu. Zadanie dnia zachęca do krótkiej, codziennej nauki: wystarczy zdobyć w danej grze choć jedną gwiazdkę.</div>
+</main>
+<script>
+var GAMES=[
+ {k:"czytanka_stars",n:"Czytanka",e:"📖",h:"gry/czytanka.html",c:"#ffd166"},
+ {k:"liczydlo_stars",n:"Liczydełko",e:"🔢",h:"gry/liczydelko.html",c:"#06d6a0"},
+ {k:"logika_stars",n:"Główkowanie",e:"🧩",h:"gry/glowkowanie.html",c:"#b8a1ff"},
+ {k:"bystrzaki-zegar-stars",n:"Zegarek",e:"🕐",h:"gry/zegar.html",c:"#bde0fe"},
+ {k:"bystrzaki-sklepik-stars",n:"Sklepik",e:"🛒",h:"gry/sklepik.html",c:"#ffe08a"},
+ {k:"bystrzaki-kalendarz-stars",n:"Kalendarz",e:"📅",h:"gry/kalendarz.html",c:"#caffbf"},
+ {k:"bystrzaki-kosz-stars",n:"Rzuty do kosza",e:"🏀",h:"gry/kosz.html",c:"#ffc078"},
+ {k:"bystrzaki-robot-stars",n:"Robot",e:"🤖",h:"gry/robot.html",c:"#c5cafe"},
+ {k:"bystrzaki-rysuj-stars",n:"Rysowanie",e:"🎨",h:"gry/rysuj.html",c:"#ffc6dd"},
+ {k:"bystrzaki-szachy-stars",n:"Szachy",e:"♞",h:"gry/szachy.html",c:"#e9d8a6"},
+ {k:"bystrzaki-english-stars",n:"English",e:"🇬🇧",h:"gry/english.html",c:"#bde0fe"},
+ {k:"bystrzaki-soroban-stars",n:"Japońskie liczenie",e:"🧮",h:"gry/soroban.html",c:"#ffb4a2"},
+ {k:"ratownik_stars",n:"Mały ratownik",e:"🚑",h:"gry/maly-ratownik.html",c:"#ffadad"}];
+var STK="🦁🐯🐻🐼🐨🐸🐵🦊🐰🦄🐲🦖🐙🦋🐞🐝🚀🛸🌈⭐🌟🌙☀️⚡🏀⚽🏆🎯🎨🎸🥁🎈🎁🍕🍩🍓🍉🚒🚑🚓🚂🚁⛵🏰🗿🌋🤖👾🦸".match(/(\p{Extended_Pictographic}️?)/gu).slice(0,48);
+var B=window.Bystrzaki,me=B?B.current():{n:"",a:"🦉"},tot=B?B.total():0,un=B?B.unlocked():0;
+document.getElementById("av").textContent=me.a;document.getElementById("nm").textContent=me.n?"Album: "+me.n:"Mój album";
+document.getElementById("sub").textContent="⭐ "+tot+" gwiazdek · 📒 "+un+" z 48 naklejek";
+var toNext=3-(tot%3);document.getElementById("bar").style.width=Math.round(un/48*100)+"%";
+document.getElementById("next").textContent=un>=48?"Masz wszystkie naklejki! Jesteś Mistrzem Bystrzaków 👑":"Do następnej naklejki: "+toNext+" ⭐";
+// zadanie dnia
+(function(){var d=new Date().toISOString().slice(0,10),h=0;for(var i=0;i<d.length;i++)h=(h*31+d.charCodeAt(i))%9973;
+ var g=GAMES[h%GAMES.length],snap={};try{snap=JSON.parse(localStorage.getItem("bystrzaki-day")||"{}")}catch(e){}
+ var start=(snap.s&&snap.s[g.k]!=null)?snap.s[g.k]:(B?B.starsOf(g.k):0),now=B?B.starsOf(g.k):0,done=now>start;
+ if(done&&snap.d===d&&!snap.done&&B){B.addBonus();snap.done=1;localStorage.setItem("bystrzaki-day",JSON.stringify(snap));un=B.unlocked();}
+ var t=document.getElementById("task");t.href=g.h;t.className="task"+(done?" done":"");
+ t.innerHTML='<span class="ic">'+g.e+'</span><span><b>'+g.n+'</b>'+(done?"Zrobione! Naklejka-prezent jest w albumie 🎁":"Zdobądź dziś choć 1 gwiazdkę w tej grze")+'</span><span class="st">'+(done?"✅ Gotowe":"▶ Graj")+'</span>';})();
+// mapa
+(function(){var W=700,rows=Math.ceil(GAMES.length/4),H=rows*170+40,pts=[];
+ GAMES.forEach(function(g,i){var r=Math.floor(i/4),c=i%4;if(r%2)c=3-c;pts.push([90+c*173,90+r*170])});
+ var s='<svg class="map" viewBox="0 0 '+W+' '+H+'"><rect x="0" y="0" width="'+W+'" height="'+H+'" rx="26" fill="#bde9ff"/>';
+ for(var w=0;w<14;w++)s+='<text x="'+(30+((w*137)%640))+'" y="'+(40+((w*89)%(H-40)))+'" font-size="18" fill="#8fd3f7">〰️</text>';
+ s+='<path d="M'+pts.map(function(p){return p.join(" ")}).join(" L")+'" fill="none" stroke="#fff" stroke-width="10" stroke-dasharray="2 18" stroke-linecap="round"/>';
+ var last=0;GAMES.forEach(function(g,i){if((B?B.starsOf(g.k):0)>0)last=i});
+ GAMES.forEach(function(g,i){var p=pts[i],st=B?B.starsOf(g.k):0,med=st>=50?"👑":st>=25?"🥇":st>=10?"🥈":st>=3?"🥉":"";
+  s+='<a href="'+g.h+'" class="isl"><ellipse cx="'+p[0]+'" cy="'+(p[1]+18)+'" rx="70" ry="42" fill="#f6d68b"/><ellipse cx="'+p[0]+'" cy="'+(p[1]+10)+'" rx="62" ry="36" fill="'+(st?"#7bd88f":"#a8d5a2")+'"/>'+
+  '<text x="'+p[0]+'" y="'+(p[1]+20)+'" text-anchor="middle" font-size="44">'+g.e+'</text>'+
+  '<text x="'+p[0]+'" y="'+(p[1]+72)+'" text-anchor="middle" font-size="19" font-weight="800" fill="#2b2d42">'+g.n+'</text>'+
+  '<text x="'+p[0]+'" y="'+(p[1]-32)+'" text-anchor="middle" font-size="19" font-weight="800" fill="#2b2d42">⭐'+st+' '+med+'</text></a>';});
+ var ap=pts[last];s+='<text x="'+(ap[0]+52)+'" y="'+(ap[1]-6)+'" font-size="40">'+me.a+'</text></svg>';
+ document.getElementById("map").innerHTML=s;})();
+// album
+(function(){var seenNew=+(localStorage.getItem("bystrzaki-album-seen")||0),h="";
+ STK.forEach(function(e,i){var ok=i<un;h+='<div class="'+(ok?"":"l")+(ok&&i>=seenNew?" n":"")+'">'+(ok?e:"?")+'</div>'});
+ document.getElementById("stk").innerHTML=h;document.getElementById("cnt").textContent=un+"/48";localStorage.setItem("bystrzaki-album-seen",un);})();
+</script>
+<script src="glos.js"></script>
+</body>
+</html>
