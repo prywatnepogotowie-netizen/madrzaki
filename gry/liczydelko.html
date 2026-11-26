@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+<script>
+/* Bystrzaki: wybór najładniejszego polskiego głosu */
+window.bestPl=function(list){
+  list=(list||[]).filter(function(v){return /^pl/i.test(v.lang)});
+  if(!list.length)return null;
+  var bad=/eloquence|grandma|grandpa|rocko|shelley|flo|reed|sandy|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph/i;
+  function score(v){var n=v.name,s=0;
+    if(bad.test(n))s-=100;
+    if(/natural|neural|online/i.test(n))s+=60;
+    if(/premium/i.test(n))s+=55;
+    if(/enhanced|ulepszon/i.test(n))s+=45;
+    if(/google/i.test(n))s+=40;
+    if(/zosia|zofia|paulina|agnieszka|ewa|maja|marta/i.test(n))s+=10;
+    if(v.localService===false)s+=5;
+    return s;}
+  return list.sort(function(a,b){return score(b)-score(a)})[0];
+};
+</script>
+
 <link rel="manifest" href="../manifest.json">
 <link rel="icon" href="../ikona.svg">
 <meta charset="utf-8">
@@ -90,9 +109,9 @@ const EM=["🍎","🍓","🐟","⭐","🎈","🐞","🍪","🚗","🌸","🐥","
 
 // ---------- mowa ----------
 let plVoice=null;
-function pickVoice(){try{plVoice=speechSynthesis.getVoices().find(v=>/^pl/i.test(v.lang))||null}catch(e){}}
+function pickVoice(){try{plVoice=bestPl(speechSynthesis.getVoices())}catch(e){}}
 if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
-function say(t,rate=0.85){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plVoice)u.voice=plVoice;u.rate=rate;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+function say(t,rate=0.95){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";if(plVoice)u.voice=plVoice;u.rate=rate;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
 const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!","Doskonale!"];
 function cheer(x,y){
   stars++; saveStars();

@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+<script>
+/* Bystrzaki: wybór najładniejszego polskiego głosu */
+window.bestPl=function(list){
+  list=(list||[]).filter(function(v){return /^pl/i.test(v.lang)});
+  if(!list.length)return null;
+  var bad=/eloquence|grandma|grandpa|rocko|shelley|flo|reed|sandy|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph/i;
+  function score(v){var n=v.name,s=0;
+    if(bad.test(n))s-=100;
+    if(/natural|neural|online/i.test(n))s+=60;
+    if(/premium/i.test(n))s+=55;
+    if(/enhanced|ulepszon/i.test(n))s+=45;
+    if(/google/i.test(n))s+=40;
+    if(/zosia|zofia|paulina|agnieszka|ewa|maja|marta/i.test(n))s+=10;
+    if(v.localService===false)s+=5;
+    return s;}
+  return list.sort(function(a,b){return score(b)-score(a)})[0];
+};
+</script>
+
 <link rel="manifest" href="../manifest.json">
 <link rel="icon" href="../ikona.svg">
 <meta charset="utf-8">
@@ -140,14 +159,14 @@ saveStars(); applyCase();
 
 // ---------- MOWA ----------
 let plVoice=null;
-function pickVoice(){ try{ const v=speechSynthesis.getVoices(); plVoice=v.find(x=>/^pl/i.test(x.lang))||null; }catch(e){} }
+function pickVoice(){ try{ const v=speechSynthesis.getVoices(); plVoice=bestPl(v); }catch(e){} }
 if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
-function say(text,rate=0.8){
+function say(text,rate=0.95){
   try{
     if(!("speechSynthesis" in window)) return;
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text.toLowerCase());
-    u.lang="pl-PL"; if(plVoice) u.voice=plVoice; u.rate=rate; u.pitch=1.1;
+    u.lang="pl-PL"; if(plVoice) u.voice=plVoice; u.rate=rate; u.pitch=1.0;
     speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -155,8 +174,8 @@ function sayParts(parts,then){
   // czyta sylaby po kolei, potem całe słowo
   try{
     speechSynthesis.cancel();
-    parts.forEach(p=>{ const u=new SpeechSynthesisUtterance(p.toLowerCase()); u.lang="pl-PL"; if(plVoice)u.voice=plVoice; u.rate=0.6; speechSynthesis.speak(u); });
-    if(then){ const u=new SpeechSynthesisUtterance(then.toLowerCase()); u.lang="pl-PL"; if(plVoice)u.voice=plVoice; u.rate=0.8; speechSynthesis.speak(u); }
+    parts.forEach(p=>{ const u=new SpeechSynthesisUtterance(p.toLowerCase()); u.lang="pl-PL"; if(plVoice)u.voice=plVoice; u.rate=0.85; speechSynthesis.speak(u); });
+    if(then){ const u=new SpeechSynthesisUtterance(then.toLowerCase()); u.lang="pl-PL"; if(plVoice)u.voice=plVoice; u.rate=0.95; speechSynthesis.speak(u); }
   }catch(e){}
 }
 const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!"];
@@ -238,7 +257,7 @@ function syllables(){
     const vs=["K","G","J"].includes(cur)?"AEIOU":"AEIOUY";
     const list=[...vs].map(v=>cur+v);
     $("#sg").innerHTML="";
-    list.forEach(s=>{const b=document.createElement("button"); b.className="key uc"; b.innerHTML=`${cur}<span style="color:var(--s1)">${s.slice(cur.length)}</span>`; b.style.color="var(--ink)"; b.onclick=()=>say(s,0.7); $("#sg").appendChild(b)});
+    list.forEach(s=>{const b=document.createElement("button"); b.className="key uc"; b.innerHTML=`${cur}<span style="color:var(--s1)">${s.slice(cur.length)}</span>`; b.style.color="var(--ink)"; b.onclick=()=>say(s,0.88); $("#sg").appendChild(b)});
     $("#all").onclick=()=>sayParts(list);
   };
   CONS.forEach(c=>{const b=document.createElement("button"); b.className="key uc"+(c===cur?" sel":""); b.textContent=c;
@@ -273,7 +292,7 @@ function words(){
       <div class="row"><button class="btn go" id="next">Dalej ➡</button></div>
     </div>`;
     bindBack(); bindLevels(words);
-    app.querySelectorAll(".syl").forEach(s=>s.onclick=()=>{ s.classList.add("hi"); setTimeout(()=>s.classList.remove("hi"),600); say(w.syl[+s.dataset.i],0.6); });
+    app.querySelectorAll(".syl").forEach(s=>s.onclick=()=>{ s.classList.add("hi"); setTimeout(()=>s.classList.remove("hi"),600); say(w.syl[+s.dataset.i],0.85); });
     $("#hear").onclick=()=>sayParts(w.syl,w.word);
     $("#show").onclick=e=>{ $("#em").textContent=w.emoji; say(w.word); cheer(e.clientX,e.clientY); $("#show").disabled=true; $("#show").style.opacity=.5; };
     $("#next").onclick=()=>{ i++; if(i>=list.length){list=shuffle(pool());i=0;} draw(); };
@@ -299,7 +318,7 @@ function quiz(){
       <div class="row"><button class="btn" id="help">💡 Podpowiedź</button></div>
     </div>`;
     bindBack(); bindLevels(quiz);
-    app.querySelectorAll(".syl").forEach(s=>s.onclick=()=>say(w.syl[+s.dataset.i],0.6));
+    app.querySelectorAll(".syl").forEach(s=>s.onclick=()=>say(w.syl[+s.dataset.i],0.85));
     $("#help").onclick=()=>sayParts(w.syl);
     app.querySelectorAll(".opt").forEach(b=>b.onclick=e=>{
       const o=opts[+b.dataset.k];
@@ -347,7 +366,7 @@ function build(){
     const slots=app.querySelectorAll(".slot");
     app.querySelectorAll(".piece").forEach(b=>b.onclick=e=>{
       const x=pieces[+b.dataset.k];
-      say(x.s,0.6);
+      say(x.s,0.85);
       if(x.s===w.syl[pos]){
         slots[pos].textContent=x.s; slots[pos].classList.add("uc", pos%2?"f2":"f1"); b.disabled=true; pos++;
         if(pos===w.syl.length){ $("#msg").className="msg ok"; $("#msg").textContent="Brawo! 🎉"; setTimeout(()=>say("Brawo! "+w.word),500); cheer(e.clientX,e.clientY); setTimeout(draw,2200); }
@@ -409,7 +428,7 @@ function sentHTML(t,size=40){
   let k=0;
   return `<div class="word" style="font-size:${size}px;letter-spacing:1px;line-height:1.5">`+t.split(" ").map(w=>`<span style="white-space:nowrap;display:inline-block;margin-right:.38em">`+w.split("-").map(s=>`<span class="syl uc" data-s="${s}" style="padding:0 1px;color:${(k++)%2?"var(--s2)":"var(--s1)"}">${s}</span>`).join("")+`</span>`).join("")+`</div>`;
 }
-function bindSyl(){ app.querySelectorAll(".syl[data-s]").forEach(s=>s.onclick=()=>{s.classList.add("hi");setTimeout(()=>s.classList.remove("hi"),600);say(s.dataset.s.replace(/[.,!?]/g,""),0.6)}); }
+function bindSyl(){ app.querySelectorAll(".syl[data-s]").forEach(s=>s.onclick=()=>{s.classList.add("hi");setTimeout(()=>s.classList.remove("hi"),600);say(s.dataset.s.replace(/[.,!?]/g,""),0.85)}); }
 function sentences(){
   let list=shuffle(SENT),i=0;
   const draw=()=>{const [t,e]=list[i];
@@ -419,8 +438,8 @@ function sentences(){
       <div class="row"><button class="btn alt" id="show">🙈 Pokaż obrazek</button><button class="btn" id="hear">🔊 Całe zdanie</button></div>
       <div class="row"><button class="btn go" id="next">Dalej ➡</button></div></div>`;
     bindBack(); bindSyl();
-    $("#hear").onclick=()=>say(plain(t),0.75);
-    $("#show").onclick=ev=>{$("#em").textContent=e;say(plain(t),0.8);cheer(ev.clientX,ev.clientY);$("#show").disabled=true;$("#show").style.opacity=.5};
+    $("#hear").onclick=()=>say(plain(t),0.9);
+    $("#show").onclick=ev=>{$("#em").textContent=e;say(plain(t),0.9);cheer(ev.clientX,ev.clientY);$("#show").disabled=true;$("#show").style.opacity=.5};
     $("#next").onclick=()=>{i++;if(i>=list.length){list=shuffle(SENT);i=0}draw()};
   };
   draw();
@@ -435,7 +454,7 @@ function sentPic(){
       ${sentHTML(t,34)}<p class="hint">Przeczytaj i wybierz pasujący obrazek</p>
       <div class="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}" style="font-size:44px">${o}</button>`).join("")}</div>
       <div class="msg" id="msg"></div><div class="row"><button class="btn" id="help">💡 Podpowiedź</button></div></div>`;
-    bindBack();bindSyl();$("#help").onclick=()=>say(plain(t),0.7);
+    bindBack();bindSyl();$("#help").onclick=()=>say(plain(t),0.88);
     app.querySelectorAll(".opt").forEach(b=>b.onclick=ev=>{
       if(opts[+b.dataset.k]===e){b.classList.add("good");app.querySelectorAll(".opt").forEach(x=>x.disabled=true);$("#msg").className="msg ok";$("#msg").textContent=PRAISE[Math.floor(Math.random()*PRAISE.length)];
         say(plain(t));if(!tries)score++;cheer(ev.clientX,ev.clientY);n++;setTimeout(next,1900)}
@@ -453,7 +472,7 @@ function story(S){
     <div style="text-align:center">${sentHTML(S.t,40)}</div>${S.s.map(x=>sentHTML(x,30)).join("")}
     <div class="row"><button class="btn" id="hear">🔊 Przeczytaj mi</button><button class="btn go" id="qs">❓ Pytania</button></div></div>`;
   bindBack(); bindSyl();
-  $("#hear").onclick=()=>say(S.s.map(plain).join(" "),0.75);
+  $("#hear").onclick=()=>say(S.s.map(plain).join(" "),0.9);
   $("#qs").onclick=()=>{let k=0,score=0;
     const ask=()=>{
       if(k>=S.q.length){app.innerHTML=topBar("📚 "+plain(S.t))+`<div class="panel"><div class="emoji">🏆</div><div class="word" style="font-size:44px">${score} / ${S.q.length}</div>
@@ -495,7 +514,7 @@ function setPicker(cb){
   return `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">${LSETS.map((x,i)=>`<button class="lv ${i===lset?"on":""}" data-ls="${i}">${x[0]}</button>`).join("")}</div>`;
 }
 function bindSet(cb){app.querySelectorAll("[data-ls]").forEach(b=>b.onclick=()=>{lset=+b.dataset.ls;try{localStorage.setItem("czytanka_lset",lset)}catch(e){};cb()})}
-const sayLetter=L=>say("litera "+L.toLowerCase(),0.75);
+const sayLetter=L=>say("litera "+L.toLowerCase(),0.9);
 function showSay(){
   let L=nextLetter(), ok=0, all=0;
   const draw=()=>{
@@ -508,7 +527,7 @@ function showSay(){
       <div class="row" id="judge" style="display:none"><button class="btn go" id="yes">✅ Umiem</button><button class="btn" style="background:#fecaca" id="no">❌ Jeszcze nie</button></div>
       <p class="hint">Dobrze: ${ok} z ${all}</p></div>`;
     bindBack(); bindSet(()=>{L=nextLetter();draw()});
-    $("#chk").onclick=()=>{ $("#ans").innerHTML=e?`<div class="emoji">${e}</div><div class="word uc" style="font-size:34px">${w.toUpperCase()}</div>`:""; say(`${L.toLowerCase()}. ${L.toLowerCase()} jak ${w}`,0.75); $("#judge").style.display="flex"; };
+    $("#chk").onclick=()=>{ $("#ans").innerHTML=e?`<div class="emoji">${e}</div><div class="word uc" style="font-size:34px">${w.toUpperCase()}</div>`:""; say(`${L.toLowerCase()}. ${L.toLowerCase()} jak ${w}`,0.9); $("#judge").style.display="flex"; };
     $("#yes").onclick=ev=>{const W=weak(); W[L]=Math.max(0,(W[L]||0)-1); setWeak(W); ok++; all++; cheer(ev.clientX,ev.clientY); say(pick(PRAISE)); L=nextLetter(L); setTimeout(draw,700)};
     $("#no").onclick=()=>{const W=weak(); W[L]=(W[L]||0)+1; setWeak(W); all++; say("Nic nie szkodzi. Ta literka wróci jeszcze."); L=nextLetter(L); setTimeout(draw,500)};
   };
@@ -553,7 +572,7 @@ function firstLetter(){
       <div class="opts">${opts.map((o,j)=>`<button class="opt uc" data-j="${j}" style="font-size:56px;font-weight:700;color:var(--ink)">${o}</button>`).join("")}</div>
       <div class="msg" id="msg"></div></div>`;
     bindBack(); bindSet(firstLetter);
-    const ask=()=>say(w+". Na jaką literkę?",0.75); $("#again").onclick=ask; ask();
+    const ask=()=>say(w+". Na jaką literkę?",0.9); $("#again").onclick=ask; ask();
     app.querySelectorAll(".opt").forEach(b=>b.onclick=ev=>{
       if(opts[+b.dataset.j]===L){b.classList.add("good");app.querySelectorAll(".opt").forEach(x=>x.disabled=true);$("#msg").className="msg ok";
         $("#msg").innerHTML=`<span class="uc">${w.toUpperCase()}</span>`;say(`${pick(PRAISE)} ${w} zaczyna się na ${L.toLowerCase()}`);if(!tries)score++;cheer(ev.clientX,ev.clientY);n++;setTimeout(next,2000);}

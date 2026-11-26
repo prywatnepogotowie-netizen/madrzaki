@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+<script>
+/* Bystrzaki: wybór najładniejszego polskiego głosu */
+window.bestPl=function(list){
+  list=(list||[]).filter(function(v){return /^pl/i.test(v.lang)});
+  if(!list.length)return null;
+  var bad=/eloquence|grandma|grandpa|rocko|shelley|flo|reed|sandy|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|fred|junior|kathy|ralph/i;
+  function score(v){var n=v.name,s=0;
+    if(bad.test(n))s-=100;
+    if(/natural|neural|online/i.test(n))s+=60;
+    if(/premium/i.test(n))s+=55;
+    if(/enhanced|ulepszon/i.test(n))s+=45;
+    if(/google/i.test(n))s+=40;
+    if(/zosia|zofia|paulina|agnieszka|ewa|maja|marta/i.test(n))s+=10;
+    if(v.localService===false)s+=5;
+    return s;}
+  return list.sort(function(a,b){return score(b)-score(a)})[0];
+};
+</script>
+
 <link rel="manifest" href="../manifest.json">
 <link rel="icon" href="../ikona.svg">
 <meta charset="utf-8">
@@ -82,9 +101,9 @@ function saveStars(){$("#stars").textContent=stars;store("stars",stars)}
 saveStars();
 // mowa
 let voices={};
-function pickVoices(){try{const v=speechSynthesis.getVoices();voices.pl=v.find(x=>/^pl/i.test(x.lang))||null;voices.en=v.find(x=>/^en-GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}catch(e){}}
+function pickVoices(){try{const v=speechSynthesis.getVoices();voices.pl=bestPl(v);voices.en=v.find(x=>/^en-GB/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang))||null}catch(e){}}
 if("speechSynthesis" in window){pickVoices();speechSynthesis.onvoiceschanged=pickVoices;}
-function say(t,lang="pl",rate=0.85,queue=false){try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang==="en"?"en-GB":"pl-PL";if(voices[lang])u.voice=voices[lang];u.rate=rate;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+function say(t,lang="pl",rate=0.95,queue=false){try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang==="en"?"en-GB":"pl-PL";if(voices[lang])u.voice=voices[lang];u.rate=rate;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
 const PRAISE=["Brawo!","Super!","Świetnie!","Ekstra!","Wspaniale!","Tak jest!","Doskonale!"];
 function cheer(x,y,add=true){
   if(add){stars++;saveStars();}
@@ -237,7 +256,7 @@ function myData(){
    <label>Ulica i numer domu / mieszkania<input class="fld" id="fa" value="${me.addr.replace(/"/g,"")}" placeholder="np. ul. Lipowa 7"></label>
    <label>Miejscowość<input class="fld" id="fc" value="${me.city.replace(/"/g,"")}" placeholder="np. Kraków"></label>
    <div style="text-align:center"><button class="btn" id="sv">💾 Zapisz</button><button class="btn b" id="hear">🔊 Posłuchaj i powtórz</button></div><div class="msg" id="msg" style="text-align:center"></div></div>`;
-  const speakMe=()=>{const m=getMe(); if(!m.addr){say("Najpierw rodzic wpisuje adres.");return} say(`Nazywam się ${m.name}. Mieszkam: ${m.addr}, ${m.city}. Powtórz za mną.`,"pl",0.75)};
+  const speakMe=()=>{const m=getMe(); if(!m.addr){say("Najpierw rodzic wpisuje adres.");return} say(`Nazywam się ${m.name}. Mieszkam: ${m.addr}, ${m.city}. Powtórz za mną.`,"pl",0.9)};
   bindBar(speakMe);
   $("#sv").onclick=()=>{store("name",$("#fn").value.trim());store("addr",$("#fa").value.trim());store("city",$("#fc").value.trim());$("#msg").className="msg ok";$("#msg").textContent="Zapisane ✔"};
   $("#hear").onclick=speakMe;
