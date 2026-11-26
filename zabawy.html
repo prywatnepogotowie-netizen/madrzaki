@@ -71,7 +71,19 @@ details[open] summary::after{transform:rotate(180deg)}
 .parents li span{font-size:30px;line-height:1}
 footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40px}
 #home{position:fixed;left:12px;bottom:12px;z-index:20;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
-@media print{nav,.testbar,.filters,.random,#home,.hero .kite,.hero .sun{display:none}details{display:block}details>.body{display:block}.card{break-inside:avoid;box-shadow:none;border:2px solid #ddd}}
+
+.voice{display:block;margin:12px 18px 0;border:none;cursor:pointer;background:var(--ink);color:#fff;font:800 18px "Baloo 2",sans-serif;padding:12px 16px;border-radius:999px;box-shadow:0 5px 0 #000}
+#vo{position:fixed;inset:0;z-index:100;background:rgba(43,45,66,.75);display:none;align-items:center;justify-content:center;padding:16px}
+#vo.on{display:flex}
+#vo .box{background:#fff;border-radius:30px;max-width:560px;width:100%;padding:24px 20px;text-align:center;box-shadow:0 10px 0 #cfe6c4}
+#vo .ic{font-size:70px;line-height:1}
+#vo .cnt{color:var(--muted);font-weight:700;margin:6px 0}
+#vo .txt{font:800 clamp(22px,5vw,30px)/1.3 "Baloo 2",sans-serif;min-height:120px;display:flex;align-items:center;justify-content:center}
+#vo .bar{height:10px;background:#e6f2e0;border-radius:999px;overflow:hidden;margin:10px 0 16px}#vo .bar i{display:block;height:100%;background:var(--g);transition:width .3s}
+#vo .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#vo button{border:none;cursor:pointer;border-radius:999px;padding:12px 18px;font:800 18px "Baloo 2",sans-serif;background:#f1f5ee;color:var(--ink);box-shadow:0 4px 0 #cfe6c4}
+#vo button.go{background:var(--r);color:#fff;box-shadow:0 4px 0 #b8304f}
+@media print{nav,.testbar,.filters,.random,#home,.voice,#vo,.hero .kite,.hero .sun{display:none}details{display:block}details>.body{display:block}.card{break-inside:avoid;box-shadow:none;border:2px solid #ddd}}
 </style>
 </head>
 <body>
@@ -94,7 +106,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
 
 <section id="zabawy">
   <h2 class="title">Wybierz zabawę</h2>
-  <p class="sub">Każda karta ma: co powiedzieć dziecku, czego potrzebujesz i jak to zrobić krok po kroku</p>
+  <p class="sub">Dziecko klika „🔊 Posłuchaj krok po kroku” – lektor podpowie, jak namówić rodzica i jak się bawić</p>
   <div class="filters" id="filters">
     <button class="on" data-f="all">Wszystkie</button>
     <button data-f="a">🐣 4–6 lat</button>
@@ -107,7 +119,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
   <div class="cards" id="cards">
 
     <article class="card" data-ages="b c d">
-      <div class="top"><div class="ic" style="background:var(--g)">🧭</div><div><h3>Podchody</h3><div class="tags"><span>6–17 lat</span><span>park / las</span><span>1–2 h</span><span>2 drużyny</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--g)">🧭</div><div><h3 data-pitch="pobawmy się w podchody">Podchody</h3><div class="tags"><span>6–17 lat</span><span>park / las</span><span>1–2 h</span><span>2 drużyny</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Jedna drużyna ucieka i zostawia tajne znaki. Druga musi je odczytać i znaleźć ukryty skarb, zanim się ściemni!</p>
       <details><summary>Jak przygotować (dla rodzica)</summary><div class="body">
         <h4>Czego potrzebujesz</h4>
@@ -127,7 +139,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="a b c d">
-      <div class="top"><div class="ic" style="background:var(--b)">🪁</div><div><h3>Latawiec</h3><div class="tags"><span>4–17 lat</span><span>łąka</span><span>zrób sam</span><span>wiatr!</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--b)">🪁</div><div><h3 data-pitch="zróbmy razem latawiec i puśćmy go na łące">Latawiec</h3><div class="tags"><span>4–17 lat</span><span>łąka</span><span>zrób sam</span><span>wiatr!</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Zbuduj swój własny latawiec, pomaluj go i sprawdź, czy poleci wyżej niż ptaki!</p>
       <details><summary>Jak zrobić latawiec (dla rodzica)</summary><div class="body">
         <h4>Czego potrzebujesz</h4>
@@ -145,7 +157,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="b c d">
-      <div class="top"><div class="ic" style="background:var(--o)">🔥</div><div><h3>Dwa ognie</h3><div class="tags"><span>6–17 lat</span><span>boisko</span><span>od 8 osób</span><span>piłka</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--o)">🔥</div><div><h3 data-pitch="zagrajmy w dwa ognie">Dwa ognie</h3><div class="tags"><span>6–17 lat</span><span>boisko</span><span>od 8 osób</span><span>piłka</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Uchyl się, złap, rzuć! Zbijaj przeciwników piłką i nie daj się trafić.</p>
       <details><summary>Zasady (dla rodzica)</summary><div class="body">
         <ol><li>Boisko dzielimy na pół, za każdą połową jest „niebo” (pas za linią).</li><li>W każdej drużynie 1 osoba zaczyna w niebie.</li><li>Trafiony piłką (bez złapania) idzie do nieba i zbija stamtąd.</li><li>Wygrywa drużyna, która zbije wszystkich na polu przeciwnika.</li></ol>
@@ -154,7 +166,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="a b c">
-      <div class="top"><div class="ic" style="background:var(--p)">🏃</div><div><h3>Berek – 5 wersji</h3><div class="tags"><span>4–13 lat</span><span>podwórko</span><span>od 3 osób</span><span>bez sprzętu</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--p)">🏃</div><div><h3 data-pitch="zagrajmy w berka">Berek – 5 wersji</h3><div class="tags"><span>4–13 lat</span><span>podwórko</span><span>od 3 osób</span><span>bez sprzętu</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Uciekaj! Kto zostanie złapany, ten goni. Ale uwaga – są tajne kryjówki!</p>
       <details><summary>Wersje berka (dla rodzica)</summary><div class="body">
         <ul><li><b>Berek kucany</b> – kto kucnie, jest bezpieczny (max 3 sekundy).</li><li><b>Berek zaczarowany</b> – złapany stoi jak posąg, odczarowuje go kolega przejściem między nogami.</li><li><b>Berek kolorowy</b> – bezpieczny jest ten, kto dotyka podanego koloru.</li><li><b>Berek łańcuch</b> – złapani łapią się za ręce i gonią razem.</li><li><b>Berek z ogonem</b> – każdy ma za pasem chustkę, trzeba ją zerwać.</li></ul>
@@ -162,7 +174,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="a b">
-      <div class="top"><div class="ic" style="background:var(--y)">🔢</div><div><h3>Klasy</h3><div class="tags"><span>4–9 lat</span><span>chodnik</span><span>kreda</span><span>uczy liczenia</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--y)">🔢</div><div><h3 data-pitch="narysujmy kredą klasy i poskaczmy">Klasy</h3><div class="tags"><span>4–9 lat</span><span>chodnik</span><span>kreda</span><span>uczy liczenia</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Rzuć kamyk, skacz na jednej nodze i nie nadepnij na linię!</p>
       <details><summary>Jak grać (dla rodzica)</summary><div class="body">
         <ol><li>Narysuj kredą pola od 1 do 10 (pojedyncze i podwójne na przemian).</li><li>Rzuć kamyk na pole 1, skacz przez wszystkie pola omijając to z kamykiem.</li><li>W drodze powrotnej podnieś kamyk. Potem rzucasz na pole 2 itd.</li></ol>
@@ -171,7 +183,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="a b">
-      <div class="top"><div class="ic" style="background:var(--v)">🙈</div><div><h3>Chowany w przyrodzie</h3><div class="tags"><span>4–9 lat</span><span>ogród / park</span><span>od 2 osób</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--v)">🙈</div><div><h3 data-pitch="zagrajmy w chowanego">Chowany w przyrodzie</h3><div class="tags"><span>4–9 lat</span><span>ogród / park</span><span>od 2 osób</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Liczę do 20… Szukam! Gdzie się schowałeś?</p>
       <details><summary>Wskazówki (dla rodzica)</summary><div class="body">
         <ul><li>Ustal granice („tylko do płotu”) i „domek”, który trzeba klepnąć.</li><li>Dla maluchów: chowamy pluszaka zamiast dziecka i podpowiadamy „ciepło–zimno”.</li><li>Starsze dzieci: chowany w parach z krótkofalówkami.</li></ul>
@@ -180,7 +192,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="b c d">
-      <div class="top"><div class="ic" style="background:var(--g)">🚲</div><div><h3>Rowerowy tor przeszkód</h3><div class="tags"><span>6–17 lat</span><span>plac / parking</span><span>kask!</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--g)">🚲</div><div><h3 data-pitch="zróbmy rowerowy tor przeszkód">Rowerowy tor przeszkód</h3><div class="tags"><span>6–17 lat</span><span>plac / parking</span><span>kask!</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Slalom, wąska kładka, hamowanie na linii – zdobądź prawo jazdy rowerowej!</p>
       <details><summary>Jak przygotować (dla rodzica)</summary><div class="body">
         <ul><li>Slalom z pachołków lub butelek z wodą.</li><li>„Kładka” – dwie linie kredą 30 cm od siebie.</li><li>Stop – hamowanie przed linią, znaki drogowe narysowane kredą.</li><li>Na koniec wręcz „Kartę rowerową Bystrzaka” (dyplom).</li></ul>
@@ -189,7 +201,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="c d">
-      <div class="top"><div class="ic" style="background:var(--b)">🗺️</div><div><h3>Bieg na orientację</h3><div class="tags"><span>9–17 lat</span><span>las / park</span><span>mapa, kompas</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--b)">🗺️</div><div><h3 data-pitch="zróbmy bieg na orientację z mapą">Bieg na orientację</h3><div class="tags"><span>9–17 lat</span><span>las / park</span><span>mapa, kompas</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Dostajesz mapę i kompas. Znajdź wszystkie punkty kontrolne najszybciej jak się da!</p>
       <details><summary>Jak przygotować (dla rodzica)</summary><div class="body">
         <ol><li>Wydrukuj mapę parku (np. z mapy online) i zaznacz 6–10 punktów.</li><li>W punktach zawieś kartki z literami – razem tworzą hasło.</li><li>Starsze dzieci: start co 2 minuty, mierzymy czas.</li></ol>
@@ -199,7 +211,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="c d">
-      <div class="top"><div class="ic" style="background:var(--r)">🚑</div><div><h3>Mały ratownik w terenie</h3><div class="tags"><span>9–17 lat</span><span>wycieczka</span><span>pierwsza pomoc</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--r)">🚑</div><div><h3 data-pitch="pobawmy się w ratowników medycznych">Mały ratownik w terenie</h3><div class="tags"><span>9–17 lat</span><span>wycieczka</span><span>pierwsza pomoc</span></div></div></div>
       <p class="kid"><b>Dla dziecka:</b> Jesteś ratownikiem na misji! Opatrz „rannego” kolegę i wezwij pomoc tak jak prawdziwy ratownik medyczny.</p>
       <details><summary>Scenariusze (dla rodzica)</summary><div class="body">
         <ul><li>Otarte kolano – przemycie, opatrunek, plaster.</li><li>Ktoś się nie rusza – sprawdź bezpieczeństwo, zawołaj, sprawdź oddech, dzwoń <b>112</b>.</li><li>Pozycja bezpieczna – ćwiczenie na kocu.</li><li>Ugryzienie owada / kleszcz – co zrobić, kogo zawołać.</li></ul>
@@ -208,7 +220,7 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
     </article>
 
     <article class="card" data-ages="d">
-      <div class="top"><div class="ic" style="background:var(--o)">🏐</div><div><h3>Sporty drużynowe</h3><div class="tags"><span>13–17 lat</span><span>boisko / plaża</span><span>od 4 osób</span></div></div></div>
+      <div class="top"><div class="ic" style="background:var(--o)">🏐</div><div><h3 data-pitch="zagrajmy razem w coś na boisku">Sporty drużynowe</h3><div class="tags"><span>13–17 lat</span><span>boisko / plaża</span><span>od 4 osób</span></div></div></div>
       <p class="kid"><b>Dla nastolatka:</b> Zbierz ekipę: siatkówka plażowa, frisbee ultimate, koszykówka 3×3 albo piłka nożna.</p>
       <details><summary>Pomysły (dla rodzica)</summary><div class="body">
         <ul><li><b>Ultimate frisbee</b> – nie wolno biegać z dyskiem, punkt za złapanie w strefie.</li><li><b>Koszykówka 3×3</b> – jeden kosz, gra do 21 punktów.</li><li><b>Turniej rodzinny</b> – nastolatek jest sędzią i organizatorem.</li></ul>
@@ -234,6 +246,47 @@ footer{text-align:center;color:var(--muted);font-size:14px;padding:30px 16px 40p
 </section>
 
 <footer>© 2026 Bystrzaki · MedKrak Sp. z o.o., ul. Ujastek 1, 31-752 Kraków · <a href="polityka-prywatnosci.html" style="color:inherit">Polityka prywatności</a> · <a href="mailto:biuro@medkrak.pl" style="color:inherit">biuro@medkrak.pl</a></footer>
+<div id="vo" role="dialog" aria-modal="true"><div class="box">
+  <div class="ic" id="vo-ic">🧭</div><div class="cnt" id="vo-cnt"></div><div class="bar"><i id="vo-bar"></i></div>
+  <div class="txt" id="vo-txt"></div>
+  <div class="row"><button id="vo-prev">◀ Wstecz</button><button id="vo-rep">🔊 Powtórz</button><button class="go" id="vo-next">Dalej ▶</button></div>
+  <div class="row" style="margin-top:10px"><button id="vo-close">✖ Zamknij</button></div>
+</div></div>
+<script>
+(function(){
+  var plV=null;function pv(){try{var l=speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)});
+    function sc(v){var n=v.name,s=0;if(/natural|neural|online/i.test(n))s+=60;if(/premium/i.test(n))s+=55;if(/enhanced/i.test(n))s+=45;if(/google/i.test(n))s+=40;return s}
+    plV=l.sort(function(a,b){return sc(b)-sc(a)})[0]||null}catch(e){}}
+  if("speechSynthesis" in window){pv();speechSynthesis.onvoiceschanged=pv;}
+  function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t.replace(/[\u2190-\u21ff\u2700-\u27bf\ud83c-\udbff\udc00-\udfff]/g,""));u.lang="pl-PL";if(plV)u.voice=plV;u.rate=0.95;u.pitch=1.0;speechSynthesis.speak(u)}catch(e){}}
+  var steps=[],i=0;
+  function show(){var t=steps[i];document.getElementById("vo-txt").textContent=t;
+    document.getElementById("vo-cnt").textContent=i===0?"Najpierw namów rodzica!":(i===steps.length-1?"Ostatni krok":"Krok "+i+" z "+(steps.length-2));
+    document.getElementById("vo-bar").style.width=Math.round(i/(steps.length-1)*100)+"%";
+    document.getElementById("vo-prev").style.visibility=i?"visible":"hidden";
+    document.getElementById("vo-next").textContent=i===steps.length-1?"🎉 Koniec":"Dalej ▶";say(t);}
+  function open(card){
+    var name=card.querySelector("h3").textContent.trim(),ic=card.querySelector(".ic").textContent.trim();
+    var kid=(card.querySelector(".kid")||{textContent:""}).textContent.replace(/^Dla (dziecka|nastolatka):\s*/,"").trim();
+    var items=[].slice.call(card.querySelectorAll(".body ol > li"));if(!items.length)items=[].slice.call(card.querySelectorAll(".body ul > li"));
+    var need=card.querySelector(".body ul");var needTxt="";
+    var h4=[].slice.call(card.querySelectorAll(".body h4"));h4.forEach(function(h){if(/potrzeb/i.test(h.textContent)&&h.nextElementSibling)needTxt=[].slice.call(h.nextElementSibling.querySelectorAll("li")).map(function(l){return l.textContent}).join(", ");});
+    var pt=card.querySelector("h3").getAttribute("data-pitch")||("zagrajmy w "+name.toLowerCase());steps=["Hej! Podejdź do mamy albo taty i powiedz: Mamo, tato, "+pt+"! Proszę! "+kid];
+    if(needTxt){steps.push("Najpierw przygotujcie razem: "+needTxt+".");items=[].slice.call(card.querySelectorAll(".body ol > li"));}
+    items.forEach(function(li){steps.push(li.textContent.trim())});
+    var safe=card.querySelector(".safe");if(safe)steps.push("Ważne! "+safe.textContent.replace(/^⚠️\s*/,"").trim());
+    steps.push("Brawo! Teraz już wiesz, jak się bawić. Miłej zabawy!");
+    document.getElementById("vo-ic").textContent=ic;i=0;document.getElementById("vo").classList.add("on");show();}
+  document.querySelectorAll(".card").forEach(function(card){
+    var b=document.createElement("button");b.className="voice";b.type="button";b.textContent="🔊 Posłuchaj krok po kroku";
+    b.addEventListener("click",function(){open(card)});card.querySelector(".kid").insertAdjacentElement("afterend",b);});
+  document.getElementById("vo-next").onclick=function(){if(i<steps.length-1){i++;show()}else close()};
+  document.getElementById("vo-prev").onclick=function(){if(i>0){i--;show()}};
+  document.getElementById("vo-rep").onclick=function(){say(steps[i])};
+  function close(){try{speechSynthesis.cancel()}catch(e){}document.getElementById("vo").classList.remove("on")}
+  document.getElementById("vo-close").onclick=close;
+})();
+</script>
 <a href="index.html" id="home">🏠 Wszystkie gry</a>
 
 <script>
