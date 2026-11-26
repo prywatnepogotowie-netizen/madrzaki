@@ -6,7 +6,8 @@
  try{cfg=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
  function save(){try{localStorage.setItem(KEY,JSON.stringify(cfg))}catch(e){}}
  function plVoices(){return speechSynthesis.getVoices().filter(function(v){return /^pl/i.test(v.lang)})}
- function chosen(){if(!cfg.name)return null;var v=plVoices().filter(function(x){return x.name===cfg.name});return v[0]||null}
+ function def(){var l=plVoices();return l.filter(function(x){return /google/i.test(x.name)})[0]||null}
+ function chosen(){if(!cfg.name)return def();var v=plVoices().filter(function(x){return x.name===cfg.name});return v[0]||def()}
  var orig=speechSynthesis.speak.bind(speechSynthesis);
  try{speechSynthesis.speak=function(u){
   try{if(!u.lang||/^pl/i.test(u.lang)){var v=chosen();if(v)u.voice=v;if(cfg.rate)u.rate=Math.max(.5,Math.min(1.6,(u.rate||1)*cfg.rate));if(cfg.pitch)u.pitch=cfg.pitch;}}catch(e){}
@@ -23,7 +24,7 @@
   "#bzgp .ok{width:100%;border:none;background:#06d6a0;border-radius:14px;padding:12px;font:800 18px system-ui;cursor:pointer;margin-top:8px}"+
   "#bzgp .hint{font-size:14px;color:#6b7090;line-height:1.45;background:#f6f7fb;border-radius:12px;padding:10px}"+
   "@media print{#bzg{display:none}}";document.head.appendChild(s)}
- function label(v){var n=v.name,t=[];if(/premium/i.test(n))t.push("bardzo naturalny");else if(/enhanced|natural|neural|online/i.test(n))t.push("naturalny");if(/google/i.test(n))t.push("Google");
+ function label(v){var n=v.name,t=[];if(/premium/i.test(n))t.push("bardzo naturalny");else if(/enhanced|natural|neural|online/i.test(n))t.push("naturalny");if(/google/i.test(n))t.push("Google · domyślny");
   if(/krzysztof|jacek|marek|male|męsk/i.test(n))t.push("męski");else if(/zosia|ewa|paulina|agnieszka|maja|female|zofia|marta/i.test(n))t.push("kobiecy");return t.join(" · ")}
  function speak(v,txt){speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(txt||SAMPLE);u.lang="pl-PL";u.voice=v;u.rate=cfg.rate||1;u.pitch=cfg.pitch||1;orig(u)}
  function open(){css();var list=plVoices(),cur=chosen();
