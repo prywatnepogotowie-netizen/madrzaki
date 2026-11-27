@@ -39,14 +39,14 @@ main{max-width:860px;margin:0 auto;padding:16px}
 .task{font:800 34px "Baloo 2";margin:4px 0 12px}
 .info{color:var(--muted);font-size:16px;margin:8px 0 0}
 /* SOROBAN */
-.abacus{display:inline-flex;gap:14px;background:var(--wood);border:10px solid var(--wood2);border-radius:18px;padding:12px 18px;position:relative;box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)}
+.abacus{display:inline-flex;gap:14px;background:var(--wood);border:10px solid var(--wood2);border-radius:18px;padding:12px 18px 40px;position:relative;box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)}
 .rod{position:relative;width:62px;height:330px}
 .rod::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:#5b3a20;border-radius:3px}
 .beam{position:absolute;left:-18px;right:-18px;top:98px;height:12px;background:var(--wood2);z-index:2}
 .bead{position:absolute;left:50%;width:58px;height:34px;margin-left:-29px;border-radius:50%/60%;cursor:pointer;transition:top .18s;z-index:3;
  background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ff6b6b,#c1121f);box-shadow:0 3px 0 rgba(0,0,0,.25)}
 .bead.heaven{background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ffd166,#e09f00)}
-.rodlbl{position:absolute;bottom:-34px;left:0;right:0;text-align:center;color:#fff;font-weight:800;font-size:14px}
+.rodlbl{position:absolute;bottom:-30px;left:-14px;right:-14px;text-align:center;color:#fff;font-weight:800;font-size:13px;white-space:nowrap}.abacus.two{gap:34px!important;padding-left:26px!important;padding-right:26px!important}
 .val{font:800 44px "Baloo 2";margin:14px 0 4px}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 /* WISIENKI */
@@ -71,7 +71,7 @@ main{max-width:860px;margin:0 auto;padding:16px}
 .fb{font:800 26px "Baloo 2";min-height:36px;margin-top:10px}
 .parent{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 5px 0 #f1d2d2;font-size:16px;line-height:1.55}
 #home{position:fixed;left:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;text-decoration:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
-@media(max-width:520px){.rod{width:52px}.bead{width:50px;margin-left:-25px}.abacus{gap:8px;padding:10px}}
+@media(max-width:520px){.rod{width:52px}.bead{width:50px;margin-left:-25px}.abacus{gap:8px;padding:10px 10px 38px}}
 </style>
 </head>
 <body>
@@ -123,7 +123,8 @@ function soroban(){
 function drawAbacus(){
  var ab=document.getElementById("abacus");if(!ab)return;
  var names=["setki","dziesiątki","jedności"],h="";
- for(var r=0;r<RODS;r++){
+ var first=(sMode==="task"&&target<100)?1:0;
+ for(var r=first;r<RODS;r++){
   var d=state[r],five=d>=5,ones=d%5;
   h+='<div class="rod"><div class="beam"></div>';
   h+='<div class="bead heaven" style="top:'+(five?58:6)+'px" onclick="tapHeaven('+r+')"></div>';
@@ -131,7 +132,7 @@ function drawAbacus(){
    h+='<div class="bead" style="top:'+(up?114+i*36:174+i*36)+'px" onclick="tapEarth('+r+','+i+')"></div>';}
   h+='<div class="rodlbl">'+names[r]+'</div></div>';
  }
- ab.innerHTML=h;
+ ab.innerHTML=h;ab.classList.toggle("two",first===1);
  var v=state[0]*100+state[1]*10+state[2];
  document.getElementById("sval").textContent=(sMode==="task"?"?":v);
 }
@@ -145,7 +146,9 @@ function sClear(){state=[0,0,0];drawAbacus();}
 function sCheck(){var v=state[0]*100+state[1]*10+state[2];
  if(v===target){star();document.getElementById("stask").textContent="⭐ "+praise()+" To jest "+target+"!";sMode="free";drawAbacus();
   setTimeout(function(){document.getElementById("scheck").style.display="none"},10);}
- else{document.getElementById("stask").textContent="Masz "+v+". Spróbuj jeszcze: "+target;say("Masz "+v+". Spróbuj jeszcze raz.");}}
+ else{var tt=target,hs=Math.floor(tt/100),ds=Math.floor(tt/10)%10,js=tt%10,parts=[];
+  if(hs)parts.push(hs+" "+(hs===1?"setka":hs<5?"setki":"setek"));if(ds||hs)parts.push(ds+" "+(ds===1?"dziesiątka":ds>1&&ds<5?"dziesiątki":"dziesiątek"));parts.push(js+" "+(js===1?"jedność":js>1&&js<5?"jedności":"jedności"));
+  document.getElementById("stask").innerHTML="Masz "+v+". Spróbuj jeszcze: "+tt+"<br><small style='font-size:18px;color:#6b7090'>💡 "+tt+" to "+parts.join(", ")+". Żółty = 5, czerwony = 1.</small>";say("Masz "+v+". Spróbuj jeszcze raz.");}}
 
 // ---------- WISIENKI ----------
 var W={};
