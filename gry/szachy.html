@@ -98,7 +98,7 @@ function unlocked(i){return i===0||DONE[ORDER[i-1]]||DONE[ORDER[i]]}
 function menu(){try{speechSynthesis.cancel()}catch(e){}
  var h='<p class="hello">Poznaj szachowe postacie! Każdą możesz nazwać po swojemu. 👑</p><div class="list">';
  ORDER.forEach(function(k,i){var u=unlocked(i);h+='<button class="pc'+(DONE[k]?" done":"")+(u?"":" lock")+'" onclick="'+(u?"intro('"+k+"')":"say('Najpierw poznaj poprzednią postać')")+'"><span class="g">'+P[k].g+'</span><b>'+nm(k)+'</b><small>'+(NAMES[k]?P[k].n:"&nbsp;")+'</small></button>'});
- var all=ORDER.every(function(k){return DONE[k]});
+ var all=true;
  h+='<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"battle()":"say('Bitwa pionków odblokuje się, gdy poznasz wszystkie postacie')")+'"><span class="g">⚔️</span><b>Bitwa pionków</b><small>'+(all?"Zagraj z komputerem!":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button>'+
  '<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"puzzles()":"say('Zagadki odblokują się, gdy poznasz wszystkie postacie')")+'"><span class="g">🧩</span><b>Zagadki</b><small>'+(all?"Która figura zbije?":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button>'+
  '<button class="pc big'+(all?"":" lock")+'" onclick="'+(all?"game()":"say('Mini partia odblokuje się, gdy poznasz wszystkie postacie')")+'"><span class="g">♚\uFE0E</span><b>Mini partia</b><small>'+(all?"Prawdziwe szachy z komputerem!":"🔒 Poznaj najpierw wszystkie postacie")+'</small></button></div>'+

@@ -98,7 +98,7 @@ function naming(){
 function saveName(){var v=document.getElementById("nm").value.trim();RNAME=v||"Robocik";ls("bystrzaki-robot-name",RNAME);say("Cześć! Jestem "+RNAME+"! Pomożesz mi znaleźć baterię?");menu();}
 function level(i){L={i:i,map:LV[i].map(function(r){return r.split("")})};prog=[];busy=false;
  for(var r=0;r<5;r++)for(var c=0;c<5;c++){if(L.map[r][c]==="R"){L.r=r;L.c=c;L.sr=r;L.sc=c;L.map[r][c]="."}}
- draw();say(i===0?"Ułóż strzałki, którymi "+rname()+" dojdzie do baterii. Potem naciśnij start!":"Poziom "+(i+1)+". Ułóż program i naciśnij start.");}
+ draw();say(i===0?"Ułóż strzałki, żeby robot doszedł do baterii. Potem naciśnij start!":"Poziom "+(i+1)+". Ułóż program i naciśnij start.");}
 function draw(trail){
  var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Poziom '+(L.i+1)+'</h2></div><div class="grid" id="grid" style="grid-template-columns:repeat(5,1fr)">';
  for(var r=0;r<5;r++)for(var c=0;c<5;c++){var t=L.map[r][c],cls="cell"+(t==="#"?" wall":"")+(trail&&trail[r+","+c]?" trail":"");
