@@ -24,9 +24,9 @@ main{max-width:620px;margin:0 auto;padding:14px 14px 90px}
 .top h2{flex:1;margin:0;font-size:24px}
 .btn{border:none;border-radius:16px;padding:11px 16px;font:800 18px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
 .btn.main{background:var(--g);box-shadow:0 5px 0 #04986f}.btn.red{background:#ffccd5}
-.grid{display:grid;gap:6px;background:#c7cdf7;padding:8px;border-radius:22px;margin:0 auto;width:min(100%,430px);aspect-ratio:1}
-.cell{background:#fff;border-radius:12px;display:grid;place-items:center;font-size:clamp(18px,6.5vw,40px);position:relative}
-.cnt{text-align:center;margin:8px 0 0;color:#6b7090}.prog .cmd{position:relative}.prog .cmd small{position:absolute;right:-4px;bottom:-6px;background:#2b2d42;color:#fff;border-radius:8px;font:800 13px system-ui;padding:1px 5px}.reps .rep{background:#ffd6a5;font-size:20px;min-width:64px}
+.grid{display:grid;gap:4px;background:#c7cdf7;padding:6px;border-radius:18px;margin:0 auto;width:min(100%,34vh,400px);aspect-ratio:1}
+.cell{background:#fff;border-radius:9px;display:grid;place-items:center;font-size:min(5vw,3.6vh,32px);position:relative}
+.ctrl{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:nowrap;margin-top:4px}.side{display:flex;flex-direction:column;gap:6px;min-width:130px}.side .row{margin:0;gap:6px;flex-wrap:nowrap}.side .two .btn{width:auto;flex:1}.side .two .btn.red{flex:0 0 46px}.side .btn{padding:8px 10px;font-size:16px;width:100%}.side .reps .btn{width:auto;flex:1;padding:6px 0;min-width:0}.top{margin-bottom:6px!important}.top h2{font-size:22px}.prog{min-height:48px!important;margin:6px 0!important;padding:5px!important}.cnt{margin-top:4px!important;font-size:14px}.cnt{text-align:center;margin:8px 0 0;color:#6b7090}.prog .cmd{position:relative}.prog .cmd small{position:absolute;right:-4px;bottom:-6px;background:#2b2d42;color:#fff;border-radius:8px;font:800 13px system-ui;padding:1px 5px}.reps .rep{background:#ffd6a5;font-size:20px;min-width:64px}
 .cell.wall{background:#5c677d}
 .cell.wall::after{content:"🧱";font-size:.8em}
 .cell.trail{background:#d8f8ea}
@@ -34,11 +34,11 @@ main{max-width:620px;margin:0 auto;padding:14px 14px 90px}
 .robot.bump{animation:bump .35s}
 @keyframes bump{30%{transform:translateX(6px)}60%{transform:translateX(-6px)}}
 .prog{display:flex;flex-wrap:wrap;gap:6px;min-height:62px;background:#fff;border-radius:18px;padding:8px;margin:12px 0;box-shadow:0 4px 0 #d9defb;align-items:center}
-.prog .cmd{width:46px;height:46px;border-radius:12px;background:var(--y);display:grid;place-items:center;font-size:26px;cursor:pointer;box-shadow:0 3px 0 #c99a1b}
+.prog .cmd{width:40px;height:40px;border-radius:12px;background:var(--y);display:grid;place-items:center;font-size:26px;cursor:pointer;box-shadow:0 3px 0 #c99a1b}
 .prog .cmd.run{background:var(--g);transform:scale(1.12)}
 .prog .empty{color:var(--muted);font-size:15px;padding:0 6px}
-.pad{display:grid;grid-template-columns:repeat(3,72px);grid-template-rows:repeat(2,72px);gap:8px;justify-content:center}
-.pad button{border:none;border-radius:18px;font-size:36px;cursor:pointer;background:var(--b);box-shadow:0 5px 0 #2a9fc4}
+.pad{display:grid;grid-template-columns:repeat(3,58px);grid-template-rows:repeat(2,58px);gap:6px;justify-content:center}
+.pad button{border:none;border-radius:14px;font-size:28px;cursor:pointer;background:var(--b);box-shadow:0 5px 0 #2a9fc4}
 .pad .up{grid-column:2}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
 .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -100,9 +100,9 @@ function draw(trail){var n=L.n,lim=cap(),rep=L.i>=REP_FROM;
   h+='<div class="'+cls+'">'+(t==="B"?"🔋":"")+(t==="*"&&!L.got[k]?"⭐":"")+(r===L.r&&c===L.c?'<div class="robot" id="rb">🤖</div>':"")+'</div>';}
  h+='</div><div class="cnt">Klocki: <b>'+prog.length+' / '+lim+'</b>'+(LV[L.i].lim?' · najlepiej: '+(LV[L.i].lim-3):'')+'</div>';
  h+='<div class="prog" id="prog">'+(prog.length?prog.map(function(p,k){return '<div class="cmd" title="usuń" onclick="del('+k+')">'+DIRS[p.d][2]+(p.n>1?'<small>×'+p.n+'</small>':'')+'</div>'}).join(""):'<span class="empty">👇 Tu pojawi się program. Klikaj strzałki!</span>')+'</div>'+
- '<div class="pad"><button class="up" onclick="add(\'up\')">⬆️</button><button class="left" onclick="add(\'left\')">⬅️</button><button class="down" onclick="add(\'down\')">⬇️</button><button class="right" onclick="add(\'right\')">➡️</button></div>'+
- (rep?'<div class="row reps"><button class="btn rep" onclick="rep(2)">×2</button><button class="btn rep" onclick="rep(3)">×3</button><button class="btn rep" onclick="rep(4)">×4</button></div>':'')+
- '<div class="row"><button class="btn main" onclick="run()">▶ Start</button><button class="btn" onclick="undo()">↩️ Cofnij</button><button class="btn red" onclick="prog=[];reset()">🧹 Wyczyść</button></div><div class="fb" id="fb"></div>'+
+ '<div class="ctrl"><div class="pad"><button class="up" onclick="add(\'up\')">⬆️</button><button class="left" onclick="add(\'left\')">⬅️</button><button class="down" onclick="add(\'down\')">⬇️</button><button class="right" onclick="add(\'right\')">➡️</button></div>'+
+ '<div class="side">'+(rep?'<div class="row reps"><button class="btn rep" onclick="rep(2)">×2</button><button class="btn rep" onclick="rep(3)">×3</button><button class="btn rep" onclick="rep(4)">×4</button></div>':'')+
+ '<button class="btn main" onclick="run()">▶ Start</button><div class="row two"><button class="btn" onclick="undo()">↩️ Cofnij</button><button class="btn red" onclick="prog=[];reset()">🧹</button></div></div></div><div class="fb" id="fb"></div>'+
  '<p class="hint">Kliknij strzałkę w programie, żeby ją usunąć.'+(rep?' Przycisk ×2, ×3 albo ×4 powtarza ostatnią strzałkę.':'')+'</p>';
  app.innerHTML=h;}
 function add(d){if(busy)return;if(prog.length>=cap()){say("Za dużo klocków! Użyj powtórzeń.");return}prog.push({d:d,n:1});say(DIRS[d][3]);reset();}
