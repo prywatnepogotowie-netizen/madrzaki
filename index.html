@@ -180,6 +180,8 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     <a class="game" data-ages="a b" style="background:#ffe08a" href="gry/sklepik.html"><span class="age">5–9 lat</span><span class="ic">🛒</span><h3>Sklepik</h3><p>Płacenie, reszta i zakupy za kieszonkowe</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:#caffbf" href="gry/kalendarz.html"><span class="age">5–9 lat</span><span class="ic">📅</span><h3>Kalendarz</h3><p>Dni tygodnia, miesiące i pory roku</p><span class="play">Graj ▶</span></a>
   </div>
+  <div id="gry-inne-wrap" style="display:none"><h3 class="title" style="font-size:26px;margin-top:26px">Pozostałe gry</h3><p class="sub">Też możesz w nie zagrać!</p><div class="games" id="gry-inne"></div></div>
+  <p style="text-align:center;margin:18px 0"><button type="button" id="gry-all" style="display:none;font:700 18px inherit;background:#fff;border:3px solid #2b2d42;border-radius:999px;padding:10px 22px;cursor:pointer">🎮 Pokaż wszystkie gry</button></p>
   <div class="soon">
     <div><b>✍️</b>Piszemy literą<small>wkrótce</small></div>
     <div><b>📝</b>Ortografia<small>wkrótce</small></div>
@@ -238,7 +240,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
   var soon={c:['Tabliczka mnożenia na czas','Ułamki','English – zdania i rozmowy','Pierwsza pomoc – resuscytacja','Mapa Polski'],d:['Pierwsza pomoc jak ratownik medyczny','Własne pieniądze i budżet','Przepisy drogowe – teoria','English – rozmowy','Bezpieczeństwo w internecie']};
   function pick(k,scroll){
     document.querySelectorAll('.age-btn').forEach(function(b){b.classList.toggle('on',b.dataset.age===k)});
-    var n=0;document.querySelectorAll('a.game').forEach(function(g){var ok=(g.dataset.ages||'').split(' ').indexOf(k)>-1;g.style.display=ok?'':'none';if(ok)n++;});
+    var n=0,main=document.querySelector('#gry .games'),inne=document.getElementById('gry-inne');[].slice.call(document.querySelectorAll('a.game')).sort(function(a,b){return (+a.dataset.o)-(+b.dataset.o)}).forEach(function(g){var ok=(g.dataset.ages||'').split(' ').indexOf(k)>-1;g.style.display='';(ok?main:inne).appendChild(g);if(ok)n++;});document.getElementById('gry-inne-wrap').style.display=inne.children.length?'':'none';document.getElementById('gry-all').style.display='';
     document.getElementById('gry-title').textContent='Gry dla: '+names[k];
     document.getElementById('age-hint').textContent='Wybrano: '+names[k]+' – możesz zmienić w każdej chwili';
     var box=document.getElementById('gry-box');
@@ -247,6 +249,8 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     if(scroll)document.getElementById('gry').scrollIntoView({behavior:'smooth'});
   }
   document.querySelectorAll('.age-btn').forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.age,true)})});
+  document.querySelectorAll('a.game').forEach(function(g,i){g.dataset.o=i});
+  document.getElementById('gry-all').addEventListener('click',function(){var main=document.querySelector('#gry .games');[].slice.call(document.querySelectorAll('a.game')).sort(function(a,b){return (+a.dataset.o)-(+b.dataset.o)}).forEach(function(g){g.style.display='';main.appendChild(g)});document.getElementById('gry-inne-wrap').style.display='none';this.style.display='none';document.getElementById('gry-box').innerHTML='';document.getElementById('gry-title').textContent='Wszystkie gry';document.getElementById('age-hint').textContent='👆 Kliknij swój wiek';document.querySelectorAll('.age-btn').forEach(function(b){b.classList.remove('on')});try{localStorage.removeItem('bystrzaki-wiek')}catch(e){}});
   try{var k=localStorage.getItem('bystrzaki-wiek');if(k&&names[k])pick(k,false)}catch(e){}
 })();
 </script>
