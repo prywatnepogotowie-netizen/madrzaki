@@ -14,9 +14,9 @@
   if(wait)setTimeout(function(){orig0(u)},wait);else orig0(u);try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}}
  try{speechSynthesis.cancel=function(){lastCancel=Date.now();try{stopRec()}catch(e){}return oCancel()}}catch(e){}
  try{speechSynthesis.speak=function(u){
-  try{var hs=recCan(u);if(hs){Q.push({u:u,hs:hs});playNext();return}}catch(e){}
-  try{if(!u.lang||/^pl/i.test(u.lang)){var v=chosen();if(v)u.voice=v;if(cfg.rate)u.rate=Math.max(.5,Math.min(1.6,(u.rate||1)*cfg.rate));if(cfg.pitch)u.pitch=cfg.pitch;}}catch(e){}
-  return orig(u);}}catch(e){}
+  var hs=null;try{hs=recCan(u)}catch(e){}
+  if(!hs){try{if(!u.lang||/^pl/i.test(u.lang)){var v=chosen();if(v)u.voice=v;if(cfg.rate)u.rate=Math.max(.5,Math.min(1.6,(u.rate||1)*cfg.rate));if(cfg.pitch)u.pitch=cfg.pitch;}}catch(e){}}
+  Q.push({u:u,hs:hs});playNext()}}catch(e){}
 
  // ---- Nagrany głos Cioci Mądrali (Google Chirp HD), z plików /glos/ ----
  var BASE=(document.currentScript&&document.currentScript.src||"").replace(/glos\.js.*$/,"")||"/";
@@ -26,7 +26,7 @@
  function sents(t){return nrm(t).replace(/([.!?…])\s+/g,"$1\n").split("\n").map(function(x){return x.trim()}).filter(Boolean)}
  function hh(s){var h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return ("0000000"+h.toString(16)).slice(-8)}
  function shardOf(h){return MAN[h][0]}
- ["m.json?v=1","m2.json?v=2"].forEach(function(f){try{fetch(BASE+"glos/"+f).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.i){MAN=MAN||{};for(var k in j.i)MAN[k]=j.i[k]}}).catch(function(){})}catch(e){}});
+ var PRI={};["m.json?v=3","m2.json?v=3","m3.json?v=3"].forEach(function(f,pi){try{fetch(BASE+"glos/"+f).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.i){MAN=MAN||{};for(var k in j.i){if(!(PRI[k]>pi)){MAN[k]=j.i[k];PRI[k]=pi}}}}).catch(function(){})}catch(e){}});
  function loadShard(n){if(SH[n])return Promise.resolve(SH[n]);if(SHL[n])return SHL[n];
   SHL[n]=fetch(BASE+"glos/"+(typeof n==="number"?"s"+n:n)+".bin?v=1").then(function(r){if(!r.ok)throw 0;return r.arrayBuffer()}).then(function(b){SH[n]=b;return b});SHL[n].catch(function(){SHL[n]=null});return SHL[n]}
  var SIL="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYwLjE2LjEwMAAAAAAAAAAAAAAA//OEwAAAAAAAAAAAAEluZm8AAAAPAAAABQAAAqAAbW1tbW1tbW1tbW1tbW1tbW1tbZKSkpKSkpKSkpKSkpKSkpKSkpKStra2tra2tra2tra2tra2tra2trbb29vb29vb29vb29vb29vb29vb2///////////////////////////AAAAAExhdmM2MC4zMQAAAAAAAAAAAAAAACQEUAAAAAAAAAKgvT9A1gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NExAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExFMAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMu//NExKYAAANIAAAAADEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//NExKwAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
@@ -34,15 +34,19 @@
  ["touchend","click","keydown"].forEach(function(ev){document.addEventListener(ev,unlock,true)});
  function stopRec(){GEN++;Q=[];if(AU){try{AU.pause()}catch(e){}}CUR=null}
  function recCan(u){if(!recOn()||!MAN)return null;try{if(u.lang&&!/^pl/i.test(u.lang))return null}catch(e){}
-  var ss=sents(u.text);if(!ss.length)return null;var hs=[];for(var i=0;i<ss.length;i++){var h=hh(ss[i]);if(!MAN[h])return null;hs.push(h)}return hs}
+  var ss=sents(u.text);if(!ss.length)return null;var hs=[];for(var i=0;i<ss.length;i++){var h=hh(ss[i].toLowerCase());if(!MAN[h])return null;hs.push(h)}return hs}
  function fire(u,ev){try{if(typeof u["on"+ev]==="function")u["on"+ev]({type:ev,utterance:u})}catch(e){}}
+ function ttsItem(it,g){var done=false;function fin(){if(done)return;done=true;if(g!==GEN)return;CUR=null;playNext()}
+  try{it.u.addEventListener("end",fin);it.u.addEventListener("error",fin)}catch(e){}
+  setTimeout(fin,Math.min(20000,1800+String(it.u.text||"").length*120/(it.u.rate||1)));orig(it.u)}
  function playNext(){if(CUR||!Q.length)return;var it=Q.shift();CUR=it;var g=GEN;
+  if(!it.hs){ttsItem(it,g);return}
   Promise.all(it.hs.map(function(h){return loadShard(shardOf(h))})).then(function(){if(g!==GEN)return;
    if(!AU){AU=new Audio();AU.preload="auto"}var k=0;fire(it.u,"start");
    function step(){if(g!==GEN)return;if(k>=it.hs.length){CUR=null;fire(it.u,"end");playNext();return}
     var h=it.hs[k++],e=MAN[h],buf=SH[e[0]];if(!buf){step();return}if(AU.__u)try{URL.revokeObjectURL(AU.__u)}catch(x){}AU.__u=URL.createObjectURL(new Blob([buf.slice(e[1],e[1]+e[2])],{type:"audio/mpeg"}));AU.src=AU.__u;try{var rr=(it.u.rate||1)/0.95;AU.playbackRate=Math.max(.6,Math.min(1.4,rr))*(cfg.rate||1)}catch(x){}
-    AU.onended=function(){setTimeout(step,k<it.hs.length?120:0)};var p=AU.play();if(p&&p.catch)p.catch(function(){if(g!==GEN)return;CUR=null;Q=[];orig(it.u)})}
-   step()}).catch(function(){if(g!==GEN)return;CUR=null;orig(it.u);playNext()})}
+    AU.onended=function(){setTimeout(step,k<it.hs.length?120:0)};var p=AU.play();if(p&&p.catch)p.catch(function(){if(g!==GEN)return;it.hs=null;ttsItem(it,g)})}
+   step()}).catch(function(){if(g!==GEN)return;it.hs=null;ttsItem(it,g)})}
  var SAMPLE="Cześć! Jestem Ciocia Mądrala. Zagramy razem?";
  function css(){if(document.getElementById("bz-glos-css"))return;var s=document.createElement("style");s.id="bz-glos-css";
   s.textContent="#bzg{position:fixed;right:12px;bottom:12px;z-index:9999;background:#2b2d42;color:#fff;border:none;font:700 15px system-ui,sans-serif;padding:10px 14px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25);cursor:pointer}"+
