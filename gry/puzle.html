@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<script src="../profil.js"></script>
+<script src="../premium.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Puzzle dla dzieci – układanki online – Bystrzaki</title>
+<meta name="description" content="Puzzle dla dzieci 3–8 lat: ułóż kolorowy obrazek z 4, 9, 16 albo 25 kawałków. Rakieta, robot, koszykówka, zamek i więcej. Za darmo, z lektorem.">
+<link rel="canonical" href="https://bystrzaki.online/gry/puzle.html">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--g:#06d6a0;--y:#ffd166;--r:#ef476f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#eef7ff;color:var(--ink);font-family:"Andika",system-ui,sans-serif;min-height:100vh}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #d6e8f8;position:sticky;top:0;z-index:5}
+header h1{font-size:22px;margin:0;flex:1;cursor:pointer}
+.stars{font-weight:800;font-size:18px}
+main{max-width:760px;margin:0 auto;padding:16px 14px 100px}
+.hello{text-align:center;font-size:19px;margin:6px 0 14px}
+.pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pic{border:none;background:#fff;border-radius:22px;padding:10px;box-shadow:0 5px 0 #d6e8f8;cursor:pointer;font:800 17px "Baloo 2";color:var(--ink)}
+.pic canvas{width:100%;border-radius:14px;display:block;margin-bottom:6px}
+.lv{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
+.btn{border:none;border-radius:16px;padding:12px 18px;font:800 18px "Baloo 2";cursor:pointer;background:#fff;color:var(--ink);box-shadow:0 4px 0 #cfdff0}
+.btn.on{background:var(--y)}.btn.main{background:var(--g)}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}.top h2{margin:0;flex:1;font-size:24px}
+.grid{display:grid;gap:3px;background:#2b2d42;border-radius:16px;padding:3px;width:min(92vw,560px);aspect-ratio:1;margin:0 auto;touch-action:manipulation}
+.pc{border-radius:6px;background-size:cover;cursor:pointer;transition:transform .15s,outline .15s;outline:0 solid transparent}
+.pc.sel{transform:scale(.9);outline:5px solid var(--y);z-index:2}
+.pc.ok{outline:3px solid var(--g);outline-offset:-3px}
+.win .pc{outline:none;border-radius:0}.win{gap:0;padding:0}
+.fb{text-align:center;font:800 22px "Baloo 2";min-height:34px;margin:10px 0}
+.prev{display:block;margin:10px auto 0;width:120px;border-radius:12px;box-shadow:0 3px 0 #cfdff0}
+.parent{background:#fff;border-radius:20px;padding:14px 16px;margin-top:20px;color:#444;line-height:1.5;font-size:15px}
+@media(max-width:560px){.top h2{font-size:20px}}
+</style>
+</head>
+<body>
+<header><h1 onclick="menu()">🧩 Puzzle</h1><span class="stars">⭐ <span id="stars">0</span></span></header>
+<main id="app"></main>
+<script>
+var app=document.getElementById("app"),S=480;
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+var stars=+ls("bystrzaki-puzle-stars")||0;document.getElementById("stars").textContent=stars;
+function star(n){stars+=n;document.getElementById("stars").textContent=stars;ls("bystrzaki-puzle-stars",stars)}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="pl-PL";speechSynthesis.speak(u)}catch(e){}}
+// ---- obrazki rysowane kodem ----
+function sky(c,a,b){var g=c.createLinearGradient(0,0,0,S);g.addColorStop(0,a);g.addColorStop(1,b);c.fillStyle=g;c.fillRect(0,0,S,S)}
+function C(c,x,y,r,col){c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill()}
+function R(c,x,y,w,h,col,rad){c.fillStyle=col;c.beginPath();c.roundRect?c.roundRect(x,y,w,h,rad||0):c.rect(x,y,w,h);c.fill()}
+function P(c,pts,col){c.fillStyle=col;c.beginPath();c.moveTo(pts[0],pts[1]);for(var i=2;i<pts.length;i+=2)c.lineTo(pts[i],pts[i+1]);c.closePath();c.fill()}
+function stars_(c,n,seed){var s=seed;for(var i=0;i<n;i++){s=(s*9301+49297)%233280;var x=s/233280*S;s=(s*9301+49297)%233280;var y=s/233280*S*.7;C(c,x,y,2+(i%3),"#fff")}}
+var PICS={
+ rakieta:{n:"Rakieta",f:function(c){sky(c,"#0b1d51","#3a0ca3");stars_(c,60,7);C(c,390,90,46,"#ffd166");C(c,372,78,10,"#f4a261");C(c,405,108,7,"#f4a261");C(c,90,400,70,"#4cc9f0");C(c,70,380,18,"#06d6a0");C(c,110,420,22,"#06d6a0");
+  P(c,[240,60,300,170,310,330,170,330,180,170],"#f1f1f1");P(c,[240,60,300,170,180,170],"#ef476f");C(c,240,220,32,"#118ab2");C(c,240,220,22,"#9be7ff");
+  P(c,[180,260,130,360,180,330],"#ef476f");P(c,[300,260,350,360,300,330],"#ef476f");P(c,[190,330,240,440,290,330],"#ff8c42");P(c,[210,330,240,400,270,330],"#ffd166")}},
+ robot:{n:"Robot",f:function(c){sky(c,"#caffbf","#9bf6ff");R(c,0,400,S,80,"#6a994e");R(c,150,70,180,130,"#adb5bd",26);C(c,205,130,24,"#fff");C(c,275,130,24,"#fff");C(c,205,130,11,"#118ab2");C(c,275,130,11,"#118ab2");R(c,200,170,80,14,"#ef476f",7);
+  R(c,236,30,8,40,"#495057");C(c,240,28,14,"#ef476f");R(c,120,215,240,180,"#4cc9f0",24);R(c,170,250,140,90,"#fff",14);C(c,205,295,16,"#ffd166");C(c,275,295,16,"#06d6a0");R(c,70,230,45,130,"#adb5bd",20);R(c,365,230,45,130,"#adb5bd",20);
+  R(c,160,395,60,60,"#495057",12);R(c,260,395,60,60,"#495057",12);C(c,420,60,30,"#ffd166")}},
+ kosz:{n:"Koszykówka",f:function(c){sky(c,"#bde0fe","#a2d2ff");R(c,0,300,S,180,"#f4a261");c.strokeStyle="#fff";c.lineWidth=6;c.beginPath();c.ellipse(240,420,190,60,0,0,Math.PI*2);c.stroke();
+  R(c,226,60,28,250,"#495057");R(c,150,40,180,120,"#fff",8);c.strokeStyle="#ef476f";c.lineWidth=6;c.strokeRect(205,85,70,50);R(c,195,150,90,10,"#ff8c42");
+  c.strokeStyle="#fff";c.lineWidth=3;for(var i=0;i<5;i++){c.beginPath();c.moveTo(200+i*20,160);c.lineTo(212+i*14,210);c.stroke()}
+  C(c,330,300,48,"#ff8c42");c.strokeStyle="#7a3b00";c.lineWidth=4;c.beginPath();c.arc(330,300,48,0,Math.PI*2);c.moveTo(282,300);c.lineTo(378,300);c.moveTo(330,252);c.lineTo(330,348);c.stroke();C(c,420,60,34,"#ffd166")}},
+ sowa:{n:"Sowa Mądrala",f:function(c){sky(c,"#ffe5ec","#ffc8dd");R(c,0,380,S,100,"#8d5524");R(c,40,360,400,30,"#6f4518",14);
+  c.fillStyle="#b07d4f";c.beginPath();c.ellipse(240,240,140,150,0,0,Math.PI*2);c.fill();c.fillStyle="#e9c46a";c.beginPath();c.ellipse(240,280,85,95,0,0,Math.PI*2);c.fill();
+  P(c,[120,120,150,40,190,110],"#b07d4f");P(c,[360,120,330,40,290,110],"#b07d4f");C(c,190,180,46,"#fff");C(c,290,180,46,"#fff");C(c,190,185,22,"#2b2d42");C(c,290,185,22,"#2b2d42");C(c,198,176,7,"#fff");C(c,298,176,7,"#fff");
+  P(c,[225,220,255,220,240,250],"#ff8c42");R(c,150,90,180,22,"#2b2d42",6);P(c,[180,90,300,90,240,50],"#2b2d42");C(c,420,70,30,"#ffd166")}},
+ zamek:{n:"Zamek",f:function(c){sky(c,"#a2d2ff","#e0fbfc");R(c,0,400,S,80,"#80b918");R(c,120,200,240,200,"#d6ccc2");R(c,70,130,80,270,"#bcb0a5");R(c,330,130,80,270,"#bcb0a5");
+  P(c,[60,130,110,50,160,130],"#ef476f");P(c,[320,130,370,50,420,130],"#ef476f");R(c,108,20,4,34,"#495057");P(c,[112,20,140,30,112,40],"#ffd166");R(c,368,20,4,34,"#495057");P(c,[372,20,400,30,372,40],"#06d6a0");
+  for(var x=120;x<360;x+=40)R(c,x,180,24,24,"#d6ccc2");c.fillStyle="#6f4518";c.beginPath();c.moveTo(195,400);c.lineTo(195,320);c.arc(240,320,45,Math.PI,0);c.lineTo(285,400);c.fill();
+  R(c,95,200,30,45,"#457b9d",15);R(c,355,200,30,45,"#457b9d",15);R(c,155,250,30,40,"#457b9d",15);R(c,295,250,30,40,"#457b9d",15);C(c,80,60,26,"#fff");C(c,105,60,20,"#fff")}},
+ dino:{n:"Dinozaur",f:function(c){sky(c,"#fff1c1","#ffd6a5");C(c,400,80,40,"#ff8c42");R(c,0,390,S,90,"#99d98c");P(c,[0,390,80,300,160,390],"#52b788");P(c,[330,390,420,280,480,390],"#52b788");
+  c.fillStyle="#2a9d8f";c.beginPath();c.ellipse(220,300,120,75,0,0,Math.PI*2);c.fill();c.beginPath();c.moveTo(300,270);c.quadraticCurveTo(360,200,350,130);c.lineTo(390,120);c.quadraticCurveTo(400,230,320,320);c.fill();
+  c.beginPath();c.ellipse(375,118,45,28,0,0,Math.PI*2);c.fill();P(c,[110,300,20,350,110,330],"#2a9d8f");R(c,150,350,34,60,"#2a9d8f",10);R(c,250,350,34,60,"#2a9d8f",10);
+  C(c,388,110,7,"#fff");C(c,390,110,3,"#2b2d42");for(var i=0;i<6;i++)P(c,[140+i*35,235,157+i*35,205,174+i*35,235],"#ffd166");C(c,190,300,14,"#8ac926");C(c,240,320,10,"#8ac926")}},
+ morze:{n:"Morze",f:function(c){sky(c,"#4cc9f0","#023e8a");R(c,0,420,S,60,"#e9c46a");
+  function fish(x,y,s,col){c.fillStyle=col;c.beginPath();c.ellipse(x,y,50*s,28*s,0,0,Math.PI*2);c.fill();P(c,[x-45*s,y,x-85*s,y-28*s,x-85*s,y+28*s],col);C(c,x+25*s,y-6*s,6*s,"#fff");C(c,x+26*s,y-6*s,3*s,"#2b2d42")}
+  fish(150,130,1,"#ff8c42");fish(330,230,1.2,"#ffd166");fish(170,320,.8,"#ef476f");
+  c.strokeStyle="#2d6a4f";c.lineWidth=12;c.lineCap="round";[60,420,450].forEach(function(x,i){c.beginPath();c.moveTo(x,440);c.quadraticCurveTo(x-30,360,x+10,280+i*20);c.stroke()});
+  C(c,300,430,26,"#f78fb3");C(c,330,440,18,"#f78fb3");[[400,90,10],[420,50,7],[80,230,9]].forEach(function(b){c.strokeStyle="#fff";c.lineWidth=3;c.beginPath();c.arc(b[0],b[1],b[2],0,Math.PI*2);c.stroke()})}},
+ kot:{n:"Kotek",f:function(c){sky(c,"#e0c3fc","#8ec5fc");R(c,0,400,S,80,"#ffafcc");C(c,240,330,110,"#ff9f1c");C(c,240,180,85,"#ff9f1c");P(c,[165,140,170,60,220,110],"#ff9f1c");P(c,[315,140,310,60,260,110],"#ff9f1c");
+  P(c,[175,125,178,80,205,108],"#ffcbf2");P(c,[305,125,302,80,275,108],"#ffcbf2");C(c,210,175,16,"#fff");C(c,270,175,16,"#fff");C(c,212,177,8,"#2b2d42");C(c,272,177,8,"#2b2d42");P(c,[230,205,250,205,240,218],"#ef476f");
+  c.strokeStyle="#2b2d42";c.lineWidth=3;[[200,215,140,205],[200,225,140,235],[280,215,340,205],[280,225,340,235]].forEach(function(l){c.beginPath();c.moveTo(l[0],l[1]);c.lineTo(l[2],l[3]);c.stroke()});
+  c.strokeStyle="#ff9f1c";c.lineWidth=26;c.lineCap="round";c.beginPath();c.moveTo(340,380);c.quadraticCurveTo(430,370,410,280);c.stroke();C(c,90,90,34,"#fff");C(c,120,90,26,"#fff")}}
+};
+var LV=[{n:"4 kawałki",k:2},{n:"9 kawałków",k:3},{n:"16 kawałków",k:4},{n:"25 kawałków",k:5}],lv=+ls("bystrzaki-puzle-lv")||0,G=null;
+function img(k){var cv=document.createElement("canvas");cv.width=cv.height=S;var c=cv.getContext("2d");PICS[k].f(c);return cv.toDataURL("image/png")}
+var CACHE={};function url(k){return CACHE[k]||(CACHE[k]=img(k))}
+function menu(){try{speechSynthesis.cancel()}catch(e){}
+ var h='<p class="hello">Wybierz obrazek i ułóż puzzle! 🧩</p><div class="lv">'+LV.map(function(L,i){return '<button class="btn'+(i===lv?" on":"")+'" onclick="setLv('+i+')">'+L.n+'</button>'}).join("")+'</div><div class="pics">';
+ for(var k in PICS)h+='<button class="pic" onclick="start(\''+k+'\')"><canvas width="240" height="240" id="t_'+k+'"></canvas>'+PICS[k].n+'</button>';
+ h+='</div><div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> Dziecko dotyka jednego kawałka, a potem drugiego. Wtedy kawałki zamieniają się miejscami. Kawałek na dobrym miejscu dostaje zieloną ramkę. Zacznijcie od 4 kawałków. Gdy idzie łatwo, wybierzcie 9 albo 16. Puzzle ćwiczą spostrzegawczość, cierpliwość i myślenie przestrzenne.</div>';
+ app.innerHTML=h;for(var k2 in PICS){var t=document.getElementById("t_"+k2).getContext("2d");t.scale(.5,.5);PICS[k2].f(t)}}
+function setLv(i){lv=i;ls("bystrzaki-puzle-lv",i);menu()}
+function start(k){var n=LV[lv].k,N=n*n,o=[];for(var i=0;i<N;i++)o.push(i);
+ do{for(var j=N-1;j>0;j--){var r=Math.floor(Math.random()*(j+1)),t=o[j];o[j]=o[r];o[r]=t}}while(o.every(function(v,i){return v===i}));
+ G={k:k,n:n,o:o,sel:-1,moves:0,done:false};draw();say("Dotknij dwóch kawałków, żeby zamienić je miejscami.")}
+function draw(msg){var n=G.n,u=url(G.k),h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>🧩 '+PICS[G.k].n+' · '+LV[lv].n+'</h2><button class="btn" onclick="start(G.k)">🔁</button></div>';
+ h+='<div class="grid'+(G.done?" win":"")+'" style="grid-template-columns:repeat('+n+',1fr)">';
+ G.o.forEach(function(v,i){var x=v%n,y=Math.floor(v/n);h+='<div class="pc'+(i===G.sel?" sel":"")+(v===i&&!G.done?" ok":"")+'" onclick="tap('+i+')" style="background-image:url('+u+');background-size:'+(n*100)+'% '+(n*100)+'%;background-position:'+(n>1?x*100/(n-1):0)+'% '+(n>1?y*100/(n-1):0)+'%"></div>'});
+ h+='</div><div class="fb">'+(msg||"")+'</div>';
+ if(!G.done)h+='<img class="prev" src="'+u+'" alt="Podgląd obrazka">';else h+='<div class="lv"><button class="btn main" onclick="start(G.k)">🔁 Jeszcze raz</button><button class="btn main" onclick="menu()">🖼️ Inny obrazek</button></div>';
+ app.innerHTML=h}
+function tap(i){if(G.done)return;if(G.sel<0){G.sel=i;draw();return}if(G.sel===i){G.sel=-1;draw();return}
+ var a=G.sel,t=G.o[a];G.o[a]=G.o[i];G.o[i]=t;G.sel=-1;G.moves++;
+ if(G.o.every(function(v,j){return v===j})){G.done=true;var s=lv+1;star(s);draw("🏆 Brawo! Obrazek ułożony! +"+s+" ⭐");say("Brawo! Dobra robota!");return}
+ var ok=(G.o[a]===a)+(G.o[i]===i);draw(ok?"✅ Pasuje!":"");if(ok)say("Super!")}
+menu();
+</script>
+<script src="../glos.js"></script>
+</body>
+</html>
