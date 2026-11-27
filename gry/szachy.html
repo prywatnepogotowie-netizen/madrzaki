@@ -93,6 +93,9 @@ function KG(cls){return '<svg class="pw '+cls+'" viewBox="0 0 45 45"><path d="M2
 function PW(cls){return '<svg class="pw '+cls+'" viewBox="0 0 45 45"><path d="M22.5 9c-2.2 0-4 1.8-4 4 0 .9.3 1.7.8 2.4-1.9 1.1-3.3 3.2-3.3 5.6 0 2 .9 3.8 2.4 5-3 1.1-7.4 5.6-7.4 13.5h23c0-7.9-4.4-12.4-7.4-13.5 1.5-1.2 2.4-3 2.4-5 0-2.4-1.4-4.5-3.3-5.6.5-.7.8-1.5.8-2.4 0-2.2-1.8-4-4-4z"/></svg>'}
 var ORDER=["wieza","goniec","hetman","krol","skoczek","pion"];
 function nm(k){return NAMES[k]||P[k].n}
+function sn(k){return P[k].n}
+var DAT={wieza:"wieży",goniec:"gońcowi",hetman:"hetmanowi",krol:"królowi",skoczek:"skoczkowi",pion:"pionkowi"};
+var ACC={Q:"hetmana",R:"wieżę",N:"skoczka",B:"gońca",K:"króla",P:"pionka"};
 var app=document.getElementById("app");
 function unlocked(i){return i===0||DONE[ORDER[i-1]]||DONE[ORDER[i]]}
 function menu(){try{speechSynthesis.cancel()}catch(e){}
@@ -129,7 +132,7 @@ function moves(k,r,c,occ,isEnemy,forward){var out=[],dirs=[];
 var Ls=null;
 function lesson(k,li){var lv=P[k].lv[li];Ls={k:k,li:li,r:lv.s[0],c:lv.s[1],t:lv.t.map(function(x){return x.slice()}),moves:0,last:null};drawL();
  var pawn2=k==="pion"&&li===1;
- say(li===0?"Pomóż "+nm(k)+" zebrać wszystkie gwiazdki. Dotknij zielonej kropki, żeby się ruszyć.":pawn2?"Uwaga, na drodze stoją czarne pionki! "+nm(k)+" bije je na ukos. Zbij je i dojdź do gwiazdki.":"Brawo! Teraz trudniej. Zbierz wszystkie gwiazdki.");}
+ say(li===0?"Pomóż "+DAT[k]+" zebrać wszystkie gwiazdki. Dotknij zielonej kropki, żeby się ruszyć.":pawn2?"Uwaga, na drodze stoją czarne pionki! "+sn(k)+" bije je na ukos. Zbij je i dojdź do gwiazdki.":"Brawo! Teraz trudniej. Zbierz wszystkie gwiazdki.");}
 function tAt(r,c){for(var i=0;i<Ls.t.length;i++)if(Ls.t[i][0]===r&&Ls.t[i][1]===c)return Ls.t[i];return null}
 function drawL(){var k=Ls.k,p=P[k];
  var mv=moves(k,Ls.r,Ls.c,function(r,c){var t=tAt(r,c);return k==="pion"?!!t:!!t},function(r,c){var t=tAt(r,c);return t&&t[2]==="e"},-1);
@@ -138,18 +141,18 @@ function drawL(){var k=Ls.k,p=P[k];
   [-1,1].forEach(function(s){if(r0>0&&inb(r0-1,c0+s)&&en(r0-1,c0+s))mv.push([r0-1,c0+s])});}
  Ls.mv=mv;
  var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>'+p.g+' '+nm(k)+' · lekcja '+(Ls.li+1)+'/2</h2></div>'+
- '<div class="tip"><button class="say" onclick="say(\''+(nm(k)+" "+p.how).replace(/'/g,"")+'\')">🔊</button><span>'+nm(k)+' '+p.how.split(".")[0]+'.</span></div><div class="board">';
+ '<div class="tip"><button class="say" onclick="say(\''+(sn(k)+" "+p.how).replace(/'/g,"")+'\')">🔊</button><span>'+nm(k)+' '+p.how.split(".")[0]+'.</span></div><div class="board">';
  for(var r=0;r<6;r++)for(var c=0;c<6;c++){var t=tAt(r,c),isMv=mv.some(function(m){return m[0]===r&&m[1]===c});
   h+='<div class="sq '+((r+c)%2?"d":"l")+(isMv?" mv":"")+(isMv&&t?" cap":"")+(Ls.last&&Ls.last[0]===r&&Ls.last[1]===c?" last":"")+'" onclick="tapL('+r+','+c+')">'+
   (r===Ls.r&&c===Ls.c?(k==='pion'?PW('w'):k==='krol'?KG('w'):'<span class="w">'+p.g+'</span>'):t?(t[2]==="e"?PW('b'):"⭐"):"")+'</div>';}
  h+='</div><div class="fb" id="fb">Zostało gwiazdek: '+Ls.t.filter(function(x){return !x[2]}).length+(Ls.t.some(function(x){return x[2]})?" · wrogów: "+Ls.t.filter(function(x){return x[2]}).length:"")+'</div>';
  app.innerHTML=h;}
-function tapL(r,c){if(r===Ls.r&&c===Ls.c){say(nm(Ls.k)+" "+P[Ls.k].how);return}
- if(!Ls.mv.some(function(m){return m[0]===r&&m[1]===c})){say(["Tam nie może iść. Szukaj zielonych kropek.","Hmm, tak "+nm(Ls.k)+" nie chodzi.","Spróbuj na zieloną kropkę."][Math.floor(Math.random()*3)]);return}
+function tapL(r,c){if(r===Ls.r&&c===Ls.c){say(sn(Ls.k)+" "+P[Ls.k].how);return}
+ if(!Ls.mv.some(function(m){return m[0]===r&&m[1]===c})){say(["Tam nie może iść. Szukaj zielonych kropek.","Hmm, tak "+sn(Ls.k)+" nie chodzi.","Spróbuj na zieloną kropkę."][Math.floor(Math.random()*3)]);return}
  Ls.last=[Ls.r,Ls.c];Ls.r=r;Ls.c=c;Ls.moves++;var t=tAt(r,c);
  if(t){Ls.t.splice(Ls.t.indexOf(t),1);if(!Ls.t.length){win();return}say(t[2]==="e"?"Bach! Zbity!":["Jest gwiazdka!","Super!","Brawo!"][Math.floor(Math.random()*3)]);}
  drawL();
- if(!Ls.mv.length){document.getElementById("fb").innerHTML='Ups, '+nm(Ls.k)+' utknął! <button class="btn main" onclick="lesson(\''+Ls.k+'\','+Ls.li+')">🔁 Jeszcze raz</button>';say("Ups, "+nm(Ls.k)+" utknął i nie może się ruszyć. Spróbuj jeszcze raz, najpierw zbij wroga.");}}
+ if(!Ls.mv.length){document.getElementById("fb").innerHTML='Ups, '+nm(Ls.k)+' utknął! <button class="btn main" onclick="lesson(\''+Ls.k+'\','+Ls.li+')">🔁 Jeszcze raz</button>';say("Ups, "+sn(Ls.k)+(Ls.k==="wieza"?" utknęła":" utknął")+" i nie może się ruszyć. Spróbuj jeszcze raz, najpierw zbij wroga.");}}
 function win(){var k=Ls.k,last=Ls.li===P[k].lv.length-1;drawL();star(1);
  var promo=k==="pion"&&Ls.r===0;
  var fb=document.getElementById("fb");fb.innerHTML=(promo?"👑 Pionek doszedł do końca i zamienia się w hetmana! ":"")+"🎉 Wszystko zebrane! ⭐";
@@ -158,7 +161,7 @@ function win(){var k=Ls.k,last=Ls.li===P[k].lv.length-1;drawL();star(1);
  else{DONE[k]=1;ls("bystrzaki-szachy-done",JSON.stringify(DONE));var i=ORDER.indexOf(k);
   nx.innerHTML=(i<ORDER.length-1?'<button class="btn main" onclick="intro(\''+ORDER[i+1]+'\')">➡ Poznaj: '+P[ORDER[i+1]].n+'</button>':'<button class="btn main" onclick="battle()">⚔️ Bitwa pionków!</button>')+'<button class="btn" onclick="menu()">Wszystkie postacie</button>';}
  fb.after(nx);
- say((promo?"Pionek doszedł do końca i zamienia się w hetmana! ":"")+"Brawo! "+nm(k)+" zebrał wszystkie gwiazdki!"+(last?" Znasz już tę postać!":""));}
+ say((promo?"Pionek doszedł do końca i zamienia się w hetmana! ":"")+"Brawo! "+sn(k)+(k==="wieza"?" zebrała":" zebrał")+" wszystkie gwiazdki!"+(last?" Znasz już tę postać!":""));}
 // ---- bitwa pionków ----
 var B=null;
 function battle(){B={w:[],b:[],turn:"w",sel:null,over:false,last:null};for(var c=0;c<6;c++){B.w.push([4,c]);B.b.push([1,c]);}drawB();
@@ -194,7 +197,7 @@ function end(who,msg){B.over=true;drawB(msg);if(who==="w")star(3);say(msg.replac
 // ---- wspólne: figury na planszy ----
 var GL={K:"♚︎",Q:"♛︎",R:"♜︎",B:"♝︎",N:"♞︎"},KEY={K:"krol",Q:"hetman",R:"wieza",B:"goniec",N:"skoczek",P:"pion"},VAL={P:1,N:3,B:3,R:5,Q:9,K:100};
 function pc(p){if(!p)return"";return p.k==="P"?PW(p.s):p.k==="K"?KG(p.s):'<span class="'+p.s+'">'+GL[p.k]+'</span>'}
-function pname(k){return nm(KEY[k])}
+function pname(k){return sn(KEY[k])}
 function gen(bd,r,c,caps){var p=bd[r][c],out=[];if(!p)return out;var s=p.s,f=s==="w"?-1:1;
  function add(rr,cc){if(!inb(rr,cc))return false;var t=bd[rr][cc];if(t&&t.s===s)return false;out.push([rr,cc]);return !t}
  if(p.k==="P"){if(!caps&&inb(r+f,c)&&!bd[r+f][c])out.push([r+f,c]);[-1,1].forEach(function(d){var rr=r+f,cc=c+d;if(inb(rr,cc)&&bd[rr][cc]&&bd[rr][cc].s!==s)out.push([rr,cc])});return out}
@@ -224,7 +227,7 @@ function makePz(){for(var tries=0;tries<500;tries++){var bd=emptyB(),cells=[];fo
  var tr=T/6|0,tc=T%6,hit=ws.filter(function(w){return bd[w[0]][w[1]]&&gen(bd,w[0],w[1]).some(function(m){return m[0]===tr&&m[1]===tc})});
  if(hit.length===1&&ws.length>=3)return{bd:bd,t:[tr,tc],a:hit[0]}}return null}
 function nextPz(){if(Z.n>=8){var s=Math.max(1,8-Z.miss);star(s>=7?3:s>=5?2:1);app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>🧩 Zagadki</h2></div><div class="panel"><div class="g">🏆</div><h2>Rozwiązane wszystkie zagadki!</h2><p>Pomyłki: '+Z.miss+'</p><div class="row"><button class="btn main" onclick="puzzles()">🔁 Nowe zagadki</button><button class="btn" onclick="menu()">Postacie</button></div></div>';ls("bystrzaki-szachy-zagadki","1");say("Brawo! Rozwiązałeś wszystkie zagadki!");return}
- Z.p=makePz();Z.n++;Z.sel=null;drawPz();var k=Z.p.bd[Z.p.t[0]][Z.p.t[1]].k;say("Zagadka "+Z.n+". Która biała figura może zbić czarnego "+(k==="Q"?"hetmana":k==="R"?"wieżę":k==="N"?"skoczka":k==="B"?"gońca":"króla")+"? Dotknij jej.")}
+ Z.p=makePz();Z.n++;Z.sel=null;drawPz();var k=Z.p.bd[Z.p.t[0]][Z.p.t[1]].k;say("Zagadka "+Z.n+". Która biała figura może zbić "+(k==="R"?"czarną":"czarnego")+" "+ACC[k]+"? Dotknij jej.")}
 function drawPz(msg){var p=Z.p,k=p.bd[p.t[0]][p.t[1]].k;
  app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>🧩 Zagadka '+Z.n+'/8</h2></div><div class="tip"><button class="say" onclick="nextSay()">🔊</button><span>Która biała figura zbije czarną figurę w czerwonym kółku? Dotknij jej.</span></div>'+
  board(p.bd,function(r,c){return (r===p.t[0]&&c===p.t[1]?" cap mv":"")+(Z.sel&&Z.sel[0]===r&&Z.sel[1]===c?" sel":"")},"tapPz")+'<div class="fb" id="fb">'+(msg||"")+'</div>'}
@@ -247,7 +250,7 @@ function tapG(r,c){if(G.over||G.turn!=="w")return;var p=G.bd[r][c];
  if(p&&p.s==="w"){G.sel=[r,c];var n=legal(G.bd,r,c).length;drawG(n?null:"Ta figura nie może się teraz ruszyć.");if(!n)say(inCheck(G.bd,"w")?"Szach! Musisz ratować króla.":"Ta figura nie może się teraz ruszyć.");return}
  if(!G.sel)return;var ok=legal(G.bd,G.sel[0],G.sel[1]).some(function(m){return m[0]===r&&m[1]===c});
  if(!ok){var pseudo=gen(G.bd,G.sel[0],G.sel[1]).some(function(m){return m[0]===r&&m[1]===c});say(pseudo?"Tak nie wolno! Twój król byłby w szachu.":"Tam ta figura nie może iść.");return}
- var cap=G.bd[r][c];G.bd=apply(G.bd,G.sel,[r,c]);G.last=[r,c];G.sel=null;if(cap)say("Bach! Zbity "+pname(cap.k).toLowerCase()+"!");
+ var cap=G.bd[r][c];G.bd=apply(G.bd,G.sel,[r,c]);G.last=[r,c];G.sel=null;if(cap)say("Bach! "+(cap.k==="R"?"Zbita ":"Zbity ")+pname(cap.k).toLowerCase()+"!");
  if(after("b"))return;G.turn="b";drawG();setTimeout(aiG,900)}
 function after(next){var ms=allLegal(G.bd,next),ch=inCheck(G.bd,next);
  if(!ms.length){G.over=true;var win=next==="b";var msg=ch?(win?"🏆 Szach mat! Wygrałeś!":"Szach mat. Tym razem wygrał komputer."):"Pat – remis! Nikt nie może się ruszyć.";
@@ -260,7 +263,7 @@ function aiG(){var ms=allLegal(G.bd,"b");
   if(attacked(nb,m.t[0],m.t[1],"w"))s-=VAL[nb[m.t[0]][m.t[1]].k]*9;
   if(p.k==="P")s+=m.t[0]*.3;return s}
  ms.sort(function(a,b){return sc(b)-sc(a)});var m=ms[0],cap=G.bd[m.t[0]][m.t[1]];G.bd=apply(G.bd,m.f,m.t);G.last=m.t;
- if(cap)say("Komputer zbił "+pname(cap.k).toLowerCase()+".");if(after("w"))return;G.turn="w";drawG()}
+ if(cap)say("Komputer zbił "+ACC[cap.k]+".");if(after("w"))return;G.turn="w";drawG()}
 
 menu();
 </script>
