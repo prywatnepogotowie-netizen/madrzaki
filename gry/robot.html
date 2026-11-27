@@ -24,8 +24,9 @@ main{max-width:620px;margin:0 auto;padding:14px 14px 90px}
 .top h2{flex:1;margin:0;font-size:24px}
 .btn{border:none;border-radius:16px;padding:11px 16px;font:800 18px "Baloo 2";cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.15);background:#fff;color:var(--ink)}
 .btn.main{background:var(--g);box-shadow:0 5px 0 #04986f}.btn.red{background:#ffccd5}
-.grid{display:grid;grid-template-rows:repeat(5,1fr);gap:6px;background:#c7cdf7;padding:8px;border-radius:22px;margin:0 auto;width:min(100%,430px);aspect-ratio:1}
-.cell{background:#fff;border-radius:12px;display:grid;place-items:center;font-size:clamp(26px,8vw,44px);position:relative}
+.grid{display:grid;gap:6px;background:#c7cdf7;padding:8px;border-radius:22px;margin:0 auto;width:min(100%,430px);aspect-ratio:1}
+.cell{background:#fff;border-radius:12px;display:grid;place-items:center;font-size:clamp(18px,6.5vw,40px);position:relative}
+.cnt{text-align:center;margin:8px 0 0;color:#6b7090}.prog .cmd{position:relative}.prog .cmd small{position:absolute;right:-4px;bottom:-6px;background:#2b2d42;color:#fff;border-radius:8px;font:800 13px system-ui;padding:1px 5px}.reps .rep{background:#ffd6a5;font-size:20px;min-width:64px}
 .cell.wall{background:#5c677d}
 .cell.wall::after{content:"🧱";font-size:.8em}
 .cell.trail{background:#d8f8ea}
@@ -65,30 +66,19 @@ var stars=+ls("bystrzaki-robot-stars")||0;document.getElementById("stars").textC
 function star(n){stars+=n;document.getElementById("stars").textContent=stars;ls("bystrzaki-robot-stars",stars)}
 var done=JSON.parse(ls("bystrzaki-robot-done")||"[]");
 var RNAME=ls("bystrzaki-robot-name")||"";
-// mapa: R robot, B bateria, # ściana, . puste ; 5x5
-var LV=[
- ["R.B..",".....",".....",".....","....."],
- ["R....",".....","B....",".....","....."],
- ["R....",".....",".....",".....","...B."],
- ["R#...",".#...",".#B..",".....","....."],
- [".....",".###.","R#B#.",".....","....."],
- ["R....","####.",".....",".####","B...."],
- ["..#..","R.#.B","..#..",".....","....."],
- ["R...#","###.#","....#",".####","...B."],
- ["B#...",".#.#.",".#.#.",".#.#.","...#R"],
- ["R.#..",".##.#","....#","#.#..","..#.B"],
- [".....",".###.",".#B#.",".#.#.","R...."],
- ["R#...",".#.#.",".#.#.",".#.#.","...#B"]
-];
+// mapa: R robot, B bateria, # ściana, * gwiazdka, . puste
+var LV=[{"m":[".....",".....",".B...","R....","....."],"best":2,"lim":null},{"m":["....R",".....",".....","...B.","....."],"best":4,"lim":null},{"m":["..R..",".....",".....",".....","....B"],"best":6,"lim":null},{"m":["#.B..","..#..",".....","...#.","..R.#"],"best":6,"lim":null},{"m":["..R..","..##.",".#B..","#.#..","...##"],"best":6,"lim":null},{"m":["R##B.","..#.#","#....","....#","....#"],"best":7,"lim":null},{"m":["B#...","..#..",".....","...#.","....R"],"best":8,"lim":null},{"m":["..#..",".....",".#...","R.##.",".#..B"],"best":9,"lim":null},{"m":["##....","...##.","...#R.","B.###.","##.#..","#.#.#."],"best":11,"lim":null},{"m":[".#....","##....","...#..","...##.","#.R##.","#.###B"],"best":10,"lim":null},{"m":["B.#.#.",".#.#.#","..##.R","..##.#","..#...","#...#."],"best":13,"lim":null},{"m":[".#..R.","....#.",".#.###","..#...","....B.","####.#"],"best":12,"lim":null},{"m":["##...#","#.....","#*..#R","#....B",".####.","...##."],"best":11,"lim":null},{"m":["......","B#...#","#...*.",".....#","..#.#.","....R."],"best":12,"lim":null},{"m":["#B.*.#","#.....",".*.#..",".##...",".#R..#","##.#.."],"best":13,"lim":null},{"m":["...#..","R#...*","..#..#","..#.#.",".B..#.",".#*.##"],"best":16,"lim":null},{"m":[".###...",".......","...#...","#...B#R",".#....#","......#","*.###.."],"best":20,"lim":13},{"m":[".#...*#","#..#.#.","..#..#.","B..#...","#....*.",".......","R.....#"],"best":21,"lim":16},{"m":["..#.###",".#.....","#...###","..#....","..##.*.","RB..#*.",".#..##."],"best":21,"lim":16},{"m":["#......","##*..##","#.##..B","...#.##","R#*#..*","##...#.","..#.##."],"best":22,"lim":15}];
 var DIRS={up:[-1,0,"⬆️","do góry"],down:[1,0,"⬇️","w dół"],left:[0,-1,"⬅️","w lewo"],right:[0,1,"➡️","w prawo"]};
-var app=document.getElementById("app"),L=null,prog=[],busy=false;
+var app=document.getElementById("app"),L=null,prog=[],busy=false,AUTO=null;
+var REP_FROM=8;
 function rname(){return RNAME||"Robocik"}
-function menu(){try{speechSynthesis.cancel()}catch(e){}
+function cap(){return L&&LV[L.i].lim||16}
+function menu(){clearTimeout(AUTO);try{speechSynthesis.cancel()}catch(e){}
  if(!RNAME){naming();return;}
  var h='<p class="hint" style="font-size:19px;color:#2b2d42">🤖 '+rname()+' potrzebuje baterii 🔋! Wybierz poziom:</p><div class="levels">';
  LV.forEach(function(_,i){var unlocked=i===0||done.indexOf(i-1)>-1||done.indexOf(i)>-1;h+='<button class="'+(done.indexOf(i)>-1?"done":"")+(unlocked?"":" lock")+'" '+(unlocked?'onclick="level('+i+')"':'onclick="say(\'Najpierw przejdź poprzedni poziom\')"')+'>'+(unlocked?(i+1):"🔒")+'</button>'});
- h+='</div><div class="row"><button class="btn" onclick="naming()">✏️ Zmień imię robota</button></div>'+
- '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> to pierwsze programowanie, bez czytania. Dziecko układa najpierw cały „program” ze strzałek, a dopiero potem robot go wykonuje. Uczy to planowania, kolejności i szukania błędów („debugowania”). Jeśli robot nie doszedł, zapytaj: „Który krok był zły?”</div>';
+ h+='</div><p class="hint">Poziomy 1–8: plansza 5×5 · 9–12: większa plansza i powtórzenia · 13–16: zbieranie gwiazdek ⭐ · 17–20: mało klocków, trzeba użyć powtórzeń.</p><div class="row"><button class="btn" onclick="naming()">✏️ Zmień imię robota</button></div>'+
+ '<div class="parent">👨‍👩‍👧 <b>Dla rodzica:</b> to pierwsze programowanie, bez czytania. Dziecko układa najpierw cały „program” ze strzałek, a dopiero potem robot go wykonuje. Od poziomu 9 jest przycisk powtórzeń (×2, ×3, ×4), czyli pierwsza „pętla”. Od poziomu 13 robot musi zebrać gwiazdki przed baterią, a od 17 program może mieć tylko kilka klocków. Uczy to planowania, kolejności i szukania błędów („debugowania”). Jeśli robot nie doszedł, zapytaj: „Który krok był zły?”</div>';
  app.innerHTML=h;}
 function naming(){
  app.innerHTML='<div class="panel"><div style="font-size:90px">🤖</div><h2>Jak ma się nazywać Twój robot?</h2><input class="name" id="nm" maxlength="14" value="'+(RNAME||"")+'" placeholder="np. Bzyk"><div class="row">'+
@@ -96,37 +86,51 @@ function naming(){
  '</div><div class="row"><button class="btn main" onclick="saveName()">✅ Gotowe</button></div></div>';
  say("Jak ma się nazywać Twój robot? Wpisz imię albo wybierz jedno z podpowiedzi.");}
 function saveName(){var v=document.getElementById("nm").value.trim();RNAME=v||"Robocik";ls("bystrzaki-robot-name",RNAME);say("Cześć! Jestem "+RNAME+"! Pomożesz mi znaleźć baterię?");menu();}
-function level(i){L={i:i,map:LV[i].map(function(r){return r.split("")})};prog=[];busy=false;
- for(var r=0;r<5;r++)for(var c=0;c<5;c++){if(L.map[r][c]==="R"){L.r=r;L.c=c;L.sr=r;L.sc=c;L.map[r][c]="."}}
- draw();say(i===0?"Ułóż strzałki, żeby robot doszedł do baterii. Potem naciśnij start!":"Poziom "+(i+1)+". Ułóż program i naciśnij start.");}
-function draw(trail){
- var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Poziom '+(L.i+1)+'</h2></div><div class="grid" id="grid" style="grid-template-columns:repeat(5,1fr)">';
- for(var r=0;r<5;r++)for(var c=0;c<5;c++){var t=L.map[r][c],cls="cell"+(t==="#"?" wall":"")+(trail&&trail[r+","+c]?" trail":"");
-  h+='<div class="'+cls+'">'+(t==="B"?"🔋":"")+(r===L.r&&c===L.c?'<div class="robot" id="rb">🤖</div>':"")+'</div>';}
- h+='</div><div class="prog" id="prog">'+(prog.length?prog.map(function(d,k){return '<div class="cmd" title="usuń" onclick="del('+k+')">'+DIRS[d][2]+'</div>'}).join(""):'<span class="empty">👇 Tu pojawi się program. Klikaj strzałki!</span>')+'</div>'+
+function level(i){clearTimeout(AUTO);var m=LV[i].m;L={i:i,n:m.length,map:m.map(function(r){return r.split("")}),stars:0};prog=[];busy=false;
+ for(var r=0;r<L.n;r++)for(var c=0;c<L.n;c++){if(L.map[r][c]==="R"){L.r=r;L.c=c;L.sr=r;L.sc=c;L.map[r][c]="."}if(L.map[r][c]==="*")L.stars++}
+ L.got={};draw();
+ var t=i===0?"Ułóż strzałki, żeby robot doszedł do baterii. Potem naciśnij start!":"Poziom "+(i+1)+". Ułóż program i naciśnij start.";
+ if(i===REP_FROM)t="Poziom "+(i+1)+". Nowość! Przycisk razy dwa powtarza ostatnią strzałkę.";
+ else if(i===12)t="Poziom "+(i+1)+". Zbierz wszystkie gwiazdki, a potem idź do baterii.";
+ else if(i===16)t="Poziom "+(i+1)+". Masz mało klocków. Użyj powtórzeń!";
+ say(t);}
+function draw(trail){var n=L.n,lim=cap(),rep=L.i>=REP_FROM;
+ var h='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Poziom '+(L.i+1)+(L.stars?' · ⭐ '+Object.keys(L.got).length+'/'+L.stars:'')+'</h2></div><div class="grid" id="grid" style="grid-template-columns:repeat('+n+',1fr);grid-template-rows:repeat('+n+',1fr)">';
+ for(var r=0;r<n;r++)for(var c=0;c<n;c++){var t=L.map[r][c],k=r+","+c,cls="cell"+(t==="#"?" wall":"")+(trail&&trail[k]?" trail":"");
+  h+='<div class="'+cls+'">'+(t==="B"?"🔋":"")+(t==="*"&&!L.got[k]?"⭐":"")+(r===L.r&&c===L.c?'<div class="robot" id="rb">🤖</div>':"")+'</div>';}
+ h+='</div><div class="cnt">Klocki: <b>'+prog.length+' / '+lim+'</b>'+(LV[L.i].lim?' · najlepiej: '+(LV[L.i].lim-3):'')+'</div>';
+ h+='<div class="prog" id="prog">'+(prog.length?prog.map(function(p,k){return '<div class="cmd" title="usuń" onclick="del('+k+')">'+DIRS[p.d][2]+(p.n>1?'<small>×'+p.n+'</small>':'')+'</div>'}).join(""):'<span class="empty">👇 Tu pojawi się program. Klikaj strzałki!</span>')+'</div>'+
  '<div class="pad"><button class="up" onclick="add(\'up\')">⬆️</button><button class="left" onclick="add(\'left\')">⬅️</button><button class="down" onclick="add(\'down\')">⬇️</button><button class="right" onclick="add(\'right\')">➡️</button></div>'+
- '<div class="row"><button class="btn main" onclick="run()">▶ Start</button><button class="btn red" onclick="prog=[];reset()">🧹 Wyczyść</button></div><div class="fb" id="fb"></div>'+
- '<p class="hint">Kliknij strzałkę w programie, żeby ją usunąć.</p>';
+ (rep?'<div class="row reps"><button class="btn rep" onclick="rep(2)">×2</button><button class="btn rep" onclick="rep(3)">×3</button><button class="btn rep" onclick="rep(4)">×4</button></div>':'')+
+ '<div class="row"><button class="btn main" onclick="run()">▶ Start</button><button class="btn" onclick="undo()">↩️ Cofnij</button><button class="btn red" onclick="prog=[];reset()">🧹 Wyczyść</button></div><div class="fb" id="fb"></div>'+
+ '<p class="hint">Kliknij strzałkę w programie, żeby ją usunąć.'+(rep?' Przycisk ×2, ×3 albo ×4 powtarza ostatnią strzałkę.':'')+'</p>';
  app.innerHTML=h;}
-function add(d){if(busy||prog.length>=16)return;prog.push(d);say(DIRS[d][3]);reset();}
+function add(d){if(busy)return;if(prog.length>=cap()){say("Za dużo klocków! Użyj powtórzeń.");return}prog.push({d:d,n:1});say(DIRS[d][3]);reset();}
+function rep(n){if(busy||!prog.length)return;prog[prog.length-1].n=n;say("razy "+["","jeden","dwa","trzy","cztery"][n]);reset();}
+function undo(){if(busy||!prog.length)return;prog.pop();reset();}
 function del(k){if(busy)return;prog.splice(k,1);reset();}
-function reset(){L.r=L.sr;L.c=L.sc;draw();}
+function reset(){L.r=L.sr;L.c=L.sc;L.got={};draw();}
 function run(){if(busy)return;if(!prog.length){say("Najpierw ułóż strzałki!");return}
- busy=true;L.r=L.sr;L.c=L.sc;var k=0,trail={};trail[L.r+","+L.c]=1;draw(trail);
+ busy=true;L.r=L.sr;L.c=L.sc;L.got={};var steps=[];prog.forEach(function(p,bi){for(var j=0;j<p.n;j++)steps.push({d:p.d,b:bi})});
+ var k=0,trail={};trail[L.r+","+L.c]=1;draw(trail);
  (function step(){
-  var cmds=document.querySelectorAll(".prog .cmd");cmds.forEach(function(x){x.classList.remove("run")});
-  if(k>=prog.length){finish(false);return}
-  cmds[k].classList.add("run");var d=DIRS[prog[k]],nr=L.r+d[0],nc=L.c+d[1];
-  if(nr<0||nr>4||nc<0||nc>4||L.map[nr][nc]==="#"){var rb=document.getElementById("rb");rb.classList.add("bump");say("Bum! Tu jest ściana.");setTimeout(function(){finish(false,true)},700);return}
-  L.r=nr;L.c=nc;trail[nr+","+nc]=1;draw(trail);var c2=document.querySelectorAll(".prog .cmd");c2[k].classList.add("run");
-  if(L.map[nr][nc]==="B"){setTimeout(function(){finish(true)},400);return}
-  k++;setTimeout(step,480);
+  function mark(){var c=document.querySelectorAll(".prog .cmd");c.forEach(function(x){x.classList.remove("run")});if(k<steps.length&&c[steps[k].b])c[steps[k].b].classList.add("run")}
+  if(k>=steps.length){finish(false);return}
+  mark();var d=DIRS[steps[k].d],nr=L.r+d[0],nc=L.c+d[1];
+  if(nr<0||nr>=L.n||nc<0||nc>=L.n||L.map[nr][nc]==="#"){var rb=document.getElementById("rb");rb.classList.add("bump");say("Bum! Tu jest ściana.");setTimeout(function(){finish(false,true)},700);return}
+  L.r=nr;L.c=nc;var key=nr+","+nc;trail[key]=1;if(L.map[nr][nc]==="*"&&!L.got[key]){L.got[key]=1}
+  draw(trail);mark();
+  if(L.map[nr][nc]==="B"){if(Object.keys(L.got).length>=L.stars){setTimeout(function(){finish(true)},400);return}}
+  k++;setTimeout(step,420);
  })();}
 function finish(win,wall){busy=false;var fb=document.getElementById("fb");
  if(win){var first=done.indexOf(L.i)<0;if(first){done.push(L.i);ls("bystrzaki-robot-done",JSON.stringify(done));star(1)}
-  fb.innerHTML="🔋 Hurra! "+rname()+" ma baterię!"+(first?" ⭐":"");say("Hurra! "+rname()+" ma baterię! Brawo, jesteś programistą!");
-  var nx=document.createElement("div");nx.className="row";nx.innerHTML=(L.i<LV.length-1?'<button class="btn main" onclick="level('+(L.i+1)+')">➡ Następny poziom</button>':'<button class="btn main" onclick="menu()">🏆 Wszystkie poziomy!</button>');fb.after(nx);}
- else{fb.textContent=wall?"🧱 Ściana! Popraw program.":"Robot się zatrzymał. Jeszcze kawałek!";if(!wall)say("Robot nie doszedł do baterii. Dodaj albo popraw strzałki.");}}
+  var last=L.i>=LV.length-1;fb.innerHTML="🔋 Hurra! "+rname()+" ma baterię!"+(first?" ⭐":"")+(last?"":"<br><small>Za chwilę następny poziom…</small>");
+  say(last?"Brawo! Przeszedłeś wszystkie poziomy!":"Hurra! Brawo, jesteś programistą!");
+  var nx=document.createElement("div");nx.className="row";nx.innerHTML=(last?'<button class="btn main" onclick="menu()">🏆 Wszystkie poziomy!</button>':'<button class="btn main" onclick="level('+(L.i+1)+')">➡ Dalej</button>');fb.after(nx);
+  if(!last){var nxt=L.i+1;AUTO=setTimeout(function(){level(nxt)},3200)}}
+ else{var miss=L.stars&&Object.keys(L.got).length<L.stars;fb.textContent=wall?"🧱 Ściana! Popraw program.":(miss?"⭐ Najpierw zbierz wszystkie gwiazdki!":"Robot się zatrzymał. Jeszcze kawałek!");
+  if(!wall)say(miss?"Najpierw zbierz wszystkie gwiazdki!":"Robot nie doszedł do baterii. Dodaj albo popraw strzałki.");}}
 menu();
 </script>
 <script src="../glos.js"></script>
