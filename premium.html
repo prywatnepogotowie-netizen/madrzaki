@@ -34,6 +34,14 @@ td.c{text-align:center}
 .code{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.code input{flex:1;min-width:200px;font:16px monospace;padding:12px;border-radius:12px;border:2px solid #ddd}
 .btn{border:none;border-radius:14px;padding:12px 18px;font:800 17px "Baloo 2";cursor:pointer;background:var(--g)}
 .muted{color:var(--muted);font-size:15px;line-height:1.5}
+.buy.on{background:var(--g);color:#2b2d42}
+#bzbuy{position:fixed;inset:0;z-index:10004;background:rgba(20,20,40,.55);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
+#bzbuy .box{background:#fff;max-width:460px;width:100%;border-radius:26px;padding:20px;margin:auto 0;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+#bzbuy h3{margin:0 0 4px;font-size:24px}#bzbuy input:not([type=radio]):not([type=checkbox]){width:100%;font:16px system-ui;padding:12px;border-radius:12px;border:2px solid #e6e0cf;margin:0 0 8px}
+#bzbuy .typ{display:flex;gap:16px;margin:8px 0;font-weight:700}#bzbuy label{display:flex;gap:8px;align-items:flex-start}
+#bzbuy .go{display:block;width:100%;border:none;border-radius:16px;padding:14px;font:800 19px "Baloo 2";cursor:pointer;background:var(--g);margin-top:10px}
+#bzbuy .x{float:right;border:none;background:none;font-size:26px;cursor:pointer}
+.paywait{background:#e8f4ff;border-radius:20px;padding:14px 18px;margin:16px 0;font-size:18px;text-align:center;font-weight:700}
 </style>
 </head>
 <body>
@@ -43,10 +51,10 @@ td.c{text-align:center}
  <div class="status no" id="st">Sprawdzam dostęp…</div>
 
  <div class="plans">
-  <div class="plan"><h3>Miesiąc</h3><div class="price">14,99 zł <small>/ mies.</small></div><p class="sub">Bez zobowiązań, na próbę</p><button class="buy" disabled>Sprzedaż ruszy wkrótce</button></div>
-  <div class="plan best"><span class="tag">NAJTANIEJ</span><h3>Rok</h3><div class="price">99 zł <small>/ rok</small></div><p class="sub">Wychodzi 8,25 zł miesięcznie · świetne na prezent 🎁</p><button class="buy" disabled>Sprzedaż ruszy wkrótce</button></div>
+  <div class="plan"><h3>Miesiąc</h3><div class="price">14,99 zł <small>/ mies.</small></div><p class="sub">Bez zobowiązań, na próbę</p><button class="buy" data-plan="m" disabled>Sprzedaż ruszy wkrótce</button></div>
+  <div class="plan best"><span class="tag">NAJTANIEJ</span><h3>Rok</h3><div class="price">99 zł <small>/ rok</small></div><p class="sub">Wychodzi 8,25 zł miesięcznie · świetne na prezent 🎁</p><button class="buy" data-plan="y" disabled>Sprzedaż ruszy wkrótce</button></div>
  </div>
- <p class="muted" style="text-align:center;margin-top:10px">Bystrzaki to na razie wersja testowa. Płatności (BLIK i karta) uruchomimy niedługo. Do tego czasu wszystkie darmowe poziomy są otwarte dla każdego. Ceny brutto z VAT, bez automatycznego odnawiania. <a href="regulamin.html">Regulamin</a> · <a href="polityka-prywatnosci.html">Polityka prywatności</a>.</p>
+ <p class="muted" style="text-align:center;margin-top:10px"><span id="soon">Bystrzaki to na razie wersja testowa. Płatności (BLIK i karta) uruchomimy niedługo. Do tego czasu wszystkie darmowe poziomy są otwarte dla każdego. </span>Ceny brutto z VAT 23% (14,99 zł = 12,19 zł netto + 2,80 zł VAT; 99 zł = 80,49 zł netto + 18,51 zł VAT). Faktura VAT przychodzi e-mailem razem z kodem, bez automatycznego odnawiania. <a href="regulamin.html">Regulamin</a> · <a href="polityka-prywatnosci.html">Polityka prywatności</a>.</p>
 
  <div class="card"><h2 style="margin:0 0 8px">Co jest za darmo, a co w Premium?</h2>
  <table><tr><th>Gra</th><th>Za darmo</th><th>W Premium dodatkowo</th></tr>
@@ -80,6 +88,38 @@ function act(){var m=document.getElementById("km");m.textContent="Sprawdzam…";
  if(d&&!d.expired){m.style.color="#06a77d";m.textContent="🎉 Kod aktywny! Miłej zabawy.";history.replaceState(null,"","premium.html")}else if(d&&d.expired){m.style.color="#c9184a";m.textContent="Ten kod już wygasł."}else{m.style.color="#c9184a";m.textContent="Ten kod jest nieprawidłowy. Sprawdź, czy skopiowałeś go w całości."}show()})}
 document.getElementById("ak").onclick=act;
 document.getElementById("rm").onclick=function(){P.clear();location.reload()};
+</script>
+<div id="bzbuy"><div class="box"><button class="x" id="bzx" aria-label="Zamknij">×</button><h3 id="bztt">Bystrzaki Premium</h3><p class="muted" id="bzpr" style="margin:0 0 10px"></p>
+<input id="bem" type="email" placeholder="E-mail rodzica (tu wyślemy kod i fakturę)" autocomplete="email">
+<b>🧾 Dane do faktury</b>
+<div class="typ"><label><input type="radio" name="bft" value="osoba" checked> Osoba prywatna</label><label><input type="radio" name="bft" value="firma"> Firma</label></div>
+<div data-bf="osoba"><input id="bf_imie" placeholder="Imię" autocomplete="given-name"><input id="bf_nazwisko" placeholder="Nazwisko" autocomplete="family-name"></div>
+<div data-bf="firma" hidden><input id="bf_nazwa" placeholder="Nazwa firmy"><input id="bf_nip" placeholder="NIP (10 cyfr)" inputmode="numeric"><input id="bf_ulica" placeholder="Ulica i numer"><div style="display:flex;gap:8px"><input id="bf_kod" placeholder="Kod" style="max-width:110px"><input id="bf_miasto" placeholder="Miasto"></div></div>
+<label class="muted" style="margin-top:6px"><input type="checkbox" id="bzzg"> <span>Akceptuję <a href="regulamin.html" target="_blank">regulamin</a>. Żądam natychmiastowego dostępu do Premium i przyjmuję do wiadomości, że z chwilą jego udostępnienia tracę prawo odstąpienia od umowy.</span></label>
+<button class="go" id="bzgo">Przejdź do płatności</button><p id="bzm" style="color:#c9184a;font-weight:700;min-height:20px;margin:8px 0 0"></p>
+<p class="muted" style="margin:4px 0 0">Płatność BLIK, przelewem lub kartą przez Przelewy24. Sprzedawca: MedKrak sp. z o.o.</p></div></div>
+<script>
+var BZ_PAY=false; // true = sprzedaż włączona (po podłączeniu Przelewy24)
+var BZ_FN="https://djysqborsvrfdjgjbehm.supabase.co/functions/v1/bystrzaki";
+(function(){var M=document.getElementById("bzbuy"),plan="y",$=function(i){return document.getElementById(i)};
+var sel=function(){return document.querySelector("input[name=bft]:checked").value};
+document.querySelectorAll("input[name=bft]").forEach(function(r){r.onchange=function(){document.querySelectorAll("[data-bf]").forEach(function(d){d.hidden=d.dataset.bf!==sel()})}});
+if(BZ_PAY){$("soon").style.display="none";document.querySelectorAll(".buy[data-plan]").forEach(function(b){b.disabled=false;b.classList.add("on");b.textContent=b.dataset.plan==="m"?"Kup miesiąc – 14,99 zł":"Kup rok – 99 zł";
+b.onclick=function(){plan=b.dataset.plan;$("bztt").textContent=plan==="m"?"Premium – miesiąc":"Premium – rok";$("bzpr").textContent=plan==="m"?"14,99 zł brutto · 31 dni · bez odnawiania":"99 zł brutto · 366 dni · bez odnawiania";$("bzm").textContent="";M.style.display="flex"}})}
+$("bzx").onclick=function(){M.style.display="none"};M.onclick=function(e){if(e.target===M)M.style.display="none"};
+$("bzgo").onclick=function(){var m=$("bzm"),v=function(i){return $("bf_"+i).value.trim()},em=$("bem").value.trim(),inv;
+if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(em)){m.textContent="Podaj poprawny adres e-mail.";return}
+if(sel()==="firma"){var nip=v("nip").replace(/[^0-9]/g,"");if(!v("nazwa")||!v("ulica")||!v("kod")||!v("miasto")){m.textContent="Uzupełnij nazwę firmy i adres.";return}if(nip.length!==10){m.textContent="NIP musi mieć 10 cyfr.";return}inv={typ:"firma",nazwa:v("nazwa"),nip:nip,ulica:v("ulica"),kod:v("kod"),miasto:v("miasto")}}
+else{if(!v("imie")||!v("nazwisko")){m.textContent="Podaj imię i nazwisko do faktury.";return}inv={typ:"osoba",imie:v("imie"),nazwisko:v("nazwisko")}}
+if(!$("bzzg").checked){m.textContent="Zaznacz zgodę powyżej.";return}
+m.style.color="#2b2d42";m.textContent="Łączę z Przelewy24…";
+fetch(BZ_FN+"?a=register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan:plan,email:em,inv:inv,zgoda:true})}).then(function(r){return r.json()}).then(function(d){if(d.url)location.href=d.url;else{m.style.color="#c9184a";m.textContent=d.error||"Nie udało się. Spróbuj za chwilę."}}).catch(function(){m.style.color="#c9184a";m.textContent="Brak połączenia. Spróbuj za chwilę."})};
+// powrót z płatności: ?s=<id zamówienia> – czekamy na potwierdzenie i włączamy kod sam
+var s=new URLSearchParams(location.search).get("s");if(s){var box=document.createElement("div");box.className="paywait";box.textContent="⏳ Czekamy na potwierdzenie płatności…";var st=$("st");st.parentNode.insertBefore(box,st.nextSibling);var n=0;
+(function poll(){fetch(BZ_FN+"?a=code&s="+encodeURIComponent(s)).then(function(r){return r.json()}).then(function(d){
+if(d.status==="paid"&&d.code){window.BystrzakiPremium.activate(d.code).then(function(){box.textContent="🎉 Dziękujemy! Premium jest włączone. Kod i fakturę wysłaliśmy też e-mailem.";history.replaceState(null,"","premium.html");show()})}
+else if(++n<40)setTimeout(poll,3000);else box.textContent="Płatność jeszcze się księguje. Kod przyjdzie e-mailem w ciągu kilku minut – otwórz link z wiadomości."}).catch(function(){if(++n<40)setTimeout(poll,3000)})})()}
+})();
 </script>
 <script src="glos.js"></script>
 </body>
