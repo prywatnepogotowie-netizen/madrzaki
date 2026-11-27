@@ -71,6 +71,8 @@ function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()
 var DAYS=["poniedziałek","wtorek","środa","czwartek","piątek","sobota","niedziela"];
 var DCOL=["#ef476f","#f78c6b","#e9b200","#06d6a0","#118ab2","#7b61ff","#c9184a"];
 var MONTHS=["styczeń","luty","marzec","kwiecień","maj","czerwiec","lipiec","sierpień","wrzesień","październik","listopad","grudzień"];
+var DLOC=["poniedziałku","wtorku","środzie","czwartku","piątku","sobocie","niedzieli"];
+var MLOC=["styczniu","lutym","marcu","kwietniu","maju","czerwcu","lipcu","sierpniu","wrześniu","październiku","listopadzie","grudniu"];
 var MGEN=["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
 var MEMO=["⛄","❤️","🌱","🐣","🌷","🍓","☀️","🏖️","🎒","🍂","🍄","🎄"];
 // pora roku "szkolna": zima XII–II, wiosna III–V, lato VI–VIII, jesień IX–XI
@@ -92,7 +94,7 @@ function today(){var d=new Date(),dow=(d.getDay()+6)%7,y=d.getFullYear(),m=d.get
  var cal='<div class="cal">'+["pn","wt","śr","cz","pt","so","nd"].map(function(x,i){return '<div class="h'+(i>4?" w":"")+'">'+x+'</div>'}).join("");
  for(var i=0;i<first;i++)cal+='<div style="background:none"></div>';
  for(var k=1;k<=dim;k++){var w=(first+k-1)%7;cal+='<div class="'+(k===dd?"t":"")+(w>4?" w":"")+'">'+k+'</div>'}cal+='</div>';
- var txt="Dzisiaj jest "+DAYS[dow]+", "+ordDay(dd)+" "+MGEN[m]+" "+y+" roku. Pora roku: "+s.n.toLowerCase()+".";
+ var txt="Dzisiaj jest "+DAYS[dow]+". "+ordDay(dd)+" "+MGEN[m]+". Rok "+y+". Pora roku: "+s.n.toLowerCase()+".";
  var yd=DAYS[(dow+6)%7],tm=DAYS[(dow+1)%7];
  app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Jaki dziś dzień?</h2></div><div class="card"><div style="font-size:54px">'+MEMO[m]+' '+s.e+'</div>'+
  '<div class="today">Dzisiaj jest <span style="color:'+DCOL[dow]+'">'+DAYS[dow]+'</span><br>'+dd+' '+MGEN[m]+' '+y+'</div>'+
@@ -110,13 +112,13 @@ function pickO(i){if(i===G.pos){G.pos++;G.pool.splice(G.pool.indexOf(i),1);drawO
   if(G.pos===G.src.length){var s=G.err===0?3:G.err<4?2:1;star(s);document.getElementById("fb").innerHTML="🎉 Wszystko po kolei! ⭐ "+s+'<div class="row"><button class="btn main" onclick="order(\''+G.kind+'\')">🔁 Jeszcze raz</button><button class="btn" onclick="menu()">Menu</button></div>';
    say("Brawo! "+G.src.join(", ")+"."+(G.kind==="d"?" Tydzień ma siedem dni.":" Rok ma dwanaście miesięcy."));}
   else say(G.src[i]);}
- else{G.err++;document.getElementById("fb").textContent="Hmm, jeszcze nie ten. Co jest "+(G.pos===0?"pierwsze":"po: "+G.src[G.pos-1])+"?";say(G.pos===0?(G.kind==="d"?"Tydzień zaczyna się od poniedziałku.":"Rok zaczyna się od stycznia."):"Co jest po "+(G.kind==="d"?"":"miesiącu ")+G.src[G.pos-1]+"?");}}
+ else{G.err++;document.getElementById("fb").textContent="Hmm, jeszcze nie ten. Co jest "+(G.pos===0?"pierwsze":"po "+(G.kind==="d"?DLOC:MLOC)[G.pos-1])+"?";say(G.pos===0?(G.kind==="d"?"Tydzień zaczyna się od poniedziałku.":"Rok zaczyna się od stycznia."):"Co jest po "+(G.kind==="d"?DLOC:MLOC)[G.pos-1]+"?");}}
 // --- wczoraj / jutro
 function quiz(){G={n:0,ok:0};nextQ()}
 function nextQ(){if(G.n>=8){endQ();return}var d=rnd(0,6),t=rnd(0,3),q,a,sp;
  if(t===0){q="Dziś jest "+DAYS[d]+". Jaki dzień będzie jutro?";a=(d+1)%7}
  else if(t===1){q="Dziś jest "+DAYS[d]+". Jaki dzień był wczoraj?";a=(d+6)%7}
- else if(t===2){q="Jaki dzień jest po: "+DAYS[d]+"?";a=(d+1)%7}
+ else if(t===2){q="Jaki dzień jest po "+DLOC[d]+"?";a=(d+1)%7}
  else{q="Dziś jest "+DAYS[d]+". Jaki dzień będzie pojutrze?";a=(d+2)%7}
  var o=[a];while(o.length<3){var x=rnd(0,6);if(o.indexOf(x)<0)o.push(x)}shuffle(o);G.a=a;G.o=o;
  app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Wczoraj i jutro</h2></div><div class="prog">Zadanie '+(G.n+1)+' z 8</div><div class="card"><div class="q">'+q+'</div>'+

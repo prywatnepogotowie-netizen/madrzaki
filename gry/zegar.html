@@ -131,8 +131,8 @@ function dayGame(){G={mode:"day"};app.innerHTML='<div class="top"><button class=
  DAY.map(function(d,i){return '<div class="it" onclick="dayShow('+i+')"><span class="e">'+d[0]+'</span>'+d[1]+'<span class="t">'+d[2]+":"+(d[3]<10?"0":"")+d[3]+'</span></div>'}).join("")+'</div>'+
  '<div class="parent">👨‍👩‍👧 Pogadajcie, jak wygląda Wasz dzień. O której naprawdę wstajecie? Po południu godziny mówimy na dwa sposoby: 14:00 to „czternasta” albo „druga po południu”.</div>';say("Zobacz, co robię w ciągu dnia. Dotknij obrazka.");}
 function dayShow(i){var d=DAY[i];document.getElementById("dc").innerHTML=clockSVG(d[2],d[3])+'<div class="dig">'+d[2]+":"+(d[3]<10?"0":"")+d[3]+'</div>';
- var extra=d[2]>12?" Czyli "+(d[2]===14?"czternasta":d[2]===16?"szesnasta":d[2]===19?"dziewiętnasta":"dwudziesta")+(d[3]===30?" trzydzieści":"")+".":"";
- say(d[1]+" o godzinie "+words(d[2],d[3]).replace("godzina ","")+"."+extra);}
+ var extra=d[2]>12?" Czyli o "+(d[2]===14?"czternastej":d[2]===16?"szesnastej":d[2]===19?"dziewiętnastej":"dwudziestej")+(d[3]===30?" trzydzieści":"")+".":"";
+ var a=h12(d[2]);say(d[1]+(d[3]===0?" o godzinie "+GEN[a]:" o "+words(d[2],d[3]))+"."+extra);}
 // --- pooglądaj
 function learn(){G={mode:"learn",h:3,m:0};var st=Math.min(LEVELS[LV].st,15);
  app.innerHTML='<div class="top"><button class="btn" onclick="menu()">⬅</button><h2>Pooglądaj zegar</h2></div><div class="clockwrap">'+clockSVG(3,0)+'<div class="dig" id="ld">3:00</div><div class="q" id="lw" style="font-size:20px">godzina trzecia</div></div>'+
