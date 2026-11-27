@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<script src="profil.js"></script>
+<script src="premium.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logowanie – Bystrzaki</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="ikona.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2d42;--muted:#6b7090;--bg:#fffaf0;--g:#06d6a0;--r:#ef476f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Andika",system-ui,sans-serif}
+h1,h2{font-family:"Baloo 2","Andika",sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;box-shadow:0 2px 0 #f0e4c8}
+header a{color:inherit;text-decoration:none;font:800 20px "Baloo 2"}header .sp{flex:1}
+main{max-width:480px;margin:0 auto;padding:22px 14px 110px}
+.card{background:#fff;border-radius:24px;padding:22px;box-shadow:0 5px 0 #f0e4c8;margin-top:14px}
+h1{text-align:center;font-size:34px;margin:4px 0}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input{width:100%;font:18px system-ui;padding:13px 14px;border-radius:14px;border:2px solid #e3dcc8;background:#fffdf7}
+input:focus{outline:none;border-color:var(--g)}
+.btn{display:block;width:100%;border:none;border-radius:16px;padding:14px;font:800 20px "Baloo 2";cursor:pointer;background:var(--g);margin-top:18px;color:var(--ink)}
+.btn.gray{background:#eee}
+.msg{min-height:26px;margin-top:12px;font-weight:700;text-align:center}
+.msg.err{color:var(--r)}
+.ok{background:#d8f8ea;border-radius:18px;padding:16px;text-align:center;font-size:18px}
+.muted{color:var(--muted);font-size:15px;line-height:1.5;text-align:center}
+a.link{color:#3a86ff}
+</style>
+</head>
+<body>
+<header><a href="index.html">🦉 Bystrzaki</a><span class="sp"></span><a href="index.html#gry">🎮 Gry</a></header>
+<main>
+<h1>👤 Konto rodzica</h1>
+<div class="card" id="box"></div>
+<p class="muted">Logowanie odblokowuje Premium na tym urządzeniu. Na każdym telefonie i komputerze logujesz się tym samym e-mailem i hasłem.<br>Nie masz konta? Konto dostajesz razem z zakupem <a class="link" href="premium.html">Bystrzaki Premium</a>.</p>
+</main>
+<script>
+var KK="bystrzaki-konto";
+function acct(){try{return JSON.parse(localStorage.getItem(KK)||"null")}catch(e){return null}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(d){if(!d)return"";if(d>"2090")return"bez limitu";var p=d.split("-");return p[2]+"."+p[1]+"."+p[0]}
+function plan(p){return p==="a"?"pełny dostęp (administrator)":p==="y"?"Premium roczne":p==="m"?"Premium miesięczne":"Premium"}
+function draw(){var a=acct(),box=document.getElementById("box");
+ BystrzakiPremium.ready.then(function(st){
+  if(a&&st.ok){box.innerHTML='<div class="ok">✅ Zalogowano jako<br><b>'+esc(a.email)+'</b><br>'+plan(st.plan)+' · ważne: '+fmt(st.exp)+'</div>'+
+   '<button class="btn" onclick="location.href=\'index.html#gry\'">🎮 Do gier</button><button class="btn gray" onclick="logout()">Wyloguj</button>';return}
+  box.innerHTML='<form onsubmit="login(event)"><label for="em">E-mail</label><input id="em" type="email" autocomplete="username" required placeholder="np. rodzic@poczta.pl" value="'+(a?esc(a.email):"")+'">'+
+   '<label for="pw">Hasło</label><input id="pw" type="password" autocomplete="current-password" required placeholder="hasło z wiadomości po zakupie">'+
+   '<button class="btn" type="submit" id="go">Zaloguj</button><div class="msg" id="msg"></div></form>'});}
+function b64u(s){s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u}
+function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(x){return("0"+x.toString(16)).slice(-2)}).join("")}
+function login(e){e.preventDefault();var em=document.getElementById("em").value.trim().toLowerCase(),pw=document.getElementById("pw").value,msg=document.getElementById("msg"),go=document.getElementById("go");
+ msg.className="msg";msg.textContent="Sprawdzam…";go.disabled=true;var enc=new TextEncoder(),bits,db;
+ fetch("konta.json?v="+Date.now()).then(function(r){return r.json()}).then(function(j){db=j;
+  return crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveBits"])}).then(function(k){
+  return crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:enc.encode("bystrzaki:"+em),iterations:db.it||150000},k,256)}).then(function(b){bits=b;return crypto.subtle.digest("SHA-256",b)}).then(function(h){
+  var v=db.k[hex(h).slice(0,32)];if(!v)throw"bad";var p=v.split(".");
+  return crypto.subtle.importKey("raw",bits,"AES-GCM",false,["decrypt"]).then(function(key){return crypto.subtle.decrypt({name:"AES-GCM",iv:b64u(p[0])},key,b64u(p[1]))})}).then(function(pt){
+  return BystrzakiPremium.activate(new TextDecoder().decode(pt))}).then(function(d){if(!d||d.expired)throw"exp";
+  try{localStorage.setItem(KK,JSON.stringify({email:em,t:Date.now()}))}catch(x){}location.reload()}).catch(function(x){go.disabled=false;msg.className="msg err";
+  msg.textContent=x==="exp"?"Dostęp na tym koncie wygasł. Przedłuż Premium.":"Nieprawidłowy e-mail albo hasło."})}
+function logout(){try{localStorage.removeItem(KK)}catch(e){}if(BystrzakiPremium.clear)BystrzakiPremium.clear();location.reload()}
+draw();
+</script>
+<script src="glos.js"></script>
+</body>
+</html>

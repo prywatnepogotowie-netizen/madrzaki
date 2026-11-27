@@ -5,7 +5,7 @@
 (function(){
  var S=window.localStorage;if(!S)return;
  var P=Storage.prototype,oGet=P.getItem,oSet=P.setItem,oRem=P.removeItem;
- var GAME=/^(bystrzaki-|czytanka_|liczydlo_|logika_|ratownik_)/,SHARED=/^bystrzaki-(glos|wiek|prof|premium)/;
+ var GAME=/^(bystrzaki-|czytanka_|liczydlo_|logika_|ratownik_)/,SHARED=/^bystrzaki-(glos|wiek|prof|premium|konto)/;
  function raw(k){try{return oGet.call(S,k)}catch(e){return null}}
  function rawSet(k,v){try{oSet.call(S,k,v)}catch(e){}}
  var list;try{list=JSON.parse(raw("bystrzaki-prof-list")||"null")}catch(e){list=null}
