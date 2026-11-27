@@ -45,7 +45,7 @@ main{max-width:860px;margin:0 auto;padding:16px}
 .beam{position:absolute;left:-18px;right:-18px;top:98px;height:12px;background:var(--wood2);z-index:2}
 .bead{position:absolute;left:50%;width:58px;height:34px;margin-left:-29px;border-radius:50%/60%;cursor:pointer;transition:top .18s;z-index:3;
  background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ff6b6b,#c1121f);box-shadow:0 3px 0 rgba(0,0,0,.25)}
-.bead.heaven{background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ffd166,#e09f00)}
+.bead{display:flex;align-items:center;justify-content:center;font:800 17px "Baloo 2",system-ui;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);user-select:none}.bead.heaven{color:#7a4b00;text-shadow:0 1px 0 rgba(255,255,255,.5);background:radial-gradient(ellipse at 35% 30%,#fff7 0 18%,transparent 19%),linear-gradient(#ffd166,#e09f00)}
 .rodlbl{position:absolute;bottom:-30px;left:-14px;right:-14px;text-align:center;color:#fff;font-weight:800;font-size:13px;white-space:nowrap}.abacus.two{gap:34px!important;padding-left:26px!important;padding-right:26px!important}
 .val{font:800 44px "Baloo 2";margin:14px 0 4px}
 .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -117,7 +117,7 @@ function soroban(){
  '<div class="val" id="sval">0</div>'+
  '<div class="row"><button class="btn" onclick="sFree()">✋ Swobodnie</button><button class="btn main" onclick="sTask(1)">🎯 Ułóż liczbę (do 20)</button><button class="btn main" onclick="sTask(2)">🎯 Do 99</button><button class="btn main" onclick="sTask(3)">🎯 Do 999</button></div>'+
  '<div class="row" id="scheck" style="display:none"><button class="btn green" onclick="sCheck()">✅ Sprawdź</button><button class="btn" onclick="sClear()">🧹 Wyczyść</button></div>'+
- '<p class="info">Żółty koralik nad belką = <b>5</b>. Czerwone pod belką = <b>1</b>. Przesuń koralik do belki, żeby go policzyć.</p></div>';
+ '<p class="info">Żółty koralik (<b>5</b>) liczy się, gdy dotyka belki. Czerwony koralik (<b>1</b>) też liczy się przy belce. Przesuń koralik do belki, żeby go policzyć.</p></div>';
  drawAbacus();
 }
 function drawAbacus(){
@@ -127,9 +127,9 @@ function drawAbacus(){
  for(var r=first;r<RODS;r++){
   var d=state[r],five=d>=5,ones=d%5;
   h+='<div class="rod"><div class="beam"></div>';
-  h+='<div class="bead heaven" style="top:'+(five?58:6)+'px" onclick="tapHeaven('+r+')"></div>';
+  h+='<div class="bead heaven" style="top:'+(five?58:6)+'px" onclick="tapHeaven('+r+')">5</div>';
   for(var i=0;i<4;i++){var up=i<ones;var top=up?(114+i*36):(114+36*(i)+ (ones<=i?60:0));
-   h+='<div class="bead" style="top:'+(up?114+i*36:174+i*36)+'px" onclick="tapEarth('+r+','+i+')"></div>';}
+   h+='<div class="bead" style="top:'+(up?114+i*36:174+i*36)+'px" onclick="tapEarth('+r+','+i+')">1</div>';}
   h+='<div class="rodlbl">'+names[r]+'</div></div>';
  }
  ab.innerHTML=h;ab.classList.toggle("two",first===1);
