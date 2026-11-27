@@ -164,6 +164,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
   <p class="sub">Kliknij kafelek i zaczynamy!</p>
   <a href="album.html" style="display:flex;align-items:center;gap:12px;max-width:640px;margin:0 auto 18px;background:linear-gradient(135deg,#ffd166,#f78fb3);border-radius:22px;padding:12px 18px;color:#2b2d42;text-decoration:none;box-shadow:0 5px 0 #e9b8a0;font-weight:700"><span style="font-size:40px">📒</span><span><b style="font-size:19px">Mój album naklejek i mapa przygody</b><br>Zbieraj gwiazdki we wszystkich grach, odblokuj 48 naklejek i zrób zadanie dnia!</span></a>
   <div id="gry-box"></div>
+  <p style="text-align:center;margin:18px 0"><button type="button" id="gry-all" style="display:none;font:700 18px inherit;background:#fff;border:3px solid #2b2d42;border-radius:999px;padding:10px 22px;cursor:pointer">🎮 Pokaż wszystkie gry</button></p>
   <div class="games">
     <a class="game" data-ages="a b" style="background:var(--y)" href="gry/czytanka.html"><span class="age">4–7 lat</span><span class="ic">📖</span><h3>Czytanka</h3><p>Literki, sylaby, słowa i krótkie bajeczki</p><span class="play">Graj ▶</span></a>
     <a class="game" data-ages="a b" style="background:var(--g)" href="gry/liczydelko.html"><span class="age">4–8 lat</span><span class="ic">🔢</span><h3>Liczydełko</h3><p>Liczenie, dodawanie, odejmowanie i tabliczka</p><span class="play">Graj ▶</span></a>
@@ -181,7 +182,6 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     <a class="game" data-ages="a b" style="background:#caffbf" href="gry/kalendarz.html"><span class="age">5–9 lat</span><span class="ic">📅</span><h3>Kalendarz</h3><p>Dni tygodnia, miesiące i pory roku</p><span class="play">Graj ▶</span></a>
   </div>
   <div id="gry-inne-wrap" style="display:none"><h3 class="title" style="font-size:26px;margin-top:26px">Pozostałe gry</h3><p class="sub">Też możesz w nie zagrać!</p><div class="games" id="gry-inne"></div></div>
-  <p style="text-align:center;margin:18px 0"><button type="button" id="gry-all" style="display:none;font:700 18px inherit;background:#fff;border:3px solid #2b2d42;border-radius:999px;padding:10px 22px;cursor:pointer">🎮 Pokaż wszystkie gry</button></p>
   <div class="soon">
     <div><b>✍️</b>Piszemy literą<small>wkrótce</small></div>
     <div><b>📝</b>Ortografia<small>wkrótce</small></div>
@@ -244,7 +244,7 @@ footer{background:#fff;border-top:3px dashed #f1e1c0;margin-top:20px}
     document.getElementById('gry-title').textContent='Gry dla: '+names[k];
     document.getElementById('age-hint').textContent='Wybrano: '+names[k]+' – możesz zmienić w każdej chwili';
     var box=document.getElementById('gry-box');
-    box.innerHTML=(soon[k]?'<div class="empty"><b>'+(n?'Na początek mamy dla Ciebie '+n+(n===1?' grę':' gry')+'. Wkrótce dojdą nowe:':'Gry dla Twojej grupy są w przygotowaniu! Wkrótce:')+'</b><ul>'+soon[k].map(function(t){return'<li>'+t+'</li>'}).join('')+'</ul></div><br>':'');
+    box.innerHTML=(soon[k]?'<div class="empty"><b>'+(n?'Dla Twojego wieku mamy '+n+(n===1?' grę':' gry')+' – są zaraz poniżej. Niżej znajdziesz też wszystkie pozostałe gry 👇 Wkrótce dojdą nowe:':'Gry dla Twojej grupy są w przygotowaniu! Wkrótce:')+'</b><ul>'+soon[k].map(function(t){return'<li>'+t+'</li>'}).join('')+'</ul></div><br>':'');
     try{localStorage.setItem('bystrzaki-wiek',k)}catch(e){}
     if(scroll)document.getElementById('gry').scrollIntoView({behavior:'smooth'});
   }
