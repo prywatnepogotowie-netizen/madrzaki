@@ -2,7 +2,6 @@
    Kod dostępu jest podpisany cyfrowo (ECDSA P-256) i sprawdzany w przeglądarce.
    Kod zapisujemy tylko na tym urządzeniu (localStorage). */
 (function(){
- var PUB2="MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5adQcec1w4sjwEVdq3tW7y/btd5d8DEw86x/O3c+8pec+ds1QjBrcxHQNJZQXaXJsYGl3+KArWUIDz/qUAeuKg=="; // klucz automatycznej sprzedaży (funkcja Supabase "bystrzaki")
  var PUB="MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEIVF7x80L4wFE2uxjbw2EkJZ+R4wVFJXFEG288olTgjE+P4S9hpuf3R5jaT3UjAbV5AMGk0n0PpBpkynEKLPp+g==";
  var ON=true; // false = wszystko za darmo
  var KEY="bystrzaki-premium";
@@ -14,7 +13,8 @@
   english:{fn:[/cat\((\d+)\)/,3]},
   soroban:{t:["Tabliczka w rytmie"],fn:[/sTask\((\d+)\)/,3]},
   kalendarz:{t:["Ułóż miesiące","Pory roku"]},
-  rysuj:{fn:[/open_\('(kot|rakieta|serce)'\)/,0]},
+  puzle:{fn:[/setLv\((2|3)\)/,0]},
+  rysuj:{fn:[/open_\('(kot|rakieta|serce|zamek|dino|morze|miasto|motyl)'\)/,0]},
   szachy:{t:["Hetman","Król","Skoczek","Pionek","Bitwa pionków","Zagadki","Mini partia"]},
   zegar:{t:["Kwadranse","Co 5 minut"]},
   sklepik:{t:["Do 50 zł","Do 100 zł"]},
@@ -27,9 +27,8 @@
  function b64u(s){s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";var b=atob(s),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
  function verify(code){if(!code||!/^BZ1\./.test(code)||!window.crypto||!crypto.subtle)return Promise.resolve(null);
   var p=code.split(".");if(p.length!==3)return Promise.resolve(null);
-  function chk(pub){return crypto.subtle.importKey("spki",b64u(pub),{name:"ECDSA",namedCurve:"P-256"},false,["verify"]).then(function(k){
-   return crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},k,b64u(p[2]),b64u(p[1]))}).catch(function(){return false})}
-  return chk(PUB).then(function(ok){return ok||chk(PUB2)}).then(function(ok){
+  return crypto.subtle.importKey("spki",b64u(PUB),{name:"ECDSA",namedCurve:"P-256"},false,["verify"]).then(function(k){
+   return crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},k,b64u(p[2]),b64u(p[1]))}).then(function(ok){
    if(!ok)return null;var d=JSON.parse(new TextDecoder().decode(b64u(p[1])));
    if(d.e<new Date().toISOString().slice(0,10))return {expired:true,e:d.e};return d}).catch(function(){return null})}
  function raw(){try{return localStorage.getItem(KEY)}catch(e){return null}}

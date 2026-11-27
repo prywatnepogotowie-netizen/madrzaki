@@ -15,7 +15,7 @@
  try{P.getItem=function(k){return this===S?oGet.call(S,key(k)):oGet.call(this,k)};
   P.setItem=function(k,v){return this===S?oSet.call(S,key(k),v):oSet.call(this,k,v)};
   P.removeItem=function(k){return this===S?oRem.call(S,key(k)):oRem.call(this,k)};}catch(e){}
- var STAR_KEYS=["czytanka_stars","liczydlo_stars","logika_stars","ratownik_stars","bystrzaki-soroban-stars","bystrzaki-english-stars","bystrzaki-kosz-stars","bystrzaki-robot-stars","bystrzaki-rysuj-stars","bystrzaki-szachy-stars","bystrzaki-zegar-stars","bystrzaki-sklepik-stars","bystrzaki-kalendarz-stars"];
+ var STAR_KEYS=["czytanka_stars","liczydlo_stars","logika_stars","ratownik_stars","bystrzaki-soroban-stars","bystrzaki-english-stars","bystrzaki-kosz-stars","bystrzaki-robot-stars","bystrzaki-rysuj-stars","bystrzaki-szachy-stars","bystrzaki-puzle-stars","bystrzaki-zegar-stars","bystrzaki-sklepik-stars","bystrzaki-kalendarz-stars"];
  function starsOf(k){return +(S.getItem(k)||0)||0}
  function total(){return STAR_KEYS.reduce(function(a,k){return a+starsOf(k)},0)}
  function bonus(){return +(S.getItem("bystrzaki-bonus")||0)||0}
