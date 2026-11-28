@@ -10,7 +10,7 @@
   czytanka:{t:["Ułóż słowo","Na jaką literkę","Zdania","Zdanie i obrazek","Czytanki"]},
   liczydelko:{t:["do 100","Mnożenie","Dzielenie","Tabliczka mnożenia","Mieszanka"]},
   glowkowanie:{t:["Trudniejsze","Memory"]},
-  english:{fn:[/cat\((\d+)\)/,3]},
+  english:{fn:[/cat\((\d+)\)/,4]},
   soroban:{t:["Tabliczka w rytmie"],fn:[/sTask\((\d+)\)/,3]},
   kalendarz:{t:["Ułóż miesiące","Pory roku"]},
   puzle:{fn:[/setLv\((2|3)\)/,0]},
